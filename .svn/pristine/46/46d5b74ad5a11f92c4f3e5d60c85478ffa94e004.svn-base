@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <configuration scan="true" scanPeriod="1 seconds"> -->
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{1000} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.myspring" level="ALL"></logger>
+
+	<logger name="com.myspring.common.menu" level="WARN"></logger>
+
+	<logger name="com.myspring.common.logic" level="WARN"></logger>
+
+	<logger name="org.springframework" level="INFO"></logger>
+
+	<logger name="org.apache.ibatis" level="INFO"></logger>
+	<logger name="org.apache.commons.beanutils" level="INFO"></logger>
+
+	<logger name="org.mybatis.spring" level="INFO"></logger>
+	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor" level="DEBUG"></logger>
+	<logger name="mapper" level="TRACE"></logger>
+	<logger name="mapper.myspring.common" level="INFO"></logger>
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

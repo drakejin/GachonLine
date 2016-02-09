@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.login">
+
+	<select id="getCheckMember" resultType="Integer" parameterType="LoginVO">
+		SELECT
+			count(*)
+		FROM 
+			MEMBER_MST A
+		WHERE
+			1=1 
+				AND 
+			A.MEMBER_ID=TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999)
+				AND
+			A.PASSWORD=#{password,jdbcType=VARCHAR}
+				AND
+			A.CLOSE_YN='N'
+		ORDER BY 	A.MEMBER_ID ASC 
+	</select>
+	<select id="getLoginSession" resultType="LoginVO" parameterType="LoginVO">
+		SELECT
+			TO_CHAR(A.MEMBER_ID) AS memberId, 
+			A.MEMBER_NAME AS memberName,
+			A.PASSWORD AS password,
+			A.MEMBER_TYPE AS memberType,
+			TO_CHAR(A.JOIN_FROM_DT,'YYYY-MM-DD') AS joinFromDate,
+			A.CLOSE_YN AS closeYesNo,
+			A.CLOSE_REASON AS closeReason,
+			A.COLLEGE AS college,
+			A.DEPARTMENT AS department,
+			A.MAJOR AS major,
+			A.SCHOOL_YEAR AS schoolYear,
+			A.YEAR AS year,
+			A.COMPLETE_TERM AS completeTerm,
+			A.COLLEGE_STATUS AS collegeStatus,
+			TO_CHAR(A.BIRTH_DATE,'YYYY-MM-DD') AS birthDate,
+			A.POSTAL_CODE AS postalCode,
+			A.ADDRESS AS address,
+			A.PHONE AS phone,
+			A.PHONE2 AS phone2,
+			A.MOBILE AS mobile,
+			A.EMAIL AS email,
+			A.PROFILE_IMG_PATH AS profileImagePath,
+			A.CRT_USER AS createUser,
+			TO_CHAR(A.CRTDT,'YYYY-MM-DD') AS createDate,
+			A.UPDT_USER AS updateUser,
+			TO_CHAR(A.UPDTDT,'YYYY-MM-DD') AS updateDate
+			
+		FROM 		MEMBER_MST A
+		WHERE 		1=1 
+			AND 
+			A.MEMBER_ID=TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999)
+			AND
+			A.PASSWORD=#{password,jdbcType=VARCHAR}
+		ORDER BY 	A.MEMBER_ID ASC 
+	</select>
+
+</mapper>

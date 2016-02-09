@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.community">
+	<!-- 게시글 싸지르기 list에 들어갈것 -->
+	
+	<select id="getSelectList" parameterType="CommunityNormalListVO" resultType="CommunityNormalListVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo,
+		A.TYPE AS type,
+		A.TITLE as title,
+		A.VIEW_COUNT as viewCount,
+		A.RECMD_COUNT as recommandCount,
+		A.CRT_USER as createUser,
+		A.CRTDT AS createDate,
+		A.CRT_ID as createId
+	FROM
+		COMMU_NORMAL_LIST A
+	WHERE
+		1=1
+			AND
+		A.BOARD_NO = TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')	
+	</select>
+	
+	<select id="getSelectContent" parameterType="CommunityNormalListVO" resultType="CommunityNormalContentVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo,
+		A.CONTENT AS content,
+		A.CRT_USER as createUser,
+		A.CRTDT as createDate
+	FROM
+		COMMU_NORMAL_CONTENT A
+	WHERE
+		1=1
+			AND
+		A.BOARD_NO = TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	</select>
+	
+	
+	<update id="setBoardSelect" parameterType="CommunityNormalListVO">
+	
+	UPDATE 
+		COMMU_NORMAL_LIST A
+	SET 
+		A.VIEW_COUNT=A.VIEW_COUNT+1
+	WHERE 
+		A.BOARD_NO=TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	
+	</update>
+	
+	
+	
+	
+	<select id="getBoardList" parameterType="CommunityNormalListVO" resultType="CommunityNormalListVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo, 
+		A.TITLE AS title,
+		A.VIEW_COUNT AS viewCount,
+		A.RECMD_COUNT AS recommandCount,
+		A.CRT_USER as createUser,
+		TO_CHAR(A.CRTDT,'YYYY-MM-DD HH:mm:ss') AS createDate,
+		A.CRT_ID as createId
+		FROM COMMU_NORMAL_LIST A
+		WHERE 1=1
+			AND 
+		A.TYPE = #{type,jdbcType=VARCHAR}
+		ORDER BY
+			A.BOARD_NO DESC
+	</select>
+	
+	<insert id="writeSubmitList" parameterType="CommunityNormalListVO"> 
+	INSERT INTO 
+		COMMU_NORMAL_LIST 
+	VALUES(
+		COMMU_NORMAL_CONTENT_SEQ.NEXTVAL,
+		#{type,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR},
+		0,
+		0,
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{updateUser,jdbcType=VARCHAR},
+		SYSDATE,
+		TO_NUMBER(#{createId,jdbcType=VARCHAR}, '999999999')
+		)
+	</insert>
+	<!-- 게시글 싸지르기 list에 들어갈것 -->
+	<insert id="writeSubmitContent" parameterType="CommunityNormalContentVO">
+	INSERT INTO 
+		COMMU_NORMAL_CONTENT 
+	VALUES(
+		COMMU_NORMAL_CONTENT_SEQ.CURRVAL,
+		#{content,jdbcType=VARCHAR},
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{updateUser,jdbcType=VARCHAR},
+		SYSDATE
+		)
+	</insert>
+	<select id="getReply" parameterType="CommunityNormalListVO" resultType="CommunityNormalReplyVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo,
+		A.COMMENT_NO AS commentNo,
+		A.COMMENT1 AS comment1,
+		A.CRT_USER as createUser,
+		A.CRTDT as createDate,
+		A.CRT_ID as createId
+	FROM
+		COMMU_NORMAL_REPLY A
+	WHERE
+		1=1
+			AND
+		A.BOARD_NO = TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	ORDER BY
+		A.COMMENT_NO ASC
+	</select>
+	<insert id="setReply" parameterType="CommunityNormalReplyVO">
+	
+	INSERT INTO 
+		COMMU_NORMAL_REPLY 
+	VALUES(
+		#{boardNo},
+		COMMU_NORMAL_REPLY_SEQ.NEXTVAL,
+		#{comment1,jdbcType=VARCHAR},
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		TO_NUMBER(#{createId,jdbcType=VARCHAR}, '999999999')
+		)
+	</insert>
+
+	<update id="setReplyUpdate" parameterType="CommunityNormalReplyVO">
+	UPDATE 
+		COMMU_NORMAL_REPLY A
+	SET 
+		A.COMMENT1=#{comment1,jdbcType=VARCHAR},
+		A.UPDTDT=SYSDATE,
+		A.UPDT_USER=#{updateUser,jdbcType=VARCHAR}
+	WHERE 
+		A.COMMENT_NO=TO_NUMBER(#{commentNo,jdbcType=VARCHAR}, '999999999')
+	</update>
+
+	<delete id="setReplyDelete" parameterType="CommunityNormalReplyVO">
+	DELETE FROM
+		COMMU_NORMAL_REPLY A
+	WHERE
+		A.COMMENT_NO=TO_NUMBER(#{commentNo,jdbcType=VARCHAR}, '999999999')
+	</delete>
+
+
+	<delete id="setBoardDelete" parameterType="CommunityNormalListVO">
+	DELETE FROM
+		COMMU_NORMAL_LIST A
+	WHERE
+		A.BOARD_NO=TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	</delete>
+	<delete id="setBoardReplyDelete" parameterType="CommunityNormalListVO">
+	DELETE FROM
+		COMMU_NORMAL_REPLY A
+	WHERE
+		A.BOARD_NO=TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	</delete>
+	
+	<update id="setBoardListUpdateSubmit" parameterType="CommunityNormalListVO">
+	UPDATE 
+		COMMU_NORMAL_LIST A
+	SET 
+		A.TITLE =#{title,jdbcType=VARCHAR},
+		A.UPDTDT=SYSDATE
+	WHERE 
+		A.BOARD_NO=TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	</update>
+	<update id="setBoardContentUpdateSubmit" parameterType="CommunityNormalContentVO">
+	UPDATE 
+		COMMU_NORMAL_CONTENT A
+	SET 
+		A.CONTENT =#{content,jdbcType=VARCHAR},
+		A.UPDTDT=SYSDATE
+	WHERE 
+		A.BOARD_NO=TO_NUMBER(#{boardNo,jdbcType=VARCHAR}, '999999999')
+	</update>
+	
+	
+
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+	<tlib-version>1.0</tlib-version>
+	<short-name>gachonTag</short-name>
+	<uri>/WEB-INF/tld/GachonLineTag</uri>
+
+	<tag>
+		<name>html</name>
+		<tag-class>com.myspring.gachon.tags.HtmlTag</tag-class>
+		<info>This Tag set default Html Tag</info>
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>script</name>
+		<tag-class>com.myspring.gachon.tags.ScriptTag</tag-class>
+		<info>This Tag set default Script Tag</info>
+		<attribute>
+			<name>common</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>bootstrapTable</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>jQuery</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>bootstrap</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>noty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>select</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+<!-- 		<attribute> -->
+<!-- 			<name>select2</name> -->
+<!-- 			<required>false</required> -->
+<!-- 			<rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>magnific_popup</name> -->
+<!-- 			<required>false</required> -->
+<!-- 			<rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>bootstrapValidator</name> -->
+<!-- 			<required>false</required> -->
+<!-- 			<rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>lytebox</name> -->
+<!-- 			<required>false</required> -->
+<!-- 			<rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>bxslider</name> -->
+<!-- 			<required>false</required> -->
+<!-- 			<rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>scrollfollow</name> -->
+<!-- 			<required>false</required> -->
+<!-- 			<rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+	</tag>
+	
+	<tag>
+		<name>navBar</name>
+		<tag-class>com.myspring.gachon.tags.NavBarTag</tag-class>
+		<info>This Tag Draw Menu</info>
+		<body-content>empty</body-content>
+	</tag>
+	
+	
+	<tag>
+		<name>select</name>
+		<tag-class>com.myspring.gachon.tags.SelectTag</tag-class>
+		<info>This Tag set default Html Tag</info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>code</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>onChange</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>required</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>initValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>initLabel</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selected</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib>

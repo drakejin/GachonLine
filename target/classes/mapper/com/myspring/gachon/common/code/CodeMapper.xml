@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.common.code">
+	<select id="selectCodeDet" resultType="CodeVO" parameterType="String">
+		SELECT CODE AS value
+		, CODE_NAME AS label
+		FROM CODE_DET 
+		WHERE GRCODE = #{grcode}
+		ORDER BY SORTSEQ ASC
+	</select>
+	
+	<select id="selectCodeDetWithCodeLike" resultType="CodeVO" parameterType="JSONObject">
+		SELECT CODE AS value
+		, CODE_NAME AS label
+		FROM CODE_DET 
+		WHERE GRCODE = #{grcode}
+		<if test="code != null">
+			AND INSTR(CODE, #{code}) > 0 
+			<!-- 질문 : INSTR로 비교했을때 CODE 비교대상을 code값으로 비교한다...에서 왜  > 0을 해주는가? -->
+		</if>
+		ORDER BY SORTSEQ ASC
+	</select>
+	
+	<select id="selectCodeDetWithCodeLike2" resultType="CodeVO" parameterType="map">
+		SELECT CODE AS value
+		, CODE_NAME AS label
+		FROM CODE_DET 
+		WHERE GRCODE = #{grcode}
+		<if test="code != null">
+			AND INSTR(CODE, #{code}) > 0
+		</if>
+		ORDER BY SORTSEQ ASC
+	</select>
+</mapper>

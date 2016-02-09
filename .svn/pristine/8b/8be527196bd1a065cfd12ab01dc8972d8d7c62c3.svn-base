@@ -1,0 +1,13 @@
+package com.myspring.gachon.community.service;
+
+import com.myspring.gachon.community.vo.CommunityNormalContentVO;
+import com.myspring.gachon.community.vo.CommunityNormalListVO;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+public interface CommunityService {
+	JSONArray getBoardList(String divs);
+	JSONObject setWriteSubmit(CommunityNormalListVO list,CommunityNormalContentVO content);
+	JSONObject getBoard(CommunityNormalListVO vo);
+}

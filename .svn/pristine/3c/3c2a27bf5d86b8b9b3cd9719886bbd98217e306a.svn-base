@@ -1,0 +1,454 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@include file="/resources/include/include.jsp"%>
+<gachonTag:html>
+
+<gachonTag:script bootstrapTable="YES">
+
+<!-- 게시글 리스트들을 역할을 합니다. -->
+<script type="text/javascript">
+
+$(document).ready(function() {
+	list();
+	$(function() {
+		$('#boardList').bootstrapTable().on('click-row.bs.table',function(e, row, $element) {
+			location.href="/community?divs=${divs}&boardNo="+row.boardNo;
+		});
+	});
+});
+
+//댓글에 들어가는 인풋박스 검증하기
+function checkInput(value) {
+	if (value.length > 2 && value.length < 1000) {
+		document.getElementById("replyNotice").innerHTML = "&nbsp;";
+		document.getElementById("replySubmit").disabled = false;
+	} else {
+		document.getElementById("replyNotice").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;덧글이 너무 짧거나 너무 깁니다.1000글자 제한입니다.";
+		document.getElementById("replySubmit").disabled = true;
+	}
+}
+
+/*
+function boardSelect(type, boardNo, createId) {
+	var dataForm = {
+		type : type,
+		boardNo : boardNo,
+		createId : createId
+	};
+	$.ajax({
+		type : "POST",
+		url : "/community.content",
+		cache : false,
+		async : true,
+		data : dataForm,
+		dataType : "json",
+		success : function(response) {
+			$('#board').hide(500);
+			console.log(response);
+	
+			$("#replyBoardNo").val(response.LIST.boardNo);
+			document.getElementById("title").value = response.LIST.title;
+			document.getElementById("createUser").value = response.LIST.createUser;
+			document.getElementById("createId").value = response.LIST.createId;
+			document.getElementById("content").innerHTML = response.CONTENT.content;
+	
+			if (response.LIST.createId == '${LOGIN_MEMBER.memberId}') {
+				contentControl.style = "display:inline;";
+			}
+	
+			$('#board').show(1000, function() {
+				$('html, body').animate({
+					scrollTop : $("#board").offset().top - 30
+				}, 300);
+			});
+			var replies = document.getElementById('replies');
+			var index = 0;
+	
+			for (index in response.REPLY) {
+				console.log(response.REPLY[index]);
+				var reply = document.createElement('div');
+	
+				var form_row = document.createElement('div');
+				var form = document.createElement('form');
+	
+				var colSm2_1 = document.createElement('div');
+				var colSm8_2 = document.createElement('div');
+				var colSm2_3 = document.createElement('div');
+	
+				var form_group_1 = document
+						.createElement('div');
+				var form_group_2 = document
+						.createElement('div');
+				var form_group_3 = document
+						.createElement('div');
+				var form_group_4 = document
+						.createElement('div');
+				var form_group_5 = document
+						.createElement('div');
+	
+				var input_1 = document.createElement('input');
+				var input_2 = document.createElement('input');
+	
+				var textarea = document
+						.createElement('textarea');
+	
+				var input_3 = document.createElement('input');
+				var input_4 = document.createElement('a');
+				var input_5 = document.createElement('input');
+				var input_6 = document.createElement('input');
+	
+				reply.className = "row well";
+				reply.style = "background-color:#fff;"
+	
+				form.method = "POST";
+				form.action = "/community/reply/update"
+	
+				colSm2_1.className = "col-sm-2";
+				colSm8_2.className = "col-sm-8";
+				colSm2_3.className = "col-sm-2";
+	
+				form_group_1.className = "form-group";
+				form_group_2.className = "form-group";
+				form_group_3.className = "form-group";
+				form_group_4.className = "form-group";
+	
+				input_1.className = "form-control";
+				input_1.readOnly = true;
+				input_1.type = "text";
+				input_1.value = response.REPLY[index].createUser;
+	
+				input_2.className = "form-control";
+				input_2.readOnly = true;
+				input_2.type = "text";
+				input_2.value = response.REPLY[index].createId;
+	
+				textarea.className = "form-control";
+				textarea.rows = 4;
+				textarea.readOnly = true;
+				textarea.id = "comment"
+						+ response.REPLY[index].commentNo;
+				textarea.value = response.REPLY[index].comment1;
+	
+				form_group_1.appendChild(input_1);
+				form_group_2.appendChild(input_2);
+				colSm2_1.appendChild(form_group_1);
+				colSm2_1.appendChild(form_group_2);
+	
+				form.appendChild(colSm2_1);
+	
+				colSm8_2.appendChild(textarea);
+	
+				form.appendChild(colSm8_2);
+	
+				input_3.className = "form-control";
+				input_3.readOnly = true;
+				input_3.type = "text";
+				input_3.value = response.REPLY[index].createDate;
+	
+				input_6.type = "hidden";
+				input_6.name = "commentNo";
+				input_6.value = response.REPLY[index].commentNo
+						+ "";
+	
+				form_group_3.appendChild(input_6);
+				form_group_3.appendChild(input_3);
+	
+				//----------권한 있는 사용자들에게 부여
+				if (response.REPLY[index].createId == '${LOGIN_MEMBER.memberId}') {
+	
+					input_4.className = "col-sm-6 btn btn-warning";
+					input_4.href = "/community/reply/delete?commentNo="
+							+ response.REPLY[index].commentNo;
+					input_4.innerHTML = "삭제";
+	
+					textarea.readOnly = false;
+	
+					input_5.className = "col-sm-6 btn btn-success";
+					input_5.type = "submit";
+					input_5.value = "수정";
+	
+					form_group_4.appendChild(input_4);
+					form_group_4.appendChild(input_5);
+	
+				}
+				colSm2_3.appendChild(form_group_3);
+				colSm2_3.appendChild(form_group_4);
+				form.appendChild(colSm2_3);
+	
+				reply.appendChild(form);
+				replies.appendChild(reply)
+			}
+			if (index != 0) {
+				replies.className = "well";
+				replies.style = "margin-top:2em;margin-bottom:0.7em;";
+			}
+		},
+		error : function(request, status, errorThrown) {
+	
+			GachonNoty.showAjaxErrorNoty(request, status,
+					errorThrown);
+		}
+	});
+
+}
+*/
+//리스트를 불러옵니다.
+function list() {
+	var dataForm = {
+		type : '${divs}'
+	};
+	$.ajax({
+		type : "POST",
+		url : "/community.select",
+		cache : false,
+		async : true,
+		data : dataForm,
+		dataType : "json",
+		success : function(response) {
+			$('#boardList').bootstrapTable('load', response);
+		},
+		error : function(request, status, errorThrown) {
+			GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+		}
+	});
+}
+function replyDelete(commentNo) {
+	alert("삭제_" + commentNo);
+};
+</script>
+
+<script>
+function selectContent(index) {
+	alert(index);
+}
+</script>
+</gachonTag:script>
+<body>
+
+	<!-- 구분은 하나의 변수로하고 변수는 두개로 즉 구분자와 그룹자 두개를 넘겨준다. -->
+	<!-- 속성 아직 안만들어 놨어요 이거는 임시방편으로 만든 태그라이브러리이고  /WEB-INF/tags/nav-bar.tag 
+에다가 링크를 수정해주세양! 나중에 tag class 만들때 참고할게양 ! -->
+
+	<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag"%>
+
+	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}"
+		type="${LOGIN_MEMBER.memberType}" />
+	<div class="container">
+
+		<!-- 커뮤니케이션 게시판에 사용할 nav-Bar 필요한 데이터는 divs만 받으면 된다.
+	하나의 컨트롤러 그리고 단 하나의 메서드 로 페이지를 구분한다.
+	 -->
+		<GachonTag:community-nav divs="${divs}" />
+		
+		<c:if test="${!(board eq null)}">
+			<script type="text/javascript">
+			$(document).ready(function() {
+				$('html, body').animate({
+					scrollTop : $("#board").offset().top - 30
+				}, 300);
+			});
+			</script>
+			<div id="board">
+				<div class="row" style="margin-top: 3em;">
+					<div class="row form-row">
+						<div class="col-sm-12">
+							<div class="col-sm-2 attr_name ">제목</div>
+							<div class="col-sm-10">
+								<input id="title" type="text" class="form-control"
+									value="${board.LIST.title}" readonly />
+							</div>
+						</div>
+					</div>
+	
+					<div class="row form-row">
+						<div class="col-sm-6">
+							<div class="col-sm-4 attr_name ">이름</div>
+							<div class="col-sm-8">
+								<input id="createUser" type="text" class="form-control"
+									value="${board.LIST.createUser }" readonly />
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="col-sm-4 attr_name ">학번</div>
+							<div class="col-sm-8">
+								<input id="createId" type="text" class="form-control"
+									value="${board.LIST.createId }" readonly />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="well">
+					<div class="row form-group">
+						<label for="comment">내용</label>
+						<div class="card-content card"
+							style="height: 440px; overflow-y: scroll;">
+							<div id="content" style="border: none; background-color: #ffffff">
+								${board.CONTENT.content }
+							</div>
+						</div>
+					</div>
+					<c:if test="${LOGIN_MEMBER.memberId eq board.LIST.createId}">
+						<div id="contentControl" style="display: none;" class="row">
+							<div class="col-sm-4">&nbsp;</div>
+							<div class="col-sm-4">&nbsp;</div>
+							<div class="col-sm-4" style="padding-top: 1em;">
+								<div class="col-sm-6">
+									<form method="post" action="/community/delete">
+										<input type="hidden" name="divs" value="${divs}" />
+										<input type="hidden" name="boardNo" value="${boardNo}" />
+										<input type="submit" value="삭제하기" class="col-sm-12 btn btn-warning" />
+									</form>
+								</div>
+								<div class="col-sm-6">
+									<form method="post" action="/community/modify">
+										<input type="hidden" name="divs" value="${divs}" /> 
+										<input type="hidden" name="boardNo" value="${boardNo}" />
+										<input type="submit" value="수정하기" class="col-sm-12 btn btn-success" />
+									</form>
+								</div>
+							</div>
+						</div>
+					</c:if>
+				</div>
+				<div class="well "id="replies">
+					<!--  class="well" style="margin-top:2em;margin-bottom:1em;" -->
+					<c:forEach var="reply" items="${board.REPLY}" varStatus="status">
+						<div class="row" style="margin-bottom:1em;padding-top:0.7em;background-color:#fff;">
+							<div  class="col-sm-2">
+								<div class="form-group">
+									<input type="text" id="${reply.commentNo}_name" class="form-control" value="${reply.createUser}" readonly />
+								</div>
+								<div class="form-group">
+									<input type="text" id="${reply.commentNo}_id" class="form-control" value="${reply.createId}" readonly />
+								</div>
+							</div>
+							<div  class="col-sm-8">
+								<div class="form-group">
+									<textarea rows="4" id="${reply.commentNo}_comment" class="form-control" readonly >
+									${reply.comment1}
+									</textarea>
+								</div>
+							</div>
+							<div  class="col-sm-2">
+								<div class="form-group">
+									<input type="text" id="${reply.commentNo}_date" class="form-control" value="${reply.createDate}" readonly />
+								</div>
+								<div class="form-group">
+									<input type="button" value="삭제" onclick="deleteComment('${reply.commentNo}')" class="col-sm-6 btn btn-warning" />
+									<input type="button" value="수정" onclick="updateComment('${reply.commentNo}')" class="col-sm-6 btn btn-success" />
+								</div>
+							</div>
+						</div>
+					</c:forEach>
+				</div>
+				<c:if test="${!(LOGIN_MEMBER eq null)}">
+					<div id="replyNotice" class="row">&nbsp;</div>
+					<div id="replyWrite" class="well">
+						<form method="POST" action="/community/reply/write">
+							<input type="hidden" id="replyBoardNo" name="boardNo" />
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="form-group">
+										<input class="form-control" type="text" name="createUser"
+											value="${LOGIN_MEMBER.memberName}" readonly />
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" name="createId"
+											value="${LOGIN_MEMBER.memberId}" readonly />
+									</div>
+								</div>
+								<div class="col-sm-8">
+									<textarea onkeydown="checkInput(this.value)" rows="4"
+										class="form-control" type="text" name="comment1"></textarea>
+								</div>
+								<div class="col-sm-2">
+									<div class="form-group">
+										<input type="reset" class="form-control btn btn-warning"
+											value="다시 작성" />
+									</div>
+									<div class="form-group">
+										<input id="replySubmit" type="submit"
+											class="form-control btn btn-success" value="덧글 달기" />
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</c:if>
+			</div>
+		</c:if>
+		<div>
+			<div class="table-responsive">
+				<table id="boardList" data-toggle="table" data-show-columns="true"
+					data-search="true" data-show-refresh="true"
+					data-show-toggle="false" data-show-export="true"
+					data-pagination="true">
+					<thead>
+						<tr>
+							<th data-field="boardNo" class="col-sm-1 text_center">글 번호</th>
+							<th data-field="title" class="col-sm-5 text_center">제 목</th>
+							<th data-field="createUser" class="col-sm-2 text_center">작성자</th>
+							<th data-field="createDate" class="col-sm-2 text_center">작성일</th>
+							<th data-field="viewCount" class="col-sm-1 text_center">조회</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-4">
+					<c:choose>
+						<c:when
+							test="${LOGIN_MEMBER.memberType eq 'STD' ||
+					LOGIN_MEMBER.memberType eq 'ADM' ||
+					LOGIN_MEMBER.memberType eq 'ETC' ||
+					LOGIN_MEMBER.memberType eq 'PRO'}">
+							<form method="POST" action="/community/write">
+								<input type="hidden" name="divs" value="${divs}" /> <input
+									type="submit" class="col-sm-11 btn btn-success"
+									style="margin-top: 1em; margin-left: 1em; margin-right: 1em;"
+									value="글 쓰기" />
+							</form>
+						</c:when>
+						<c:otherwise>
+							&nbsp;
+					</c:otherwise>
+					</c:choose>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>
+</gachonTag:html>
+
+
+
+<!-- 
+스프링 돌아가는 PROCESS   
+1->request ->스프링이 받는다 정확히 말하면 web.xml이 먼저 받는다. -> web.xml을 열어보면 가장첫번째에 있는 DispatcherServlet 을 정의해놓는데
+maching을 보면 **으로 되어있다. -> Dispatcher를 지나서 ->HandlerMapping 으로  오게되는데 RequestMapping 에다가 리스트로 주소들을 가지고있다.
+
+그다음에는 다시 디스패쳐에서 HandlerAdapter로 가게되는데 그것은 객체를 붙이는 역할을 한다. 
+
+서비스를 호출하는애가 잇으면 서블릿을 호출하고 없다면 바로 9번 ViewName 을 받게된다. 
+
+View 리졸브가하는거 =String 을 넘겼을때.. 
+requestBody써가지고 하는것은 ViewResolve가 하는건대 이것은 Servlet 
+
+
+
+RequestMapping 주소 
+1, 댓글 
+수정,		/community/reply/update
+삭제,		/community/reply/delete
+삽입		/community/reply/insert
+
+2, 게시글 
+수정,		/community/delete/
+삭제		/community/update/
+ -->
+ 
+ 
+ 
+ 

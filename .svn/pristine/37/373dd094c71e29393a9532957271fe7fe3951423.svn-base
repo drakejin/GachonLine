@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.admin.course">
+	<select id="getDrawCode" resultType="JSONObject">
+		SELECT D.GRCODE ,
+			D.CODE,
+			D.CODE_NAME
+		FROM CODE_DET D
+		WHERE 1=1
+		ORDER BY D.SORTSEQ DESC
+	</select>
+	
+	<!-- 리스트 테이블을 보여줌 (SELECT_MST) -->
+	<select id="getCourseList" parameterType="AdminCourseAllVO" resultType="AdminCourseAllVO">
+		SELECT C.COURSE_NUM AS courseNum,
+			C.COURSE_NAME AS courseName,
+			C.YEAR AS year,
+			C.AREA AS area,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='AREA' AND B.CODE = C.AREA ) AS area_nm,
+			C.COMPLETE_DIVISION AS completeDivision,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COMPLETE_DIVISION' AND B.CODE = C.COMPLETE_DIVISION ) AS completeDivision_nm,
+			C.GRADE AS grade,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='GRADE' AND B.CODE = C.GRADE ) AS grade_nm,
+			C.PROFESSOR AS professor,
+			C.LEC_TIME AS lecTime,
+			C.LEC_ROOM AS lecRoom,
+			C.SEMESTER AS semester,
+			C.COLLEGE AS college,
+			C.SCHOOL_YEAR AS schoolYear,
+			M.MAJOR AS major,
+			(SELECT 'Y' FROM COURSE_APPLICANT_STATE A WHERE A.COURSE_NUM = C.COURSE_NUM AND A.MEMBER_ID = #{memberId}) AS appYn
+		FROM COURSE_MST C, COURSE_MAJOR_MAP M
+		WHERE 1=1
+			AND C.COURSE_NUM = M.COURSE_NUM
+		<if test="college != null and semester != null and completeDivision != null">
+			AND C.COLLEGE = #{college}
+			AND C.SEMESTER = #{semester}
+			AND C.COMPLETE_DIVISION = #{completeDivision}
+			AND C.COURSE_NUM = M.COURSE_NUM
+			<if test="schoolYear != null and !schoolYear.equals('')">
+				AND C.SCHOOL_YEAR = #{schoolYear}
+			</if>
+			
+			<if test="major != null and !major.equals('')">
+				AND M.MAJOR = #{major}
+			</if>
+			
+			<if test="courseName != null and !courseName.equals('')">
+				AND C.COURSE_NAME = #{courseName}
+			</if>
+		</if>
+		
+		ORDER BY C.COURSE_NUM ASC
+	</select>
+
+	<!-- 리스트에 해당하는 상세 데이터들을 보여줌 (SELECT_DET) -->
+	<select id="getCourseShow" resultType="AdminCourseAllVO" parameterType="AdminCourseMajorMapVO">
+		SELECT C.COURSE_NUM AS courseNum,
+			C.COURSE_NAME AS courseName,
+			C.YEAR AS year,
+			C.SEMESTER AS semester,
+			C.COLLEGE AS college,
+			C.COMPLETE_DIVISION AS completeDivision,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COMPLETE_DIVISION' AND B.CODE = C.COMPLETE_DIVISION ) AS completeDivision_nm,
+			C.SCHOOL_YEAR AS schoolYear,
+			C.GRADE AS grade,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='GRADE' AND B.CODE = C.GRADE ) AS grade_nm,
+			C.PROFESSOR AS professor,
+			C.CAPACITY AS capacity,
+			C.CYBER_YN AS cyberYN,
+			C.LEC_ROOM AS lecRoom,
+			C.LEC_TIME AS lecTime,
+			C.AREA AS area,
+			D.PREREQUISITE_COURSE AS prerequisiteCourse,
+			D.ENGINEERING_AUTHENTICATION AS engineeringAuthentication,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='USE_YN' AND B.CODE = D.ENGINEERING_AUTHENTICATION ) AS engineeringAuthentication_nm,
+			D.SUMMARY AS summary,
+			D.GOAL AS goal,
+			D.PROGRESS_WAY AS progressWay,
+			D.VALUATION_BASIS AS valuationBasis,
+			(SELECT F.MOBILE FROM MEMBER_MST F WHERE F.MEMBER_ID = C.PROFESSOR ) AS phone,
+			(SELECT F.EMAIL FROM MEMBER_MST F WHERE F.MEMBER_ID = C.PROFESSOR ) AS email,
+			M.MAJOR AS major,
+			C.CRT_USER AS crtUser,
+			C.CRTDT AS crtDt,
+			C.UPDT_USER AS updtUser,
+			C.UPDTDT AS updtDt
+		FROM COURSE_MST C, COURSE_DET D, COURSE_MAJOR_MAP M
+		WHERE 1=1
+		  AND C.COURSE_NUM = D.COURSE_NUM
+		  AND C.COURSE_NUM = M.COURSE_NUM
+		  AND C.COURSE_NUM like #{courseNum,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 수강 INSERT 시작 -->
+	<insert id="insertCourseMaster" parameterType="AdminCourseMasterVO">
+		INSERT INTO COURSE_MST
+		VALUES(
+			TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999),
+			#{courseName,jdbcType=VARCHAR},
+			TO_NUMBER(#{year,jdbcType=VARCHAR},9999),
+			#{semester,jdbcType=VARCHAR},
+			#{college,jdbcType=VARCHAR},
+			#{completeDivision,jdbcType=VARCHAR},
+			#{schoolYear,jdbcType=VARCHAR},
+			TO_NUMBER(#{grade,jdbcType=VARCHAR},9),
+			TO_NUMBER(#{professor,jdbcType=VARCHAR},999999999),
+			TO_NUMBER(#{capacity,jdbcType=VARCHAR},9999),
+			#{cyberYN,jdbcType=VARCHAR},
+			#{lecRoom,jdbcType=VARCHAR},
+			#{lecTime,jdbcType=VARCHAR},
+			#{area,jdbcType=VARCHAR},
+			#{crtUser,jdbcType=VARCHAR},
+			SYSDATE,
+			#{updtUser,jdbcType=VARCHAR},
+			SYSDATE
+		)
+	</insert>
+	<insert id="insertCourseDetail" parameterType="AdminCourseDetailVO">
+		INSERT INTO COURSE_DET
+		VALUES(
+			TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999),
+			#{prerequisiteCourse,jdbcType=VARCHAR},
+			#{engineeringAuthentication,jdbcType=VARCHAR},
+			#{summary,jdbcType=VARCHAR},
+			#{goal,jdbcType=VARCHAR},
+			#{progressWay,jdbcType=VARCHAR},
+			#{valuationBasis,jdbcType=VARCHAR},
+			#{crtUser,jdbcType=VARCHAR},
+			SYSDATE,
+			#{updtUser,jdbcType=VARCHAR},
+			SYSDATE
+		)
+	</insert>
+
+	<insert id="insertCourseMajorMap" parameterType="AdminCourseMajorMapVO">
+		INSERT INTO COURSE_MAJOR_MAP
+		VALUES(
+			TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999),
+			#{major,jdbcType=VARCHAR},
+			#{crtUser,jdbcType=VARCHAR},
+			SYSDATE,
+			#{updtUser,jdbcType=VARCHAR},
+			SYSDATE
+		)
+	</insert>
+
+	<update id="updateCourseMaster" parameterType="AdminCourseMasterVO">
+		UPDATE COURSE_MST
+		SET COURSE_NAME = #{courseName,jdbcType=VARCHAR},
+			YEAR = #{year,jdbcType=VARCHAR},
+			SEMESTER = TO_NUMBER(#{semester,jdbcType=VARCHAR},9999),
+			COLLEGE = #{college,jdbcType=VARCHAR},
+			COMPLETE_DIVISION = #{completeDivision,jdbcType=VARCHAR},
+			SCHOOL_YEAR = #{schoolYear,jdbcType=VARCHAR},
+			GRADE = TO_NUMBER(#{grade,jdbcType=VARCHAR},9),
+			PROFESSOR = TO_NUMBER(#{professor,jdbcType=VARCHAR},999999999),
+			CAPACITY = TO_NUMBER(#{capacity,jdbcType=VARCHAR},9999),
+			CYBER_YN = #{cyberYN,jdbcType=VARCHAR},
+			LEC_ROOM = #{lecRoom,jdbcType=VARCHAR},
+			LEC_TIME = #{lecTime,jdbcType=VARCHAR},
+			AREA = #{area,jdbcType=VARCHAR},
+			UPDT_USER = #{updtUser,jdbcType=VARCHAR},
+			UPDTDT = SYSDATE
+		WHERE 1=1
+		  AND COURSE_NUM=TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999)
+	</update>
+	
+	<update id="updateCourseDetail" parameterType="AdminCourseDetailVO">
+		UPDATE COURSE_DET
+		SET PREREQUISITE_COURSE = #{prerequisiteCourse,jdbcType=VARCHAR},
+			ENGINEERING_AUTHENTICATION = #{engineeringAuthentication,jdbcType=VARCHAR},
+			SUMMARY = #{summary,jdbcType=VARCHAR},
+			GOAL = #{goal,jdbcType=VARCHAR},
+			PROGRESS_WAY = #{progressWay,jdbcType=VARCHAR},
+			VALUATION_BASIS = #{valuationBasis,jdbcType=VARCHAR},
+			UPDT_USER = #{updtUser,jdbcType=VARCHAR},
+			UPDTDT = SYSDATE
+		WHERE 1=1
+		  AND COURSE_NUM = TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999)
+	</update>
+	
+	<update id="updateCourseMajorMap" parameterType="AdminCourseMajorMapVO">
+		UPDATE COURSE_MAJOR_MAP
+		SET MAJOR = #{major,jdbcType=VARCHAR},
+			UPDT_USER = #{updtUser,jdbcType=VARCHAR},
+			UPDTDT = SYSDATE
+		WHERE 1=1
+		  AND COURSE_NUM = TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999)
+	</update>
+
+
+	<delete id="deleteCourseMaster" parameterType="AdminCourseMajorMapVO">
+		DELETE FROM COURSE_MST 
+		 WHERE 1=1 
+		   AND COURSE_NUM=TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999)
+	</delete>
+	
+	<delete id="deleteCourseDetail" parameterType="AdminCourseMajorMapVO">
+		DELETE FROM COURSE_DET 
+		 WHERE 1=1 
+		   AND COURSE_NUM=TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999)
+	</delete>
+	
+	<delete id="deleteCourseMajorMap" parameterType="AdminCourseMajorMapVO">
+		DELETE FROM COURSE_MAJOR_MAP 
+		  WHERE 1=1 
+		    AND COURSE_NUM=TO_NUMBER(#{courseNum,jdbcType=VARCHAR},9999999999)
+	</delete>
+	
+	
+	<!-- 신청자 현황 select, insert -->
+	<select id="selectApplicantState" parameterType="AdminCourseApplicantVO" resultType="AdminCourseApplicantVO">
+		SELECT A.COURSE_NUM AS courseNum
+		,A.MEMBER_ID AS memberId
+		,(SELECT M.SCHOOL_YEAR FROM MEMBER_MST M WHERE M.MEMBER_ID = A.MEMBER_ID) AS schoolYear
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='SCHOOL_YEAR' AND B.CODE = (SELECT M.SCHOOL_YEAR FROM MEMBER_MST M WHERE M.MEMBER_ID = A.MEMBER_ID)) AS schoolYear_nm
+		,(SELECT M.MEMBER_NAME FROM MEMBER_MST M WHERE M.MEMBER_ID = A.MEMBER_ID) AS memberName
+		,(SELECT M.MAJOR FROM MEMBER_MST M WHERE M.MEMBER_ID = A.MEMBER_ID) AS major
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MAJOR' AND B.CODE = (SELECT M.MAJOR FROM MEMBER_MST M WHERE M.MEMBER_ID = A.MEMBER_ID)) AS major_nm
+	
+		,(SELECT C.COURSE_NAME FROM COURSE_MST C WHERE C.COURSE_NUM = A.COURSE_NUM) AS courseName
+		,(SELECT C.LEC_ROOM FROM COURSE_MST C WHERE C.COURSE_NUM = A.COURSE_NUM) AS lecRoom
+		,(SELECT C.LEC_TIME FROM COURSE_MST C WHERE C.COURSE_NUM = A.COURSE_NUM) AS lecTime
+		,A.CRT_USER AS crtUser
+		,A.CRTDT AS crtDt
+		,A.UPDT_USER AS updtUser
+		,A.UPDTDT AS updtDt
+
+		FROM COURSE_APPLICANT_STATE A
+		WHERE 1=1
+		<if test="courseNum != null and !courseNum.equals('')">
+				AND A.COURSE_NUM = #{courseNum}
+		</if>
+		
+		<if test="memberId != null and !memberId.equals('')">
+				AND A.MEMBER_ID = #{memberId}
+		</if>
+<!-- 		AND A.COURSE_NUM = #{courseNum, jdbcType=VARCHAR} -->
+	</select>
+
+	<insert id="insertApplicantState" parameterType="AdminCourseApplicantVO"> 
+		INSERT INTO COURSE_APPLICANT_STATE 
+					(COURSE_NUM, MEMBER_ID, CRT_USER, CRTDT, UPDT_USER, UPDTDT) 
+		VALUES 		(#{courseNum}, #{memberId}, #{updtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE) 
+	</insert>
+	
+	<delete id="deleteApplicantState" parameterType="AdminCourseApplicantVO">
+		DELETE FROM COURSE_APPLICANT_STATE 
+		 WHERE 1=1 
+		   AND COURSE_NUM = #{courseNum}
+	</delete>
+	
+	
+	
+	<!-- 가상시간표 select, insert -->
+	<select id="selectTemporarySchedule" parameterType="AdminCourseAllVO" resultType="AdminCourseAllVO">
+		SELECT C.COURSE_NUM AS courseNum,
+			C.COURSE_NAME AS courseName,
+			C.AREA AS area,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='AREA' AND B.CODE = C.AREA ) AS area_nm,
+			C.COMPLETE_DIVISION AS completeDivision,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COMPLETE_DIVISION' AND B.CODE = C.COMPLETE_DIVISION ) AS completeDivision_nm,
+			C.GRADE AS grade,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='GRADE' AND B.CODE = C.GRADE ) AS grade_nm,
+			C.PROFESSOR AS professor,
+			C.LEC_TIME AS lecTime,
+			C.LEC_ROOM AS lecRoom,
+			C.SCHOOL_YEAR AS schoolYear,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='SCHOOL_YEAR' AND B.CODE = C.SCHOOL_YEAR ) AS schoolYear_nm
+		FROM COURSE_TEMPORARY_SCHEDULE C
+		WHERE 1=1
+		<if test="courseNum != null and !courseNum.equals('')">
+				AND C.COURSE_NUM = #{courseNum}
+		</if>
+	</select>
+
+	<insert id="insertTemporarySchedule" parameterType="AdminCourseAllVO"> 
+		INSERT INTO COURSE_TEMPORARY_SCHEDULE 
+					(COURSE_NUM, COURSE_NAME, AREA, COMPLETE_DIVISION, GRADE, PROFESSOR, LEC_TIME, LEC_ROOM, SCHOOL_YEAR) 
+		VALUES 		(#{courseNum}, #{courseName, jdbcType=VARCHAR}, #{area, jdbcType=VARCHAR}, #{completeDivision, jdbcType=CHAR}, #{grade}, #{professor}, #{lecTime, jdbcType=VARCHAR}, #{lecRoom, jdbcType=VARCHAR}, #{schoolYear, jdbcType=CHAR}) 
+	</insert>
+	
+	
+	<delete id="deleteTemporarySchedule" parameterType="AdminCourseAllVO">
+		DELETE FROM COURSE_TEMPORARY_SCHEDULE
+ 		 WHERE 1=1
+		  AND COURSE_NUM = #{courseNum}
+	</delete>
+</mapper>

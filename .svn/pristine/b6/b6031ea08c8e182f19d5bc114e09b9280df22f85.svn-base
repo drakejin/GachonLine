@@ -1,0 +1,430 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@include file="/resources/include/include.jsp"%>
+<gachonTag:html>
+<gachonTag:script bootstrapTable="YES">
+
+	<style>
+table {
+	text-align: center;
+	table-layout: auto;
+}
+hr {
+	border: 1px solid gray;
+	margin: 0 0 2% 0;
+}	
+.btn btn-info {
+	font-size: 12px;
+	width: 10%;
+	height: 33px;
+	font-weight: bold;
+	float: left;
+}
+
+.form-horizontal .form-group {
+	margin-left: -5%;
+}
+.th-inner {
+	text-align:center;
+}
+</style>
+
+	<script>
+		function setMapApi(eventAddrApi, eventAddrApi2) {
+			$('#myModal').on('shown.bs.modal', function() {
+				$('#myInput').focus();
+
+				var staticMapContainer = document.getElementById('staticMap'), staticMapOption = {
+					center : new daum.maps.LatLng(eventAddrApi, eventAddrApi2),
+					level : 3,
+					marker : {
+						position : new daum.maps.LatLng(eventAddrApi, eventAddrApi2),// 좌표가 없으면 이미지 지도 중심에 마커가 표시된다.
+					}
+				};
+
+				var staticMap = new daum.maps.StaticMap(staticMapContainer, staticMapOption);
+			})
+		}
+	</script>
+
+
+	<!-- Event 리스트 전체 가져오기 -->
+	<script>
+		var crtId = "";
+		function listAllSelect() {
+			$.ajax({
+				type : "POST",
+				url : "/outcommuniy/event/evnetList.json",
+				cache : false,
+				async : true,
+				dataType : "JSON",
+				success : function(response) {
+					$('#eventTable').bootstrapTable('load', response).on('check.bs.table', function(e, row) {
+						crtId = row.crtUser;
+					});
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+		listAllSelect();
+	</script>
+
+	<!-- Event 등록하기 -->
+	<script>
+		function insert() {
+			var dataForm = {
+				boardTitle : $('#boardTitle').val(),
+				eventAddr : $('#eventAddr').val(),
+				eventAddrApi : $("#eventAddrApi").val(),
+				eventAddrApi2 : $("#eventAddrApi2").val(),
+				openDate : $('#openDate').val(),
+				eventDetail : $('#eventDetail').val()
+			};
+
+			if ($("input[id=boardTitle]").val() == "") {
+				GachonNoty.showCustomNoty("제목을 입력하세요");
+				$("input[id=boardTitle]").focus();
+				return false;
+			} else if ($("input[id=openDate]").val() == "") {
+				GachonNoty.showCustomNoty("이벤트 일시를 입력하세요");
+				$("#input[id=openDate]").focus();
+				return false;
+			} else if ($("input[id=eventAddr]").val() == "") {
+				GachonNoty.showCustomNoty("이벤트 장소를 입력하세요");
+				$("#input[id=eventAddr]").focus();
+				return false;
+			} else if ($("input[id=eventAddrApi]").val() == "") {
+				GachonNoty.showCustomNoty("이벤트 장소의 API주소를 입력하세요");
+				$("#input[id=eventAddrApi]").focus();
+				return false;
+			} else if ($("input[id=eventDetail]").val() == "") {
+				GachonNoty.showCustomNoty("이벤트 장소의 API주소를 입력하세요");
+				$("#input[id=eventDetail]").focus();
+				return false;
+			}
+
+			$.ajax({
+				type : "POST",
+				url : "/outcommunity/event/eventInsert",
+				cache : false,
+				async : true,
+				data : dataForm,
+				dataType : "JSON",
+				success : function(response) {
+					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
+					$('#event_modal').modal('hide');
+					$('#eventForm')[0].reset();
+					location.reload();
+
+					if (response.RESULT_CODE >= 0) {
+						getList();
+					}
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+	</script>
+
+	<!-- 이벤트 수정하기 -->
+	<script>
+		function update() {
+			var dataForm = {
+				boardNum : $('#eventTable').bootstrapTable('getSelections')[0].eventBoardNum,
+				boardTitle : $('#boardTitle').val(),
+				eventAddr : $('#eventAddr').val(),
+				eventAddrApi : $('#eventAddrApi').val(),
+				eventAddrApi2 : $('#eventAddrApi2').val(),
+				openDate : $('input[name="openDate"]').val(),
+				eventDetail : $('textarea[name="eventDetail"]').val()
+			};
+
+			$.ajax({
+				type : "POST",
+				url : "/outcommunity/event/updateEvent",
+				cache : false,
+				async : true,
+				data : dataForm,
+				dataType : "JSON",
+				success : function(response) {
+					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
+					$('#event_modal').modal('hide');
+					location.reload();
+
+					if (response.RESULT_CODE >= 0) {
+						getList();
+					}
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+	</script>
+
+	<script>
+		function modalType(type) {
+			inputTextInit("#event_modal");
+
+			if (type == "write") {
+				$('#saveEvent').attr('href', 'javascript:insert();');
+				$("#event_modal").modal('show');
+				$('h2[id="myModalLabel"]').html("이벤트 등록하기");
+
+			} else if (type == "rewrite") {
+				$(function() {
+					var dataForm = {
+						boardNum : $('#eventTable').bootstrapTable('getSelections')[0].eventBoardNum
+					};
+					$.ajax({
+						type : "POST",
+						url : "/outcommunity/event/updateLoadData",
+						cache : false,
+						async : true,
+						data : dataForm,
+						dataType : "JSON",
+						success : function(response) {
+							$.each(response, function(index, item) {
+								var id = "글쓴이";//로그인 아이디(세션)
+								if (id == item.crtUser) {
+									$("#event_modal").modal('show');
+									$('h2[id="myModalLabel"]').html("이벤트 수정하기");
+									$('input[id="boardTitle"]').val(item.boardTitle);
+									$('input[id="openDate"]').val(item.openDate);
+									$('input[id="eventAddr"]').val(item.eventAddr);
+									$('input[id="eventAddrApi"]').val(item.eventAddrApi);
+									$('input[id="eventAddrApi2"]').val(item.eventAddrApi2);
+									$('textarea[id="eventDetail"]').val(item.eventDetail);
+								} else {
+									GachonNoty.showCustomNoty("수정 권한이 없습니다");
+								}
+							})
+						},
+						error : function(request, status, errorThrown) {
+							GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+						}
+					});
+				})
+				$('#saveEvent').attr('href', 'javascript:update();');
+			}
+
+		}
+	</script>
+
+	<!-- 이벤트 정보 띄우기 -->
+	<script>
+		$(function() {
+			$('#eventTable').on('click-row.bs.table', function(e, row) {
+				var boardNum = row.eventBoardNum;
+				var dataForm = {
+					boardNum : boardNum
+				};
+				$.ajax({
+					type : "POST",
+					url : "/outcommunity/event/updateLoadData",
+					cache : false,
+					async : true,
+					data : dataForm,
+					dataType : "JSON",
+					success : function(response) {
+						$.each(response, function(index, item) {
+							$("#myModal").modal('show');
+							$('h2[id="eventTitle"]').html(item.boardTitle);
+							$('input[id="eventOpenDate"]').val(item.openDate);
+							$('input[id="loc"]').val(item.eventAddr);
+							$('textarea[id="detail"]').val(item.eventDetail);
+							setMapApi(item.eventAddrApi, item.eventAddrApi2);
+
+						})
+					},
+					error : function(request, status, errorThrown) {
+						GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+					}
+				});
+			});
+		})
+	</script>
+	
+	<!-- ★★★★★ 조회수 처리해야함 -->
+
+	<!-- 이벤트 삭제하기 -->
+	<script>
+		$(function() {
+			$("#deleteBtn").click(function() {
+				var dataForm = {
+					boardNum : $('#eventTable').bootstrapTable('getSelections')[0].eventBoardNum
+				};
+
+				var id = "user"; //세션 아이디 가져오기
+				if (id == crtId) {
+					if (!confirm("삭제하시겠습니까??")) {
+
+					} else {
+						$.ajax({
+							type : "POST",
+							url : "/outcommunity/event/deleteEvent",
+							cache : false,
+							async : true,
+							data : dataForm,
+							dataType : "JSON",
+							success : function(response) {
+								GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
+								location.reload();
+							},
+							error : function(request, status, errorThrown) {
+								GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+							}
+						});
+					}
+				} else {
+					GachonNoty.showCustomNoty("삭제 권한이 없습니다");
+				}
+			})
+		})
+	</script>
+</gachonTag:script>
+
+
+<body>
+	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}"/>
+	<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=a06be78220061f3fc867e63e61abf9a0"></script>
+
+	<div class="container">
+		<div class="page_title">이벤트 정보</div>
+		<hr/>
+		<table id="eventTable" data-toggle="table" data-show-columns="true" data-search="true" data-show-refresh="true" data-show-toggle="false"
+			data-show-export="true" data-pagination="true" data-height="500">
+			<thead>
+				<tr>
+					<th data-field="state" data-radio="true"></th>
+					<th data-field="eventBoardNum">게시물번호</th>
+					<th data-field="boardTitle">제목</th>
+					<th data-field="crtUser">작성자</th>
+					<th data-field="crtdt">작성일</th>
+					<th data-field="hit">조회수</th>
+					<th data-field="love">추천수</th>
+				</tr>
+			</thead>
+		</table>
+
+		<input type="button" class="btn btn-info" data-toggle="modal" onclick="modalType('write');" value="글쓰기"></input> <input type="button" class="btn btn-info"
+			onclick="modalType('rewrite');" style="margin-left: 1%;" value="수정하기"></input> <input type="button" class="btn btn-info" id="deleteBtn"
+			style="margin-left: 1%;" value="삭제하기"></input>
+
+	</div>
+
+	<!-- 이벤트 정보 입력하기 -->
+	<div class="modal fade bs-example-modal-lg" id="event_modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h2 class="modal-title" id="myModalLabel" style="font-weight: bold; text-align: center;">이벤트 등록하기</h2>
+				</div>
+
+				<div class="modal-body" style="height: 60%;">
+					<form class="form-horizontal myform" id="eventForm" action="javascript:insert();">
+						<div class="form-group">
+							<label for="boardTitle" class="col-sm-2 control-label">글제목</label>
+							<div class="col-sm-4">
+								<input id="boardTitle" class="form-control input-sm" type="text" />
+							</div>
+
+							<label for="openDate" class="col-sm-2 control-label">일시</label>
+							<div class="col-sm-4">
+								<input id="openDate" class="form-control input-sm" type="text" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="eventAddr" class="col-sm-2 control-label">장소</label>
+							<div class="col-sm-4">
+								<input id="eventAddr" class="form-control input-sm" type="text" />
+							</div>
+
+							<label for="eventAddrApi" class="col-sm-2 control-label">위치URL</label>
+							<div class="col-sm-2">
+								<input id="eventAddrApi" class="form-control input-sm" type="text" />
+							</div>
+							<div class="col-sm-2">
+								<input id="eventAddrApi2" class="form-control input-sm" type="text" />
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<label for="eventDetail" class="col-sm-2 control-label">상세정보</label>
+							<div class="col-sm-10">
+								<textarea id="eventDetail" class="form-control" id="message-text" style="resize: none; height: 240px"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer" style="text-align: center;">
+					<a href="#" id="saveEvent" class="btn btn-success">저장</a> <a href="#" class="btn btn-warning" data-dismiss="modal">닫기</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- end.modal -->
+
+
+	<!-- 이벤트 정보 모달 -->
+	<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h2 class="modal-title" id="eventTitle" style="font-weight: bold; text-align: center;"></h2>
+				</div>
+				<div class="modal-body" style="height: 85%;">
+					<form class="form-horizontal myform">
+						<div class="form-group">
+							<label for="eventOpenDate" class="col-sm-2 control-label">일시</label>
+							<div class="col-sm-9">
+								<input class="form-control input-sm" id="eventOpenDate" type="text" readonly />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="loc" class="col-sm-2 control-label">장소</label>
+							<div class="col-sm-9">
+								<input class="form-control input-sm" id="loc" type="text" readonly />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="staticMap" class="col-sm-2 control-label">위치</label>
+							<div class="col-sm-9">
+								<div id="staticMap" style="width: 655px; height: 250px;"></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="detail" class="col-sm-2 control-label">상세정보</label>
+							<div class="col-sm-9">
+								<textarea class="form-control" id="detail" style="resize: none; height: 240px" disabled></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- end.modal -->
+
+
+
+</body>
+</gachonTag:html>

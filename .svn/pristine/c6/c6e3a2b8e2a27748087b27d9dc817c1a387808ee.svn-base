@@ -1,0 +1,130 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@include file="/resources/include/include.jsp"%>
+<gachonTag:html>
+<gachonTag:script bootstrapTable="YES">
+</gachonTag:script>
+
+<body>
+
+<!-- 속성 아직 안만들어 놨어요 이거는 임시방편으로 만든 태그라이브러리이고  /WEB-INF/tags/nav-bar.tag 
+에다가 링크를 수정해주세양! 나중에 tag class 만들때 참고할게양 ! -->
+<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag" %>
+<GachonTag:nav-bar name="noname" type="noname" id="noname" />
+
+
+<div style="padding-left:2em;padding-right:2em;padding-top:1em;padding-bottom:2em">
+	<div class="row">
+		<!-- 태수형 꺼  -->
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item"
+					style="background-color: #002266; color: #dddddd; font-weight: bold;">학생서비스</li>
+				<a href="/member/my_info"><li class="list-group-item list_hover">내 정보 보기</li></a>
+				<a href="/member/friend_find"><li class="list-group-item list_hover">친구 찾기</li></a>
+				<a href="/course/course"><li class="list-group-item list_hover">수강 조회</li></a>
+				<a href="/course/curriculum"><li class="list-group-item list_hover">커리큘럼 보기</li></a>
+				<a href="/course/change_course"><li class="list-group-item list_hover">수업 교환하기</li></a>
+				<a href="/timetable/show_timetable"><li class="list-group-item list_hover">나의 시간표
+						보기</li></a>
+				<a href="/timetable/share_timetable"><li class="list-group-item list_hover">친구와 공유</li></a>
+				
+				<a href="/timetable/pro_timetable"><li class="list-group-item list_hover">교수님 시간표</li></a>
+			</ul>
+		</div>
+
+		<!-- 조용진 놈 꺼  -->
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item"
+					style="background-color: #930000; color: #dddddd; font-weight: bold;">커뮤니티</li>
+				<a href="/community/gachon"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 가천대 게시판</li></a>
+				<a href="/community/major"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 단대별 게시판</li></a>
+				<a href="/community/grade"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 학년별 게시판</li></a>
+				<a href="/community/club"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 동아리 게시판</li></a>
+				<a href="/community/noname"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 익명 게시판</li></a>
+				<a href="/community/market"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 가천 장터</li></a>
+				<a href="/community/thunder"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 번개 모임</li></a>
+				<a href="/community/sinmungo"><li class="list-group-item list_hover"><span
+						class="badge">0</span>신 문 고</li></a>
+				<a href="/community/group_buy"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 공동 구매</li></a>
+			</ul>
+		</div>
+
+		<!-- 지연누나꺼 ㅋ -->
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item"
+					style="background-color: #003E00; color: #dddddd; font-weight: bold;">외부
+					커뮤니티</li>
+				<a href="outCommunity/store"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 상점보기</li></a>
+				<a href="outCommunity/alba"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 알바 공고</li></a>
+				<a href="outCommunity/event"><li class="list-group-item list_hover"><span
+						class="badge">0</span> 이벤트 정보</li></a>
+			</ul>
+		</div>
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item"
+					style="background-color: #A56100; color: #dddddd; font-weight: bold;">기타</li>
+				<a href="/common/show_all"><li
+					class="list-group-item list_hover">서비스 한눈에 보기</li></a>
+			</ul>
+		</div>
+	</div>
+	
+	
+	<!-- 관리자 및 기타 등등 ㅋ  -->
+	<div class="row">
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item" style="background-color:#002266;color:#dddddd;font-weight: bold;">개발자 샘플</li>
+				<a href="#"><li class="list-group-item list_hover">태수형의 개발 샘플 ㅋ </li></a>
+				<a href="#"><li class="list-group-item list_hover">지연누나의 개발 샘플 ㅋ</li></a>
+				<a href="#"><li class="list-group-item list_hover">조용진의 개발 샘플 ㅋ </li></a>
+				<a href="#"><li class="list-group-item list_hover">동준형의 개발 샘플 ㅋ </li></a>
+			</ul>
+		</div>
+		
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item" style="background-color:#930000;color:#dddddd;font-weight: bold;">참고사이트</li>
+				<a href="#"><li class="list-group-item list_hover"> 자유롭게 링크 달아주세용 ㅋ</li></a>
+				<a href="#"><li class="list-group-item list_hover"> 자유롭게 링크 달아주세용 ㅋ</li></a>
+				<a href="#"><li class="list-group-item list_hover"> 자유롭게 링크 달아주세용 ㅋ</li></a>
+				<a href="#"><li class="list-group-item list_hover"> 자유롭게 링크 달아주세용 ㅋ</li></a>
+			
+			</ul>
+		</div>
+		
+		<div class="col-sm-6 col-md-3 container">
+			<ul class="list-group">
+				<li class="list-group-item" style="background-color:#003E00;color:#dddddd;font-weight: bold;">관리자</li>
+				<a href="#"><li class="list-group-item list_hover"> 회원 관리 </li></a>
+				<a href="#"><li class="list-group-item list_hover"> 코드 관리 </li></a>
+				<a href="#"><li class="list-group-item list_hover"> 메뉴 관리</li></a>
+				<a href="#"><li class="list-group-item list_hover"> 상점 관리</li></a>
+				<a href="#"><li class="list-group-item list_hover"> 커리큘럼 관리</li></a>
+				<a href="#"><li class="list-group-item list_hover"> 수강 관리</li></a>
+			</ul>
+		</div>
+		
+	</div>
+	
+	
+	
+</div>
+
+
+
+</body>
+</gachonTag:html>

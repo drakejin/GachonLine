@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.community">
+	<!-- 게시글 싸지르기 list에 들어갈것 -->
+	
+	<select id="getSelectList" parameterType="CommunityNormalListVO" resultType="CommunityNormalListVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo,
+		A.TYPE AS type,
+		A.TITLE as title,
+		A.VIEW_COUNT as viewCount,
+		A.RECMD_COUNT as recommandCount,
+		A.CRT_USER as createUser,
+		A.CRTDT AS createDate,
+		A.CRT_ID as createId
+	FROM
+		COMMU_NORMAL_LIST A
+	WHERE
+		1=1
+			AND
+		A.BOARD_NO = #{boardNo}	
+	</select>
+	
+	<select id="getSelectContent" parameterType="CommunityNormalListVO" resultType="CommunityNormalContentVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo,
+		A.CONTENT AS content,
+		A.CRT_USER as createUser,
+		A.CRTDT as createDate
+	FROM
+		COMMU_NORMAL_CONTENT A
+	WHERE
+		1=1
+			AND
+		A.BOARD_NO = #{boardNo}
+	</select>
+	
+	<select id="getSelectReply" parameterType="CommunityNormalListVO" resultType="CommunityNormalReplyVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo,
+		A.COMMENT_NO AS commentNo,
+		A.COMMENT1 AS comment1,
+		A.CRT_USER as createUser,
+		A.CRTDT as createDate,
+		A.CRT_ID as createId
+	FROM
+		COMMU_NORMAL_REPLY A
+	WHERE
+		1=1
+			AND
+		A.BOARD_NO = #{boardNo}
+	ORDER BY
+		A.COMMENT_NO DESC
+	</select>
+	
+	
+	
+	
+	
+	
+	<select id="getBoardList" parameterType="CommunityNormalListVO" resultType="CommunityNormalListVO">
+	SELECT 	
+		A.BOARD_NO AS boardNo, 
+		A.TITLE AS title,
+		A.VIEW_COUNT AS viewCount,
+		A.RECMD_COUNT AS recommandCount,
+		A.CRT_USER as createUser,
+		TO_CHAR(A.CRTDT,'YYYY-MM-DD HH:mm:ss') AS createDate,
+		A.CRT_ID as createId
+		FROM COMMU_NORMAL_LIST A
+		WHERE 1=1
+			AND 
+		A.TYPE = #{type,jdbcType=VARCHAR}
+		ORDER BY
+			A.BOARD_NO DESC
+	</select>
+	
+	<insert id="writeSubmitList" parameterType="CommunityNormalListVO"> 
+	INSERT INTO 
+		COMMU_NORMAL_LIST 
+	VALUES(
+		COMMU_NORMAL_CONTENT_SEQ.NEXTVAL,
+		#{type,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR},
+		0,
+		0,
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{updateUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{createId}
+		)
+	</insert>
+	<!-- 게시글 싸지르기 list에 들어갈것 -->
+	<insert id="writeSubmitContent" parameterType="CommunityNormalContentVO">
+	INSERT INTO 
+		COMMU_NORMAL_CONTENT 
+	VALUES(
+		COMMU_NORMAL_CONTENT_SEQ.CURRVAL,
+		#{content,jdbcType=VARCHAR},
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{updateUser,jdbcType=VARCHAR},
+		SYSDATE
+		)
+	</insert>
+	
+
+</mapper>

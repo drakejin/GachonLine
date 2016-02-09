@@ -1,0 +1,26 @@
+<%@ page isErrorPage="true" import="java.io.*" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@include file="/resources/include/include.jsp"%>
+
+<gachonTag:html>
+<gachonTag:script>
+</gachonTag:script>
+<body>
+	<GachonTag:nav-bar name="noname" type="noname" id="noname" />
+	<div class="container">
+		<div class="panel panel-warning">
+			<div class="panel-heading">
+				<%=exception.getMessage()%></div>
+			<div class="panel-body">
+				<%
+					StringWriter stringWriter = new StringWriter();
+						PrintWriter printWriter = new PrintWriter(stringWriter);
+						exception.printStackTrace(printWriter);
+						out.println(stringWriter);
+						printWriter.close();
+						stringWriter.close();
+				%>
+			</div>
+		</div>
+	</div>
+</body>
+</gachonTag:html>

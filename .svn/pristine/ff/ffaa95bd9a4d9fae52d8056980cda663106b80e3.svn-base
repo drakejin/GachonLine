@@ -1,0 +1,72 @@
+/* Component styles */
+@font-face {
+	font-family: 'Blokk';
+	src: url('../fonts/blokk/BLOKKRegular.eot');
+	src: url('../fonts/blokk/BLOKKRegular.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/blokk/BLOKKRegular.woff') format('woff'),
+		 url('../fonts/blokk/BLOKKRegular.svg#BLOKKRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+.component {
+	line-height: 1.5em;
+	margin: 0 auto;
+	padding: 2em 0 3em;
+	width: 100%;
+	max-width: 1150px;
+	overflow: hidden;
+}
+.component .filler {
+	font-family: "Blokk", Arial, sans-serif;
+	color: #d3d3d3;
+} 
+table {
+    border-collapse: collapse;
+    margin-bottom: 0em;
+    width: 99.9%;
+    background: #fff;
+    outline: 1px inset #e3e3e3;
+   
+}
+td, th {
+    /* padding: 0.75em 1.5em; */
+    text-align: center;
+    height:60px;
+    outline: 1px inset #e3e3e3;
+}
+td{
+width:160px;
+word-break:break-all;
+}
+
+th {
+    background-color: #034482;
+    font-size:11pt;
+    font-weight: bold;
+    height:45px;
+    color: #fff;
+    width:10px;
+    white-space: nowrap;
+}
+
+#th1{
+	background-color: #034482 ;
+    font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+}
+
+tbody .td1:hover{
+	backgroun-color:#FF7012;
+}
+
+tbody th {
+	background-color: #034482;
+}
+
+tbody td:hover {
+    background-color: #CEFBC9;
+}
+
+
+

@@ -1,0 +1,5 @@
+package com.myspring.gachon.course.vo;
+
+public class Change_courseVO {
+
+}

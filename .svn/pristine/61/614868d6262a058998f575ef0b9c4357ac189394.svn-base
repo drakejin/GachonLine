@@ -1,0 +1,28 @@
+[				
+    {
+        "board_num": "1000001",
+        "board_title": "리눅스 및 실습으로 이산수학 구해요",
+        "give_subject": "[07274003] 리눅스 및 실습",
+        "take_subject": "[09392001] 이산수학",
+        "writer": "김태수",
+        "exit_yn": "예"
+    },
+    
+    {
+        "board_num": "1000002",
+        "board_title": "지성학 09:00에 뿌린다. 먹어라",
+        "give_subject": "[071123412] 지성학",
+        "take_subject": "[-] 없음",
+        "writer": "김태수",
+        "exit_yn": "아니오"
+    },
+    
+    {
+        "board_num": "1000003",
+        "board_title": "시스템분석설계 및 실습으로 데이터통신 및 실습 원해요",
+        "give_subject": "[09035001] 시스템분석설계 및 실습",
+        "take_subject": "[09033002] 데이터통신 및 실습",
+        "writer": "김태수",
+        "exit_yn": "예"
+    }
+]

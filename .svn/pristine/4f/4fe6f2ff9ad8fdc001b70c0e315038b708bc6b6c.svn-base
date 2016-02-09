@@ -1,0 +1,209 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@include file="/resources/include/include.jsp"%>
+<gachonTag:html>
+<gachonTag:script bootstrapTable="YES">
+<style>
+table {
+	font-size: 12px;
+}
+
+#top_bar {
+	margin-bottom: 1%;
+}
+
+h1,h2 {
+	margin: 0 0 1% 0;
+}
+
+hr {
+	border: 1px solid gray;
+	margin: 0 0 2% 0;
+}
+
+.detailInfo{
+	font-size: 13px;
+/* 	font-weight:bold; */
+}
+
+.btn {
+	font-weight: bold;
+	font-size: 12px;
+}
+
+</style>
+<script>
+	$(document).ready(
+			function() {
+				var dataForm = {
+					board_num : 123
+				};
+				$.ajax({
+					type : "POST",
+					url : "${CONTEXT_PATH}/course/changeCourse.json",
+					cache : false,
+					async : true,
+					data : dataForm,
+					dataType : "json",
+					complete : function() {
+
+					},
+					success : function(response) {
+						$('#table').bootstrapTable('load', response).on(
+								'dbl-click-row.bs.table',
+								function(e, row, $element) {
+									var num = row.board_num;
+									var title = row.board_title;
+									var give_subject = row.give_subject;
+									var take_subject = row.take_subject;
+
+									// 비동기
+									$('#modal').modal('show');	
+									$('input[name="title"]').val(title);
+									$('input[name="give_subject"]').val(give_subject);
+									$('input[name="take_subject"]').val(take_subject);
+								
+									$('.panel-heading #give').html(give_subject);
+									$('.panel-heading #take').html(take_subject);
+								});
+					},
+					error : function(request, status, errorThrown) {
+						GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+					}
+				});
+			});
+</script>
+</gachonTag:script>
+<body>
+	<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag"%>
+	<GachonTag:nav-bar name="noname" type="noname" id="noname" />
+
+	<div class="container">
+		<form class="form-horizontal">
+			<fieldset>
+				<div class="page_title">수업교환 하기</div>
+				<hr />
+
+				<div style="color: #F15F5F; font-size: 14px; font-weight: bold;">
+					<p>** 공지사항 **</p>
+					<p>1. 줬다 뺏지 않기</p>
+					<p>2. 장난으로 준다고 설레게 하지 않기</p>
+				</div>
+				<br />
+
+				<table id="table" data-toggle="table" data-show-columns="true"
+					data-search="true" data-show-refresh="false"
+					data-show-toggle="false" data-show-export="true"
+					data-pagination="true" data-height="500">
+					<thead>
+						<tr>
+							<th data-field="board_num" class="col-md-1">게시글 번호</th>
+							<th data-field="board_title" class="col-md-4">글 제목</th>
+							<th data-field="give_subject" class="col-md-3">내어줄 과목</th>
+							<th data-field="take_subject" class="col-md-3">원하는과목</th>
+							<th data-field="writer" class="col-md-3">작성자</th>
+							<th data-field="exit_yn" class="col-md-1">종료여부</th>
+						</tr>
+					</thead>
+				</table>
+			</fieldset>
+		</form>
+
+		<!-- Modal : 수업 교환 하기 공통 모달 -->
+		<div id="modal" class="modal fade bs-example-modal-lg" tabindex="-1"
+			role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="myModalLabel"
+							style="font-weight: bold;">수업 교환 하기</h4>
+					</div>
+					
+					<div class="modal-body detailInfo">
+						<form class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label for="Detail_Addr"
+										class="col-sm-2 control-label input-sm" style="width:13%;">제목</label>
+									<div class="col-sm-10">
+										<input class="form-control input-sm" name="title" type="text" readonly>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="Detail_Addr"
+										class="col-sm-2 control-label input-sm" style="width:13%;">내어줄 과목</label>
+									<div class="col-sm-4">
+										<input class="form-control input-sm" name="give_subject" type="text" readonly>
+									</div>
+									
+									<label for="Detail_Addr"
+										class="col-sm-2 control-label input-sm" style="width:16.5%;">원하는  과목</label>
+									<div class="col-sm-4">
+										<input class="form-control input-sm" name="take_subject" type="text" readonly>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="Detail_Addr"
+										class="col-sm-2 control-label input-sm" style="width:13%;">상세</label>
+									<div class="col-sm-4">
+										<div class="panel panel-success">
+											<div class="panel-heading">
+												<p class="panel-title detailInfo" id="give"></p>
+											</div>
+											
+											<!-- 미완성 : DB테이블에서 가져와야 함  -->
+											<div class="panel-body">
+												<p>학수번호 : 12345678</p>
+												<p> 과목명  : </p>
+												<p>담당교수 : 김태수</p>
+												<p>학      점 : 3학점</p>
+												<p>강의시간 : 월1,월2,월3,월4</p>
+												<p> 강의실  : 새롬관 501호</p>
+												<p>사이버여부 : N</p>
+												<p>수강인원 : 40</p>
+											</div>
+										</div>
+									</div>
+									
+									<label for="Detail_Addr"
+										class="col-sm-2 control-label input-sm" style="width:16.5%;">상세</label>
+									<div class="col-sm-4">
+										<div class="panel panel-warning">
+											<div class="panel-heading">
+												<p class="panel-title detailInfo" id="take"></p>
+											</div>
+											<div class="panel-body">
+												<p>학수번호 : 12345678</p>
+												<p>과목명 : </p>
+												<p>담당교수 : 김태수</p>
+												<p>학 점 : 3학점</p>
+												<p>강의시간 : 월1,월2,월3,월4</p>
+												<p>강의실 : 새롬관 501호</p>
+												<p>사이버여부 : N</p>
+												<p>수강인원 : 40</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+
+					<div class="modal-footer" style="text-align:center;">
+						<a href="#" class="btn btn-default" data-dismiss="modal">저장</a> 
+						<a href="#" class="btn btn-info" data-dismiss="modal">닫기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</gachonTag:html>

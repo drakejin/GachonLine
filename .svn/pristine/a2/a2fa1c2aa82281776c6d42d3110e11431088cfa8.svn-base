@@ -1,0 +1,77 @@
+package com.myspring.gachon.community.controller;
+
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class CommunityController {
+	private @Autowired HttpServletRequest request;
+	private @Autowired HttpSession session;
+	
+	private static final Logger logger = LoggerFactory.getLogger(CommunityController.class);
+
+	//Default 를 컨트롤러에서 제어하는것이아니라 jsp 페이지에서 session에서 값을 불러서 오는 방식으로.
+	@RequestMapping(value = "/community", method = RequestMethod.GET)
+	public String communityChange(Model model, Locale locale) throws ServletRequestBindingException {
+		String divs = ServletRequestUtils.getStringParameter(request, "divs");
+		model.addAttribute("divs",divs);
+		logger.info("communityController divs 값 = ["+divs+"]", locale);
+		return "/community/Community";
+	}
+	
+	@RequestMapping(value = "/community/content", method = RequestMethod.GET)
+	public String communityContent(Model model,Locale locale) throws ServletRequestBindingException{
+		String divs = ServletRequestUtils.getStringParameter(request, "divs");
+		model.addAttribute("divs",divs);
+		logger.info("communityController divs 값 = ["+divs+"]", locale);
+		return "/community/Community";
+	}
+	
+	@RequestMapping(value = "/community/delete", method = RequestMethod.GET)
+	public String communityDelete(Model model,Locale locale) throws ServletRequestBindingException{
+		String divs = ServletRequestUtils.getStringParameter(request, "divs");
+		model.addAttribute("divs",divs);
+		logger.info("communityController divs 값 = ["+divs+"]", locale);
+		return "/community/Community";
+	}
+
+	@RequestMapping(value = "/community/submit", method = RequestMethod.GET)
+	public String communitySubmit(Model model,Locale locale) throws ServletRequestBindingException{
+		String divs = ServletRequestUtils.getStringParameter(request, "divs");
+		model.addAttribute("divs",divs);
+		logger.info("communityController divs 값 = ["+divs+"]", locale);
+		return "/community/Community";
+	}
+	
+
+	
+	@RequestMapping(value = "/community/write", method = RequestMethod.GET)
+	public String communityWrite(Model model,Locale locale) throws ServletRequestBindingException{
+		String divs = ServletRequestUtils.getStringParameter(request, "divs");
+		model.addAttribute("divs",divs);
+		logger.info("communityController divs 값 = ["+divs+"]", locale);
+		return "/community/Write";
+	}
+	
+	@RequestMapping(value = "/community/modify", method = RequestMethod.GET)
+	public String communityModify(Model model,Locale locale) throws ServletRequestBindingException{
+		String divs = ServletRequestUtils.getStringParameter(request, "divs");
+		model.addAttribute("divs",divs);
+		logger.info("communityController divs 값 = ["+divs+"]", locale);
+		
+		return "/community/Write";
+	}
+	
+}

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.admin.menu">
+
+
+	<select id="getMenuList" resultType="AdminMenuVO">
+SELECT 	
+	A.MENU_ID AS menuId,
+	A.P_MENU_ID AS parentMenuId,
+	A.MENU_NAME AS menuName,
+	A.MENU_TYPE AS menuType,
+	(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MENU_TYPE' AND B.CODE = A.MENU_TYPE ) AS menuType_nm,
+	A.POWER AS power,
+	(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='POWER' AND B.CODE = A.POWER ) AS power_nm,
+	A.SORTSEQ AS sortSeq,
+	A.USE_YN AS useYn,
+	A.URL AS url,
+	A.CRT_USER AS createUser,
+	A.CRTDT AS createDate,
+	A.UPDT_USER AS updateUser,
+	A.UPDTDT AS updateDate
+FROM 		MENU_MST A
+WHERE 		1=1
+ORDER BY 	A.SORTSEQ ASC
+	</select>
+	<insert id="setMenuSubmit" parameterType="AdminMenuVO">
+INSERT INTO 
+    MENU_MST
+VALUES(
+	#{menuId,jdbcType=VARCHAR},
+	#{parentMenuId,jdbcType=VARCHAR},
+	#{menuName,jdbcType=VARCHAR},
+	#{menuType,jdbcType=VARCHAR},
+	#{power,jdbcType=VARCHAR},
+	#{sortSeq,jdbcType=VARCHAR},
+	#{useYn,jdbcType=VARCHAR},
+	#{url,jdbcType=VARCHAR},
+	#{crtUser,jdbcType=VARCHAR},
+	SYSDATE,
+	#{updtUser,jdbcType=VARCHAR},
+	SYSDATE   
+)	
+	</insert>
+	<select id="getMenuShow" resultType="AdminMenuVO" parameterType="AdminMenuVO">
+SELECT 	
+	A.MENU_ID AS menuId,
+	A.P_MENU_ID AS parentMenuId,
+	A.MENU_NAME AS menuName,
+	A.MENU_TYPE AS menuType,
+	A.POWER AS power,
+	A.SORTSEQ AS sortSeq,
+	A.USE_YN AS useYn,
+	A.URL AS url
+FROM 		MENU_MST A
+WHERE 		1=1
+	AND
+		A.MENU_ID = #{menuId,jdbcType=VARCHAR}			
+	</select>
+	<update id="setMenuModify" parameterType="AdminMenuVO">
+UPDATE
+	MENU_MST
+SET
+	P_MENU_ID=#{parentMenuId,jdbcType=VARCHAR},
+	MENU_NAME=#{menuName,jdbcType=VARCHAR},
+	MENU_TYPE=#{menuType,jdbcType=VARCHAR},
+	POWER=#{power,jdbcType=VARCHAR},
+	SORTSEQ=TO_NUMBER(#{sortSeq,jdbcType=VARCHAR},999999999),
+	USE_YN=#{useYn,jdbcType=VARCHAR},
+	URL=#{url,jdbcType=VARCHAR},
+	UPDT_USER=#{updtUser,jdbcType=VARCHAR},
+	UPDTDT=SYSDATE  
+WHERE 	
+	1=1
+		AND
+	MENU_ID = #{menuId,jdbcType=VARCHAR}			
+	</update>
+	
+	<select id="getMenuChildCount" resultType="int" parameterType="AdminMenuVO">
+SELECT 	
+	count(*)
+FROM 	MENU_MST
+WHERE 	
+	1=1
+		AND
+	P_MENU_ID = #{menuId,jdbcType=VARCHAR}			
+	</select>
+	<delete id="setMenuAllDelete" parameterType="AdminMenuVO">
+DELETE FROM	
+	MENU_MST 
+WHERE 
+	1=1 
+		and 
+	P_MENU_ID=#{menuId,jdbcType=VARCHAR}
+	</delete>
+	<delete id="setMenuDelete" parameterType="AdminMenuVO">
+DELETE FROM	
+	MENU_MST 
+WHERE 
+	1=1 
+		and 
+	MENU_ID=#{menuId,jdbcType=VARCHAR}
+	</delete>
+	<select id="getParentMenuId" resultType="AdminMenuVO">
+	
+select
+	P_MENU_ID as parentMenuId 
+from 
+	MENU_MST 
+group by 
+	P_MENU_ID
+	</select>
+</mapper>

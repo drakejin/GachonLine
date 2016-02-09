@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.timetable.proTimetable">
+	
+	<select id="proTimetableInfo" parameterType="ProTimetableVo" resultType="ProTimetableVo">
+	SELECT 
+		COURSE_NUM as courseNum,
+		COURSE_NAME as courseName,
+		LEC_ROOM as lecRoom,
+		LEC_TIME as lecTime
+	FROM COURSE_MST 
+	WHERE
+		COURSE_NUM IN (SELECT COURSE_NUM FROM COURSE_APPLICANT_STATE WHERE MEMBER_ID IN
+		(SELECT MEMBER_ID FROM MEMBER_MST WHERE MEMBER_NAME= #{memberName,jdbcType=VARCHAR} AND MAJOR= #{major}))
+	</select>
+</mapper>

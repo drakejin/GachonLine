@@ -1,0 +1,156 @@
+[
+    {
+        "id": "09617001",
+        "name": "마이크로프로세서 프로그래밍",
+        "year": "2",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "김용수",
+        "lecture_time": "목6,목7,목8,목9",
+        "lecture_room": "새롬관506"
+    },
+   {
+        "id": "09392093",
+        "name": "이산수학",
+        "year": "1",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "이상순",
+        "lecture_time": "화D,수D",
+        "lecture_room": "새롬관507"
+    },
+    
+   {
+        "id": "09392001",
+        "name": "이산수학",
+        "year": "3",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "이상순",
+        "lecture_time": "화D,수D",
+        "lecture_room": "새롬관602"
+    }, 
+    
+    {
+        "id": "09035001",
+        "name": "시스템분석설계 및 실습",
+        "year": "3",
+        "field": "2영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "이병욱",
+        "lecture_time": "화D,수D",
+        "lecture_room": "새롬관604"
+    },
+    
+    {
+        "id": "09033002",
+        "name": "데이터통신 및 실습",
+        "year": "3",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "이병문",
+        "lecture_time": "월7,월8,화7,화8",
+        "lecture_room": "새롬관603"
+    },
+    
+    {
+        "id": "09033001",
+        "name": "데이터통신 및 실습",
+        "year": "3",
+        "field": "2영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "김용수",
+        "lecture_time": "목B,목C,금A,금B",
+        "lecture_room": "새롬관603"
+    },
+    
+    {
+        "id": "08305002",
+        "name": "컴퓨터 구조",
+        "year": "2",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "2",
+        "professor": "오상엽",
+        "lecture_time": "화B,화C,목B,목C",
+        "lecture_room": "새롬관408"
+    }, 
+    
+    {
+        "id": "08305003",
+        "name": "컴퓨터 구조",
+        "year": "2",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "2",
+        "professor": "오상엽",
+        "lecture_time": "수A,수B,금A,금B",
+        "lecture_room": "새롬관408"
+    },
+    
+    {
+        "id": "07274003",
+        "name": "리눅스 및 실습",
+        "year": "3",
+        "field": "2영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "우재남",
+        "lecture_time": "화1,화2,화3,화4",
+        "lecture_room": "새롬관501"
+    },
+    
+    {
+        "id": "07274003",
+        "name": "리눅스 및 실습",
+        "year": "3",
+        "field": "2영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "이병문",
+        "lecture_time": "화1,화2,화3,화4",
+        "lecture_room": "새롬관502"
+    },
+    
+    {
+        "id": "07274003",
+        "name": "리눅스 및 실습",
+        "year": "3",
+        "field": "2영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "우재남",
+        "lecture_time": "수1,수2,수3,수4",
+        "lecture_room": "새롬관603"
+    },
+    
+    {
+        "id": "10274003",
+        "name": "운영체제",
+        "year": "3",
+        "field": "4영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "황재천",
+        "lecture_time": "월1,월2,화1,화2",
+        "lecture_room": "새롬관601"
+    },
+    
+    {
+        "id": "10274002",
+        "name": "운영체제(원어강의)",
+        "year": "3",
+        "field": "4영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "한기태",
+        "lecture_time": "월5,월6,월7,월8",
+        "lecture_room": "새롬관606"
+    }
+]

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.admin.store">
+	<!-- gachon_shop_mst 테이블 INSERT -->
+	<insert id="admin_shop_mstInsert" parameterType="AdminStoreVo">
+		INSERT INTO GACHON_SHOP_MST VALUES(
+		#{shopNum}, #{shopName, jdbcType=VARCHAR}, #{shopTitlePicPath, jdbcType=VARCHAR}, #{crtUser}, SYSDATE, #{updtUser}, SYSDATE)
+	</insert>
+
+	<!-- gachon_shop_det 테이블 INSERT -->
+	<insert id="admin_shop_detInsert" parameterType="AdminStoreVo">
+		INSERT INTO GACHON_SHOP_DET VALUES(
+		#{shopNum}, #{shopTel,jdbcType=VARCHAR}, #{shopAddr, jdbcType=VARCHAR}, 
+		#{shopAddrApi1, jdbcType=VARCHAR}, #{shopHp, jdbcType=VARCHAR}, #{shopDetailDesc, jdbcType=VARCHAR}, 
+		#{crtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE, #{shopAddrApi2, jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 상점정보가져오기 M.SHOP=#{VALUE} AND -->
+	<select id="admin_shopAllSelect" resultType="AdminStoreVo">
+		SELECT
+		M.SHOP_NUM AS shopNum,
+		M.SHOP_NAME AS shopName,
+		SHOP_TITLE_PIC_PATH AS shopTitlePicPath,
+		M.CRT_USER AS crtUser,
+		M.CRTDT AS crtdt,
+		SHOP_TEL AS shopTel,
+		SHOP_ADDR AS shopAddr,
+		SHOP_ADDR_API1 AS shopAddrApi1,
+		SHOP_HP AS shopHp,
+		SHOP_DETAIL_DESC AS shopDetailDesc,
+		SHOP_ADDR_API2 AS shopAddrApi2
+		FROM GACHON_SHOP_MST M, GACHON_SHOP_DET D
+		WHERE M.SHOP_NUM=D.SHOP_NUM
+	</select>
+	
+	<!-- 등록된 상점정보 수정하기 gachon_shop_mst -->
+	<update id="admin_shop_mstUpdate" parameterType="AdminStoreVo">
+		UPDATE GACHON_SHOP_MST SET SHOP_NAME=#{shopName}, SHOP_TITLE_PIC_PATH=#{shopTitlePicPath}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE 
+		WHERE SHOP_NUM=#{shopNum}
+	</update>
+	
+	<!-- 등록된 상점정보 수정하기 gachon_shop_det-->
+	<update id="admin_shop_detUpdate" parameterType="AdminStoreVo">
+		UPDATE GACHON_SHOP_DET SET SHOP_TEL=#{shopTel}, SHOP_ADDR=#{shopAddr}, SHOP_ADDR_API1=#{shopAddrApi1}, 
+		SHOP_HP=#{shopHp}, SHOP_DETAIL_DESC=#{shopDetailDesc}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE, SHOP_ADDR_API2=#{shopAddrApi2}
+		WHERE SHOP_NUM=#{shopNum}
+	</update>
+	
+	<!-- 알바 게시글 삭제하기 alba_det-->
+	<delete id="admin_shop_mstDelete" parameterType="int">
+	DELETE FROM GACHON_SHOP_MST WHERE SHOP_NUM=#{value}
+	</delete>
+	
+	<!-- 알바 게시글 삭제하기 alba_img-->
+	<delete id="admin_shop_detDelete" parameterType="int">
+	DELETE FROM GACHON_SHOP_DET WHERE SHOP_NUM=#{value}
+	</delete>
+	
+		<select id="admin_shopSelect" parameterType="int" resultType="AdminStoreVo">
+		SELECT
+		M.SHOP_NUM AS shopNum,
+		M.SHOP_NAME AS shopName,
+		SHOP_TITLE_PIC_PATH AS shopTitlePicPath,
+		M.CRT_USER AS crtUser,
+		M.CRTDT AS crtdt,
+		SHOP_TEL AS shopTel,
+		SHOP_ADDR AS shopAddr,
+		SHOP_ADDR_API1 AS shopAddrApi1,
+		SHOP_HP AS shopHp,
+		SHOP_DETAIL_DESC AS shopDetailDesc,
+		SHOP_ADDR_API2 AS shopAddrApi2
+		FROM GACHON_SHOP_MST M, GACHON_SHOP_DET D
+		WHERE M.SHOP_NUM=D.SHOP_NUM AND M.SHOP_NUM=#{value}
+	</select>
+	
+	
+</mapper>

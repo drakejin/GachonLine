@@ -1,0 +1,262 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@include file="/resources/include/include.jsp"%>
+<gachonTag:html>
+
+<gachonTag:script bootstrapTable="YES">
+
+</gachonTag:script>
+<body>
+
+<!-- 구분은 하나의 변수로하고 변수는 두개로 즉 구분자와 그룹자 두개를 넘겨준다. -->
+<!-- 속성 아직 안만들어 놨어요 이거는 임시방편으로 만든 태그라이브러리이고  /WEB-INF/tags/nav-bar.tag 
+에다가 링크를 수정해주세양! 나중에 tag class 만들때 참고할게양 ! -->
+
+<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag" %>
+
+<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}"/>
+<div class="container" style="padding-left:5em;padding-right:5em;">
+
+	<!-- 커뮤니케이션 게시판에 사용할 nav-Bar 필요한 데이터는 divs만 받으면 된다.0
+	하나의 컨트롤러 그리고 단 하나의 메서드 로 페이지를 구분한다.
+	 -->
+	<GachonTag:community-nav divs="${divs}"/>
+<spring:message code="test" />
+
+	<div class="row" style="margin-top:3em;">
+		<div class="row form-row">
+			<div class="col-sm-12">
+				<div class="col-sm-2 attr_name ">제목</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="오우오오오오옹 제메고고고모고목" readonly />
+				</div>
+			</div>
+		</div>
+		<div class="row form-row">
+			<div class="col-sm-6">
+				<div class="col-sm-4 attr_name ">회원구분</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" value="학생" readonly />
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-4 attr_name ">소속 대학</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" value="글로벌 캠퍼스" readonly />
+				</div>
+			</div>
+		</div>
+		
+
+		<div class="row form-row">
+			<div class="col-sm-6">
+				<div class="col-sm-4 attr_name ">이름</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" value="조용진" readonly />
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-4 attr_name ">학번</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" value="201133271" readonly />
+				</div>
+			</div>
+		</div>
+
+		<div class="row form-row">
+			<div class="col-sm-6">
+				<div class="col-sm-4 attr_name">날 짜</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" value="2011-03-02" readonly />
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-4 attr_name">핸드폰 번호</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" value="010-5596-6935" readonly />
+				</div>
+			</div>
+		</div>
+		
+		<c:if test="${divs eq 'sell' || divs eq 'buy' || divs eq 'group_buy'}">
+			<div class="row form-row" style="padding-top:2em;">
+				<div class="col-sm-6">
+					<div class="row">
+						<div class="col-sm-12 attr_name" style="text-align:center;">
+							사진
+							<div class="thumbnail" >
+								<img src="/resources/image/img1.PNG" width="400" height="400" class="img-responsive" style="display:inline;" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6"  style="padding-top:2em;">
+					<div class="row form-row">
+						<div class="col-sm-4 attr_name">
+							물품
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" value="쓰레빠아앙" readonly />
+						</div>
+					</div>
+					<div style="padding-top:1em; vertical-align:middle;">
+						<div class="row form-row">
+							<div class="col-sm-4 attr_name">가격</div>
+							<div class="col-sm-8 input-group">
+								<input type="text" class="form-control" value="300,000" readonly/>
+								<span class="input-group-addon">&#x20A9;</span>
+							</div>
+						</div>
+						<div class="form- col-sm-12">
+							<label for="comment">제품 설명 </label>
+							<div class="col-sm-12 card" style="height:160px;overflow-y:scroll;">
+<pre class="col-sm-12" style="border:none;background-color:#ffffff">
+ㅇㅁㄴㅇㅁㄴㅇ
+</pre>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</c:if>
+	</div>
+	<div class="well">
+		<div class="form-group">
+			<label for="comment">내용</label>
+			<div class="card-content card" style="height:440px;overflow-y:scroll;">
+<pre style="border:none;background-color:#ffffff">
+asdadasd
+asd
+asd
+asd
+asd
+asd
+as
+dads
+asd
+asdas
+dasd
+asdas
+dasd
+asdas
+dasd
+asdas
+dasd
+asda
+sdas
+d
+das
+
+</pre>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-4">&nbsp;</div>
+			<div class="col-sm-4">&nbsp;</div>
+			<div class="col-sm-4" style="padding-top:1em;">
+				<div class="col-sm-6">
+					<form method="post" action="/community/delete">
+						<input type="hidden" name="divs" value="${divs}"/>
+						<button type="submit" value="리셋" class="col-sm-12 btn btn-warning">삭제하기</button>
+					</form>
+				</div>
+				<div class="col-sm-6">
+					<form method="post" action="/community/modify">
+						<input type="hidden" name="divs" value="${divs}"/>
+						<button type="submit" value="삽입" class="col-sm-12 btn btn-success">수정하기</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<c:choose>
+		<c:when test="${ divs eq 'buy'|| divs eq 'sell' ||divs eq 'group_buy'}">
+			<div class="table-responsive">
+				<table data-toggle="table" data-url="/resources/js/community.json"
+					data-show-columns="true" data-search="true" data-show-refresh="true"
+					data-show-toggle="false" data-show-export="true" data-pagination="true" >
+					<thead>
+						<tr>
+							<th data-field="id" class="col-sm-1 text_center">글 번호-구매</th>
+							<th data-field="title" class="col-sm-5 text_center">제 목-구매</th>
+							<th data-field="author" class="col-sm-2 text_center">작성자-구매</th>
+							<th data-field="date"  class="col-sm-2 text_center">작성일-구매</th>
+							<th data-field="recommends" class="col-sm-1 text_center">추천-구매</th>
+							<th data-field="reads" class="col-sm-1 text_center">조회-구매</th>
+						</tr>				
+					</thead>
+				</table>
+			</div>
+		</c:when>
+		
+		<c:otherwise>
+			<div class="table-responsive">
+				<table data-toggle="table" data-url="/resources/js/community.json"
+					data-show-columns="true" data-search="true" data-show-refresh="true"
+					data-show-toggle="false" data-show-export="true" data-pagination="true">
+					<thead>
+						<tr>
+							<th data-field="id" class="col-sm-1 text_center">글 번호</th>
+							<th data-field="title" class="col-sm-5 text_center">제 목</th>
+							<th data-field="author" class="col-sm-2 text_center">작성자</th>
+							<th data-field="date"  class="col-sm-2 text_center">작성일</th>
+							<th data-field="recommends" class="col-sm-1 text_center">추천</th>
+							<th data-field="reads" class="col-sm-1 text_center">조회</th>
+						</tr>				
+					</thead>
+				</table>
+			</div>
+		</c:otherwise>
+	</c:choose>
+	
+	<div class="row">
+		<div class="col-sm-4">
+		&nbsp;
+		</div>
+		<div class="col-sm-4">
+		&nbsp;
+		</div>
+		<div class="col-sm-4">
+			<c:choose>	
+				<c:when test="${sessionScope.LOGIN_MEMBER.memberType eq 'STD' ||
+				sessionScope.LOGIN_MEMBER.memberType eq 'ADM' ||
+				sessionScope.LOGIN_MEMBER.memberType == 'PRO'}">
+					<button type="submit" class="col-sm-11 btn btn-success"
+					style="margin-top: 1em; margin-left: 1em; margin-right: 1em;">
+						글 쓰기
+					</button>
+				</c:when>
+				<c:otherwise>
+					&nbsp;
+				</c:otherwise>	
+			</c:choose>	
+		</div>
+	</div>
+</div>
+
+</body>
+</gachonTag:html>
+
+<!-- 
+스프링 돌아가는 PROCESS   
+1->request ->스프링이 받는다 정확히 말하면 web.xml이 먼저 받는다. -> web.xml을 열어보면 가장첫번째에 있는 DispatcherServlet 을 정의해놓는데
+maching을 보면 **으로 되어있다. -> Dispatcher를 지나서 ->HandlerMapping 으로  오게되는데 RequestMapping 에다가 리스트로 주소들을 가지고있다.
+
+그다음에는 다시 디스패쳐에서 HandlerAdapter로 가게되는데 그것은 객체를 붙이는 역할을 한다. 
+
+서비스를 호출하는애가 잇으면 서블릿을 호출하고 없다면 바로 9번 ViewName 을 받게된다. 
+
+View 리졸브가하는거 =String 을 넘겼을때.. 
+requestBody써가지고 하는것은 ViewResolve가 하는건대 이것은 Servlet 
+
+
+
+
+
+
+
+ -->

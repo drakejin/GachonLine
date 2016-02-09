@@ -1,0 +1,36 @@
+[
+    {
+        "id": "00000000",
+        "name": "임시과목1",
+        "year": "2",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "김태수",
+        "lecture_time": "목6,목7,목8,목9",
+        "lecture_room": "새롬관506"
+    },
+   {
+        "id": "00000001",
+        "name": "임시과목1",
+        "year": "1",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "김태수",
+        "lecture_time": "화D,수D",
+        "lecture_room": "새롬관507"
+    },
+    
+	{
+        "id": "00000002",
+        "name": "임시과목1",
+        "year": "3",
+        "field": "3영역",
+        "complete": "전공",
+        "grade": "3",
+        "professor": "김태수",
+        "lecture_time": "화D,수D",
+        "lecture_room": "새롬관602"
+    }
+]

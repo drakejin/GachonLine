@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.outcommunity.alba">
+	
+	<!-- 아르바이트 테이블 전체 조회 -->
+	<select id="albaSelect" resultType="AlbaVo">
+	SELECT 
+	ALBA_BOARD_NUM AS albaBoardNum,
+	BOARD_TITLE AS boardTitle,
+	HIT AS hit,
+	LOVE AS love,
+	CRT_USER AS crtUser,
+	CRTDT AS crtdt,
+	UPDT_USER AS updtUser,
+	UPDTDT AS UPDTDT
+	FROM ALBA_MST ORDER BY ALBA_BOARD_NUM DESC
+	</select>
+	
+	<!-- 아르바이트 게시글 등록 -->
+	<!-- alba_mst 테이블 INSERT -->
+	<insert id="alba_mstInsert" parameterType="AlbaVo">
+		INSERT INTO ALBA_MST VALUES(ALBA_LIST_SEQ.NEXTVAL,#{boardTitle},0,0,#{crtUser},SYSDATE,#{updtUser},SYSDATE)
+	</insert>
+	
+	<!-- seq=boadrNum값 가져오기 -->
+	<select id="selectalba_list_seq" resultType="JSONObject">
+		SELECT LAST_NUMBER AS ALBA_LIST_SEQ FROM USER_SEQUENCES WHERE SEQUENCE_NAME='ALBA_LIST_SEQ'
+	</select>
+	
+	
+	<!-- alba_det 테이블 INSERT -->
+	<insert id="alba_detInsert" parameterType="AlbaVo">
+	INSERT INTO ALBA_DET VALUES(
+	#{albaBoardNum}, #{corporate}, TO_DATE(#{closeDate},'YYYY-MM-DD'), #{recuritNum},
+	#{gender}, #{age},#{academicBg},#{emailAddr},#{workForm}, #{workType},#{workDay},#{workTime}, 
+	#{pay},#{empWalfare}, #{workArea}, #{crtUser}, SYSDATE,#{updtUser}, SYSDATE)
+	</insert>
+
+	<!-- alba_img 테이블 INSERT -->	
+	<insert id="alba_imgInsert" parameterType="AlbaVo">
+	INSERT INTO ALBA_IMG VALUES(#{albaBoardNum},#{corPicPath1},#{crtUser},SYSDATE, #{corPicPath2},#{corPicPath3})
+	</insert> 
+	
+	
+	<!-- 모달창에 데이터 가져오기 -->
+	<select id="loadData" resultType="AlbaVo" parameterType="int">
+	SELECT M.CRT_USER AS crtUser,
+	       BOARD_TITLE AS boardTitle,
+	       CORPORATE AS corporate,
+	       CLOSE_DATE AS closeDate,
+	       RECURIT_NUM AS recuritNum,
+	       GENDER AS gender,
+	       AGE AS AGE,
+	       ACADEMIC_BG AS academicBg,
+	       EMAIL_ADDR AS emailAddr,
+	       WORK_FORM AS workForm,
+	       WORK_TYPE AS workType,
+	       WORK_DAY AS workDay,
+	       WORK_TIME AS workTime,
+	       PAY AS pay,
+	       EMP_WALFARE AS empWalfare,
+	       WORK_AREA AS workArea,
+	       COR_PIC_PATH1 AS corPicPath1,
+	       COR_PIC_PATH2 AS corPicPath2,
+	       COR_PIC_PATH3 AS corPicPath3
+	  		FROM ALBA_MST M, ALBA_DET D, ALBA_IMG I
+	 		WHERE M.ALBA_BOARD_NUM = #{value}
+	       AND M.ALBA_BOARD_NUM = D.ALBA_BOARD_NUM
+	       AND M.ALBA_BOARD_NUM = I.ALBA_BOARD_NUM
+	</select> 
+	
+	<!-- 등록된 알바 수정하기 alba_mst -->
+	<update id="alba_mstUpdate" parameterType="AlbaVo">
+		UPDATE ALBA_MST SET BOARD_TITLE=#{boardTitle}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE ALBA_BOARD_NUM=#{albaBoardNum}
+	</update>
+
+	<!-- 등록된 알바 수정하기 alba_det -->
+	<update id="alba_detUpdate" parameterType="AlbaVo">
+		UPDATE 
+		ALBA_DET SET CORPORATE=#{corporate}, CLOSE_DATE=TO_DATE(#{closeDate},'YYYY-MM-DD'),  
+		RECURIT_NUM=#{recuritNum}, GENDER=#{gender}, AGE=#{age}, 
+		ACADEMIC_BG=#{academicBg},
+		EMAIL_ADDR=#{emailAddr}, WORK_FORM=#{workForm}, 
+		WORK_TYPE=#{workType}, WORK_DAY=#{workDay},
+		WORK_TIME=#{workTime}, PAY=#{pay}, EMP_WALFARE=#{empWalfare},
+		WORK_AREA=#{workArea}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE ALBA_BOARD_NUM=#{albaBoardNum}
+	</update> 
+
+	<!-- 등록된 알바 수정하기 alba_img -->
+	<update id="alba_imgUpdate" parameterType="AlbaVo">
+		UPDATE ALBA_IMG SET COR_PIC_PATH1=#{corPicPath1}, COR_PIC_PATH2=#{corPicPath2}, COR_PIC_PATH3=#{corPicPath3} WHERE ALBA_BOARD_NUM=#{albaBoardNum}	
+	</update>
+	
+	<!-- 알바 게시글 삭제하기 alba_mst-->
+	<delete id="alba_mstDelete" parameterType="int">
+	DELETE FROM ALBA_MST WHERE ALBA_BOARD_NUM=#{value}
+	</delete>
+	
+	<!-- 알바 게시글 삭제하기 alba_det-->
+	<delete id="alba_detDelete" parameterType="int">
+	DELETE FROM ALBA_DET WHERE ALBA_BOARD_NUM=#{value}
+	</delete>
+	
+	<!-- 알바 게시글 삭제하기 alba_img-->
+	<delete id="alba_imgDelete" parameterType="int">
+	DELETE FROM ALBA_IMG WHERE ALBA_BOARD_NUM=#{value}
+	</delete>
+</mapper>

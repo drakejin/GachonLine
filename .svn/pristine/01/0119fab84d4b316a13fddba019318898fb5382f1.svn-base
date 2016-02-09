@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.course.changeCourse">
+	<select id="selectChangeCourse_MST" parameterType="ChangeCourseVO" resultType="ChangeCourseVO">
+		SELECT A.BOARD_NUM AS boardNum 
+			,A.BOARD_TITLE AS boardTitle
+			,A.GIVE_SUBJECT AS giveSubject
+			,(SELECT B.COURSE_NAME FROM COURSE_MST B WHERE B.COURSE_NUM = A.GIVE_SUBJECT) AS giveSubject_nm   
+			,A.TAKE_SUBJECT AS takeSubject
+			,(SELECT B.COURSE_NAME FROM COURSE_MST B WHERE B.COURSE_NUM = A.TAKE_SUBJECT) AS takeSubject_nm    
+			,A.WRITER AS writer
+			,(SELECT C.MEMBER_NAME FROM MEMBER_MST C WHERE C.MEMBER_ID = A.WRITER) AS writer_nm
+			,A.EXIT_YN AS exitYn
+		FROM CHANGE_COURSE_MST A
+		WHERE 1=1
+		
+		ORDER BY A.BOARD_NUM ASC
+	</select>
+	
+	
+	<select id="selectWriteform_MST" parameterType="AdminCourseAllVO" resultType="AdminCourseAllVO">
+		SELECT A.COURSE_NUM as courseNum
+		,A.COURSE_NAME as courseName
+		,A.AREA as area
+		,A.COMPLETE_DIVISION as completeDivision
+		,A.GRADE as grade
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='GRADE' AND B.CODE = A.GRADE ) AS grade_nm
+		,A.PROFESSOR as professor
+		,A.LEC_TIME as lecTime
+		,A.LEC_ROOM as lecRoom
+		,A.CYBER_YN as cyberYn
+		,A.CAPACITY as capacity
+	FROM COURSE_MST A
+	WHERE 1=1
+		<if test="courseNum != null and courseNum !=0 ">
+			AND A.COURSE_NUM = #{courseNum}
+		</if>
+		
+		<if test="memberId != null and memberId !=0 ">
+			AND A.COURSE_NUM IN (SELECT COURSE_NUM FROM COURSE_APPLICANT_STATE WHERE MEMBER_ID = #{memberId})
+		</if>
+		
+		<if test="notMemberId != null and notMemberId !=0 ">
+			AND A.COURSE_NUM NOT IN (SELECT COURSE_NUM FROM COURSE_APPLICANT_STATE WHERE MEMBER_ID = #{notMemberId})
+		</if>
+	</select>
+	
+	<!-- 글쓰기 form에서 글 등록 insert -->
+	<insert id="insertWriteform_MST" parameterType="ChangeCourseVO"> 
+		INSERT INTO CHANGE_COURSE_MST 
+					(BOARD_NUM, BOARD_TITLE, GIVE_SUBJECT, TAKE_SUBJECT, WRITER, EXIT_YN) 
+		VALUES 		(change_course_mst_seq.NEXTVAL, #{boardTitle}, #{giveSubject}, #{takeSubject}, #{writer}, #{exitYn}) 
+	</insert>
+	
+	<!-- 수업교환하기 validation check -->
+	<select id="selectValidationCourse_MST" resultType="int">
+		SELECT COUNT(1)
+		  FROM COURSE_APPLICANT_STATE
+		 WHERE 1=1
+		   AND MEMBER_ID = #{memberId}
+		   AND COURSE_NUM = #{takeSubject, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 수업교환하기 update -->
+	<update	id="updateCourse_MST" parameterType="AdminCourseAllVO">
+		UPDATE COURSE_APPLICANT_STATE 
+		SET	MEMBER_ID = #{giveMemberId}
+		  , UPDTDT = SYSDATE
+		  , UPDT_USER = #{memberId}
+		WHERE 1=1
+			AND COURSE_NUM = #{courseNum}
+			AND MEMBER_ID = #{giveWriterMemberId}
+	</update>
+	
+	<update id="updateCHANGE_COURSE_MST" parameterType = "AdminCourseAllVO">
+		UPDATE CHANGE_COURSE_MST
+		   SET EXIT_YN = 'Y'
+		 WHERE 1 = 1 AND BOARD_NUM = #{boardNum}
+	</update>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.outcommunity.event">
+
+	<!-- 이벤트 테이블 전체 조회 -->
+	<select id="eventSelect" resultType="EventVo">
+		SELECT
+		EVENT_BOARD_NUM AS eventBoardNum,
+		BOARD_TITLE AS boardTitle,
+		HIT AS hit,
+		LOVE AS love,
+		CRT_USER AS crtUser,
+		CRTDT AS crtdt,
+		UPDT_USER AS updtUser,
+		UPDTDT AS UPDTDT
+		FROM EVENT_MST ORDER BY EVENT_BOARD_NUM DESC
+	</select>
+	
+	<!-- 이벤트 게시글 등록 -->
+	<insert id="event_mstInsert" parameterType="EventVo">
+		INSERT INTO EVENT_MST VALUES(EVENT_LIST_SEQ.NEXTVAL,#{boardTitle},0,0,#{crtUser},SYSDATE,#{updtUser},SYSDATE)
+	</insert>
+
+	<!-- 이벤트 게시글 등록하면서 seq=boarNum값 가져오기 -->
+	<select id="selectevent_list_seq" resultType="JSONObject">
+		SELECT LAST_NUMBER AS EVENT_LIST_SEQ FROM USER_SEQUENCES WHERE SEQUENCE_NAME='EVENT_LIST_SEQ'
+	</select>
+
+	<!-- 이벤트 게시글 등록시 EVENT_MST와 EVENT_DET 함께 insert -->
+	<insert id="event_detInsert" parameterType="EventVo">
+		INSERT INTO EVENT_DET values(#{eventBoardNum}, TO_DATE(#{openDate},'YYYY-MM-DD'),
+		#{eventAddr,jdbcType=VARCHAR}, #{eventAddrApi,jdbcType=VARCHAR}, #{eventDetail,jdbcType=VARCHAR}, #{crtUser}, SYSDATE,
+		#{updtUser,jdbcType=VARCHAR}, SYSDATE, #{eventAddrApi2, jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 모달창에 데이터 가져오기 -->
+	<select id="loadData" resultType="EventVo" parameterType="int">
+		SELECT
+		M.CRT_USER as crtUser, BOARD_TITLE AS boardTitle, OPEN_DATE AS openDate, EVENT_ADDR AS eventAddr, EVENT_ADDR_API AS eventAddrApi, EVENT_ADDR_API2 AS eventAddrApi2, EVENT_DETAIL AS
+		eventDetail
+		FROM EVENT_MST M, EVENT_DET D
+		WHERE D.EVENT_BOARD_NUM=#{eventBoardNum} AND M.EVENT_BOARD_NUM = D.EVENT_BOARD_NUM
+	</select>
+
+	<!-- 등록된 이벤트 수정하기 evnet_mst -->
+	<update id="event_mstUpdate" parameterType="EventVo">
+		UPDATE EVENT_MST SET BOARD_TITLE=#{boardTitle}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE EVENT_BOARD_NUM=#{eventBoardNum}
+	</update>
+
+	<!-- 등록된 이벤트 수정하기 evnet_det -->
+	<update id="event_detUpdate" parameterType="EventVo">
+		UPDATE 
+		EVENT_DET SET OPEN_DATE=#{openDate}, EVENT_ADDR=#{eventAddr}, 
+		EVENT_ADDR_API=#{eventAddrApi}, EVENT_ADDR_API2=#{eventAddrApi2}, EVENT_DETAIL=#{eventDetail}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE EVENT_BOARD_NUM=#{eventBoardNum}
+	</update>
+	
+	<!-- 이벤트 게시글 삭제하기 event_mst-->
+	<delete id="event_mstDelete" parameterType="int">
+	DELETE FROM EVENT_MST WHERE EVENT_BOARD_NUM=#{value}
+	</delete>
+	
+	<!-- 이벤트 게시글 삭제하기 event_det-->
+	<delete id="event_detDelete" parameterType="int">
+	DELETE FROM EVENT_DET WHERE EVENT_BOARD_NUM=#{value}
+	</delete>
+	
+</mapper>

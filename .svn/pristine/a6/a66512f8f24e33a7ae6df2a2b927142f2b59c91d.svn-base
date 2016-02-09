@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.member.myinfo">
+	<select id="selectMyInfo_MST" parameterType="MyInfoVO" resultType="MyInfoVO">
+		SELECT A.PROFILE_IMG_PATH AS profileImgPath
+		,A.MEMBER_TYPE AS memberType
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MEMBER_TYPE' AND B.CODE = A.MEMBER_TYPE ) AS memberType_nm
+		,A.MEMBER_ID AS memberId
+		,A.MEMBER_NAME AS memberName
+		,A.BIRTH_DATE AS birthDate
+		,A.COLLEGE AS college
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COLLEGE' AND B.CODE = A.COLLEGE ) AS college_nm
+		,A.DEPARTMENT AS department
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='DEPARTMENT' AND B.CODE = A.DEPARTMENT ) AS department_nm
+		,A.MAJOR AS major
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MAJOR' AND B.CODE = A.MAJOR ) AS major_nm
+		,A.COLLEGE_STATUS AS collegeStatus
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COLLEGE_STATUS' AND B.CODE = A.COLLEGE_STATUS ) AS collegeStatus_nm
+		,A.COMPLETE_TERM AS completeTerm
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COMPLETE_TERM' AND B.CODE = A.COMPLETE_TERM ) AS completeTerm_nm
+		,A.POSTAL_CODE AS postalCode
+		,A.SCHOOL_YEAR AS schoolYear
+		,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='SCHOOL_YEAR' AND B.CODE = A.SCHOOL_YEAR ) AS schoolYear_nm
+		,A.ADDRESS AS address
+		,A.PHONE AS phone
+		,A.PHONE2 AS phone2
+		,A.MOBILE AS mobile
+		,A.EMAIL AS email
+		,A.CRT_USER AS CRTUSER
+		,A.CRTDT AS CRTDT
+		,A.UPDT_USER AS UPDTUSER
+		,A.UPDTDT AS UPDTDT
+
+		FROM MEMBER_MST A
+		WHERE 1=1
+		<if test="memberId != null and memberId !=0 ">
+			AND A.MEMBER_ID = #{memberId}
+		</if>
+
+		<if test="memberName != null and !memberName.equals('')">
+			AND A.MEMBER_NAME = #{memberName}
+		</if>
+
+		<if test="major != null and !major.equals('')">
+			AND A.MAJOR = #{major}
+		</if>
+		<if test="college != null and !college.equals('')">
+			AND A.COLLEGE = #{college}
+		</if>
+	</select>
+
+	<update id="updateMyInfo_MST" parameterType="MyInfoVO"> 
+		UPDATE MEMBER_MST
+		SET MEMBER_TYPE = #{memberType}
+		,MEMBER_ID = #{memberId}
+		,MEMBER_NAME = #{memberName}
+		,BIRTH_DATE = #{birthDate}
+		,COLLEGE = #{college}
+		,DEPARTMENT = #{department}
+		,MAJOR = #{major}
+		,COLLEGE_STATUS = #{collegeStatus}
+		,COMPLETE_TERM = #{completeTerm}
+		,PASSWORD = #{password}
+		,POSTAL_CODE = #{postalCode}
+		,ADDRESS = #{address}
+		,PHONE = #{phone}
+		,PHONE2 = #{phone2}
+		,MOBILE = #{mobile}
+		,EMAIL = #{email}
+		,UPDT_USER = #{updtUser, jdbcType=VARCHAR}
+		,UPDTDT = SYSDATE
+		
+		WHERE 1=1
+		  AND MEMBER_ID = #{memberId, jdbcType=VARCHAR}
+	</update>
+</mapper>

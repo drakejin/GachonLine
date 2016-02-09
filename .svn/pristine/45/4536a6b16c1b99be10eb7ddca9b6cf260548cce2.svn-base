@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.member.friendinfo">
+	<select id="selectFriendInfo_MST" parameterType="FriendInfoVO" resultType="FriendInfoVO">
+		SELECT A.PROFILE_IMG_PATH AS profileImgPath,
+		         A.MEMBER_TYPE AS memberType,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'MEMBER_TYPE' AND B.CODE = A.MEMBER_TYPE) AS memberType_nm,
+		         A.MEMBER_ID AS memberId,
+		         A.MEMBER_NAME AS memberName,
+		         A.BIRTH_DATE AS birthDate,
+		         A.COLLEGE AS college,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COLLEGE' AND B.CODE = A.COLLEGE) AS college_nm,
+		         A.DEPARTMENT AS department,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'DEPARTMENT' AND B.CODE = A.DEPARTMENT) AS department_nm,
+		         A.MAJOR AS major,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'MAJOR' AND B.CODE = A.MAJOR) AS major_nm,
+		         A.COLLEGE_STATUS AS collegeStatus,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COLLEGE_STATUS' AND B.CODE = A.COLLEGE_STATUS) AS collegeStatus_nm,
+		         A.COMPLETE_TERM AS completeTerm,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COMPLETE_TERM' AND B.CODE = A.COMPLETE_TERM) AS completeTerm_nm,
+		         A.POSTAL_CODE AS postalCode,
+		         A.SCHOOL_YEAR AS schoolYear,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'SCHOOL_YEAR' AND B.CODE = A.SCHOOL_YEAR) AS schoolYear_nm,
+		         A.ADDRESS AS address,
+		         A.PHONE AS phone,
+		         A.PHONE2 AS phone2,
+		         A.MOBILE AS mobile,
+		         A.EMAIL AS email,
+		         A.CRT_USER AS CRTUSER,
+		         A.CRTDT AS CRTDT,
+		         A.UPDT_USER AS UPDTUSER,
+		         A.UPDTDT AS UPDTDT,
+		         (SELECT NVL (MAX ('Y'), 'N') FROM MEMBER_FND F WHERE F.MEMBER_ID = #{memberId} AND F.FND_MEMBER_ID = A.MEMBER_ID) AS isFnd
+		    FROM MEMBER_MST A
+		   WHERE 1 = 1 
+		   AND A.MEMBER_ID != #{memberId}
+		ORDER BY (SELECT NVL (MAX ('N'), 'Y') FROM MEMBER_FND F WHERE F.MEMBER_ID = 201033152 AND F.FND_MEMBER_ID = A.MEMBER_ID), A.MEMBER_ID 
+	</select>
+	
+	<select id="selectFilterFriend_MST" parameterType="FriendInfoVO" resultType="FriendInfoVO">
+		SELECT A.PROFILE_IMG_PATH AS profileImgPath,
+		         A.MEMBER_TYPE AS memberType,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'MEMBER_TYPE' AND B.CODE = A.MEMBER_TYPE) AS memberType_nm,
+		         A.MEMBER_ID AS memberId,
+		         A.MEMBER_NAME AS memberName,
+		         A.BIRTH_DATE AS birthDate,
+		         A.COLLEGE AS college,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COLLEGE' AND B.CODE = A.COLLEGE) AS college_nm,
+		         A.DEPARTMENT AS department,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'DEPARTMENT' AND B.CODE = A.DEPARTMENT) AS department_nm,
+		         A.MAJOR AS major,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'MAJOR' AND B.CODE = A.MAJOR) AS major_nm,
+		         A.COLLEGE_STATUS AS collegeStatus,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COLLEGE_STATUS' AND B.CODE = A.COLLEGE_STATUS) AS collegeStatus_nm,
+		         A.COMPLETE_TERM AS completeTerm,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COMPLETE_TERM' AND B.CODE = A.COMPLETE_TERM) AS completeTerm_nm,
+		         A.POSTAL_CODE AS postalCode,
+		         A.SCHOOL_YEAR AS schoolYear,
+		         (SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'SCHOOL_YEAR' AND B.CODE = A.SCHOOL_YEAR) AS schoolYear_nm,
+		         A.ADDRESS AS address,
+		         A.PHONE AS phone,
+		         A.PHONE2 AS phone2,
+		         A.MOBILE AS mobile,
+		         A.EMAIL AS email,
+		         A.CRT_USER AS CRTUSER,
+		         A.CRTDT AS CRTDT,
+		         A.UPDT_USER AS UPDTUSER,
+		         A.UPDTDT AS UPDTDT,
+		         (SELECT NVL (MAX ('Y'), 'N') FROM MEMBER_FND F WHERE F.MEMBER_ID = #{sessionId} AND F.FND_MEMBER_ID = A.MEMBER_ID) AS isFnd
+		    FROM MEMBER_MST A
+		   WHERE 1 = 1 
+		  	<if test="memberId != null and !memberId.equals('') ">
+				AND A.MEMBER_ID = #{memberId}
+			</if>
+
+			<if test="memberName != null and !memberName.equals('')">
+				AND A.MEMBER_NAME = #{memberName, jdbcType=VARCHAR}
+			</if>
+
+			<if test="memberType != null and !memberType.equals('')">
+				AND A.MEMBER_TYPE = #{memberType, jdbcType=VARCHAR}
+			</if>
+
+			<if test="college != null and !college.equals('')">
+				AND A.COLLEGE = #{college, jdbcType=VARCHAR}
+			</if>
+
+			<if test="major != null and !major.equals('')">
+				AND A.MAJOR = #{major, jdbcType=VARCHAR}
+			</if> 
+		ORDER BY A.MEMBER_ID 
+	</select>
+	
+	
+	<insert id="insertFriendInfo_MST" parameterType="FriendInfoVO"> 
+		INSERT INTO MEMBER_FND
+					(MEMBER_ID, FND_MEMBER_ID, CRT_USER, CRTDT, UPDT_USER, UPDTDT) 
+		VALUES 		(#{memberId}, #{fndMemberId}, #{updtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE) 
+	</insert>
+	
+	<delete id="deleteFriendInfo_MST" parameterType="FriendInfoVO">
+		DELETE FROM MEMBER_FND
+ 		 WHERE 1=1
+		  AND MEMBER_ID = #{memberId}
+		  AND FND_MEMBER_ID = #{fndMemberId}
+	</delete>
+</mapper>

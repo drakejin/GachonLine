@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.admin.member">
+	<select id="getMemberList" resultType="AdminMemberVO">
+	SELECT 	A.MEMBER_ID AS memberId, 
+			A.MEMBER_NAME AS memberName,
+			A.MEMBER_TYPE AS memberType,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MEMBER_TYPE' AND B.CODE = A.MEMBER_TYPE ) AS memberType_nm,
+			A.CLOSE_YN AS closeYesNo,
+			A.COLLEGE AS college,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COLLEGE' AND B.CODE = A.COLLEGE ) AS college_nm,
+			A.MAJOR AS major,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MAJOR' AND B.CODE = A.MAJOR ) AS major_nm,
+			A.SCHOOL_YEAR AS schoolYear,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='SCHOOL_YEAR' AND B.CODE = A.SCHOOL_YEAR ) AS schoolYear_nm,
+			A.YEAR AS year
+			
+			FROM MEMBER_MST A
+			WHERE 1=1
+			ORDER BY 	A.JOIN_FROM_DT DESC
+	</select>
+	
+	<select id="getFriendInfo" resultType="AdminMemberVO">
+	SELECT 	A.MEMBER_ID AS memberId, 
+			A.MEMBER_NAME AS memberName,
+			A.MEMBER_TYPE AS memberType,
+			A.CLOSE_YN AS closeYesNo,
+			A.DEPARTMENT AS department,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='DEPARTMENT' AND B.CODE = A.DEPARTMENT ) AS department_nm,
+			A.COLLEGE AS college,
+			A.SCHOOL_YEAR AS schoolYear,
+			A.MAJOR AS major,
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MAJOR' AND B.CODE = A.MAJOR ) AS major_nm,
+			A.SCHOOL_YEAR AS schoolYear,
+			A.YEAR AS year,
+			A.PROFILE_IMG_PATH AS profileImagePath
+			
+			FROM MEMBER_MST A
+			WHERE 1=1
+			<if test="memberId != null and !memberId.equals('')">
+				AND A.MEMBER_ID = #{memberId}
+			</if>
+			
+	</select>
+	
+
+	<insert id="setMemberAdd"  parameterType="AdminMemberVO">
+INSERT INTO		MEMBER_MST 
+		VALUES(
+			TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999),
+			#{memberName,jdbcType=VARCHAR},
+			#{password,jdbcType=VARCHAR},
+			#{memberType,jdbcType=VARCHAR},
+			SYSDATE,
+			#{closeYesNo,jdbcType=VARCHAR},
+			#{closeReason,jdbcType=VARCHAR},
+			#{college,jdbcType=VARCHAR},
+			#{department,jdbcType=VARCHAR},
+			#{major,jdbcType=VARCHAR},
+			#{schoolYear,jdbcType=VARCHAR},
+			#{year,jdbcType=VARCHAR},
+			#{completeTerm,jdbcType=VARCHAR},
+			#{collegeStatus,jdbcType=VARCHAR},
+			TO_DATE(#{birthDate},'YYYY-MM-DD'),
+			#{postalCode,jdbcType=VARCHAR},
+			#{address,jdbcType=VARCHAR},
+			#{phone,jdbcType=VARCHAR},
+			#{phone2,jdbcType=VARCHAR},
+			#{mobile,jdbcType=VARCHAR},
+			#{email,jdbcType=VARCHAR},
+			#{profileImagePath,jdbcType=VARCHAR},
+			#{createUser,jdbcType=VARCHAR},
+			SYSDATE,
+			#{updateUser,jdbcType=VARCHAR},
+			SYSDATE
+		)
+	</insert>
+	<!-- not null 일때는 varchar ! 를 선언해서 써야댐
+	아닐때는 안써도됨. 
+	쓰게될경우에는 영문으로 'null ' 이 찍힌다.
+	
+	COL1 에서DB 로 받는곳이 숫자인데 ㅇ문자넘기면 펑. 
+	 -->
+<select id="getMemberShow"  parameterType="AdminMemberVO" resultType="AdminMemberVO">
+SELECT  TO_CHAR(A.MEMBER_ID) AS memberId, 
+	A.MEMBER_NAME AS memberName,
+	A.PASSWORD AS password,
+	A.MEMBER_TYPE AS memberType,
+	TO_CHAR(A.JOIN_FROM_DT,'YYYY-MM-DD') AS joinFromDate,
+	A.CLOSE_YN AS closeYesNo,
+	A.CLOSE_REASON AS closeReason,
+	A.COLLEGE AS college,
+	A.DEPARTMENT AS department,
+	A.MAJOR AS major,
+	TO_CHAR(A.SCHOOL_YEAR) AS schoolYear,
+	TO_CHAR(A.YEAR) AS year ,
+	A.COMPLETE_TERM AS completeTerm,
+	A.COLLEGE_STATUS AS collegeStatus,
+	TO_CHAR(A.BIRTH_DATE,'YYYY-MM-DD') AS birthDate,
+	A.POSTAL_CODE AS postalCode,
+	A.ADDRESS AS address,
+	A.PHONE AS phone,
+	A.PHONE2 AS phone2,
+	A.MOBILE AS mobile,
+	A.EMAIL AS email,
+	A.PROFILE_IMG_PATH AS profileImagePath,
+	A.CRT_USER AS createUser,
+	TO_CHAR(A.CRTDT,'YYYY-MM-DD') AS createDate,
+	A.UPDT_USER AS updateUser,
+	TO_CHAR(A.UPDTDT,'YYYY-MM-DD') AS updateDate
+		
+	FROM 		MEMBER_MST A 
+	WHERE 		1=1
+	AND 		A.MEMBER_ID=TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999)
+	
+	ORDER BY A.JOIN_FROM_DT asc 
+</select>
+	<!-- SelectKey 는 트랜잭션있을때 사용하지못한다. -->
+	<!-- ResultType 을 맵의 방식으로 주로 사용한다.
+	 resultMap은 잘 사용하지않는다.  -->
+<update id="setMemberModify"  parameterType="AdminMemberVO">
+
+UPDATE MEMBER_MST A SET
+	A.MEMBER_NAME = #{memberName,jdbcType=VARCHAR},
+	A.PASSWORD = #{password,jdbcType=VARCHAR},
+	A.MEMBER_TYPE = #{memberType,jdbcType=VARCHAR},
+	A.CLOSE_YN = #{closeYesNo,jdbcType=VARCHAR},
+	A.CLOSE_REASON = #{closeReason,jdbcType=VARCHAR},
+	A.COLLEGE = #{college,jdbcType=VARCHAR},
+	A.DEPARTMENT = #{department,jdbcType=VARCHAR},
+	A.COMPLETE_TERM = #{completeTerm,jdbcType=VARCHAR},
+	A.COLLEGE_STATUS = #{collegeStatus,jdbcType=VARCHAR},
+	A.BIRTH_DATE = TO_DATE(#{birthDate,jdbcType=VARCHAR},'YYYY-MM-DD'),
+	A.POSTAL_CODE = #{postalCode,jdbcType=VARCHAR},
+	A.ADDRESS = #{address,jdbcType=VARCHAR},
+	A.PHONE = #{phone,jdbcType=VARCHAR},
+	A.PHONE2 = #{phone2,jdbcType=VARCHAR},
+	A.MOBILE = #{mobile,jdbcType=VARCHAR},
+	A.EMAIL = #{email,jdbcType=VARCHAR},
+	A.PROFILE_IMG_PATH = #{profileImagePath,jdbcType=VARCHAR},
+	A.UPDT_USER = #{updateUser,jdbcType=VARCHAR},
+	A.UPDTDT = SYSDATE,
+	A.MAJOR = #{major,jdbcType=VARCHAR},
+	A.SCHOOL_YEAR =	TO_NUMBER(#{schoolYear,jdbcType=VARCHAR},9),
+	A.YEAR = TO_NUMBER(#{year,jdbcType=VARCHAR},999)
+	WHERE 1 = 1
+		AND
+		A.MEMBER_ID = TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999)
+</update>
+
+
+ <delete id="setMemberDelete" parameterType="AdminMemberVO">
+DELETE FROM 
+	MEMBER_MST
+WHERE 
+	1=1
+		AND 
+	MEMBER_ID = TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999)
+ </delete>
+</mapper>

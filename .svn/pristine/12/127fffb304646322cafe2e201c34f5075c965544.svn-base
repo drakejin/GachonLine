@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.community">
+	<!-- 게시글 싸지르기 list에 들어갈것 -->
+	<insert id="writeSubmitList" parameterType="ChangeCourseVO"> 
+	INSERT INTO 
+		COMMU_NORMAL_LIST 
+	VALUES(
+		COMMU_NORMAL_CONTENT_SEQ.NEXTVAL,
+		#{type,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR},
+		0,
+		0,
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{updateUser,jdbcType=VARCHAR},
+		SYSDATE)
+	</insert>
+	<!-- 게시글 싸지르기 list에 들어갈것 -->
+	<insert id="writeSubmitContent" parameterType="ChangeCourseVO">
+	INSERT INTO 
+		COMMU_NORMAL_CONTENT 
+	VALUES(
+		COMMU_NORMAL_CONTENT_SEQ.CURRVAL,
+		#{content,jdbcType=VARCHAR},
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE,
+		#{updateUser,jdbcType=VARCHAR},
+		SYSDATE)
+	</insert>
+	
+
+</mapper>

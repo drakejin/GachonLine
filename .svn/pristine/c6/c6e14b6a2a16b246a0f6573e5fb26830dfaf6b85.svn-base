@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.tags.navbar">
+
+
+<select id="getMenu" resultType="TagsNavbarVO" parameterType="JSONObject">
+SELECT 
+	LEVEL,
+	A.MENU_ID AS menuId,
+	A.P_MENU_ID AS parentMenuId,
+	A.MENU_NAME AS menuName,
+	A.MENU_TYPE AS menuType,
+	A.POWER AS power,
+	A.SORTSEQ AS sortseq,
+	A.URL AS url
+FROM MENU_MST A  
+WHERE 
+    A.POWER='ALL'   
+	<choose>
+		<when test="power =='STD'">
+	OR A.POWER ='USR' OR A.POWER='STD' 
+		</when>
+		<when test="power == 'PRO'">
+	OR A.POWER ='USR' OR A.POWER='PRO'
+		</when>
+		<when test="power == 'ETC'">
+	OR A.POWER ='USR' OR A.POWER='ETC'
+		</when>
+		<when test="power == 'ADM'">
+	OR A.POWER ='USR' OR A.POWER='ADM' OR A.POWER='STD' OR A.POWER='PRO' OR A.POWER='ETC'
+		</when>
+		<otherwise>
+		</otherwise>
+	</choose>
+	
+	AND A.USE_YN='Y'
+START WITH MENU_ID='ROOT'                    
+CONNECT BY NOCYCLE PRIOR MENU_ID = P_MENU_ID    
+ORDER BY SORTSEQ
+</select>
+
+
+</mapper>

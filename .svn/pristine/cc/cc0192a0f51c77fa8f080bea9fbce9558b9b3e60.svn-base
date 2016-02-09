@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.admin.code">
+	<select id="selectCode_MST" resultType="ManagementCodeVO">
+		SELECT A.GRCODE AS GRCODE
+		,A.GRCODE_NAME AS GRCODENAME
+		,A.CRT_USER AS CRTUSER
+		,A.CRTDT AS CRTDT
+		,A.UPDT_USER AS UPDTUSER
+		,A.UPDTDT AS UPDTDT
+
+		FROM CODE_MST A
+		WHERE 1=1
+		ORDER BY A.GRCODE ASC
+	</select>
+
+	<insert id="insertCode_MST" parameterType="ManagementCodeVO"> 
+		INSERT INTO CODE_MST 
+					(GRCODE, GRCODE_NAME, CRT_USER, CRTDT, UPDT_USER, UPDTDT) 
+		VALUES 		(#{grcode}, #{grcodeName}, #{updtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE) 
+	</insert>
+	
+	<update id="updateCode_MST" parameterType="ManagementCodeVO"> 
+		UPDATE CODE_MST
+		SET	GRCODE_NAME = #{grcodeName}
+			,UPDT_USER = #{updtUser, jdbcType=VARCHAR}
+		    ,UPDTDT = SYSDATE
+		WHERE 1=1
+		  AND GRCODE = #{grcode, jdbcType=VARCHAR}
+	</update>
+	
+	
+	<delete id="deleteCode_MST" parameterType="ManagementCodeVO">
+		DELETE FROM CODE_MST
+ 		 WHERE 1=1
+ 		   AND GRCODE = #{grcode, jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="selectCode_DET" resultType="ManagementCodeVO">
+		SELECT GRCODE AS GRCODE
+		,CODE AS CODE
+		,CODE_NAME AS CODENAME
+		,USE_YN AS USEYN
+		,SORTSEQ AS SORTSEQ
+		,CRT_USER AS CRTUSER
+		,CRTDT AS CRTDT
+		,UPDT_USER AS UPDTUSER
+		,UPDTDT AS UPDTDT
+
+		FROM CODE_DET
+		WHERE 1=1
+		  AND GRCODE = #{grcode, jdbcType=VARCHAR}
+		ORDER BY SORTSEQ ASC
+	</select>
+	
+	
+	<insert id="insertCode_DET" parameterType="ManagementCodeVO"> 
+		INSERT INTO CODE_DET(GRCODE, CODE, CODE_NAME, SORTSEQ, USE_YN, CRT_USER, CRTDT, UPDT_USER, UPDTDT)
+		VALUES 	(#{grcode}, #{code}, #{codeName}, #{sortSeq, jdbcType=NUMERIC}, #{useYn, jdbcType=VARCHAR}, #{updtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE) 
+	</insert>
+	
+	<update id="updateCode_DET" parameterType="ManagementCodeVO"> 
+		UPDATE CODE_DET
+		   SET CODE_NAME = #{codeName}
+			,SORTSEQ = #{sortSeq}
+			,USE_YN = #{useYn, jdbcType=VARCHAR}
+			,UPDT_USER = #{updtUser, jdbcType=VARCHAR}
+		    ,UPDTDT = SYSDATE
+		WHERE 1=1
+		  AND GRCODE = #{grcode, jdbcType=VARCHAR} AND CODE = #{code, jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteCode_DET" parameterType="ManagementCodeVO">
+		DELETE FROM CODE_DET
+ 		 WHERE 1=1
+ 		   AND GRCODE = #{grcode, jdbcType=VARCHAR} AND CODE = #{code, jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteCode_MDET" parameterType="ManagementCodeVO">
+		DELETE FROM CODE_DET
+ 		 WHERE 1=1
+ 		   AND GRCODE = #{grcode, jdbcType=VARCHAR}
+	</delete>
+	
+	
+</mapper>

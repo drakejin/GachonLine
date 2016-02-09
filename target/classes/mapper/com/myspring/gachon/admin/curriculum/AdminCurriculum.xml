@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.admin.curriculum">
+	<select id="selectCourseCurriculum_MST" parameterType="ManagementCurriculumVO" resultType="ManagementCurriculumVO">
+		SELECT A.YEAR AS YEAR 
+			,A.COURSE_NUM AS COURSENUM
+			,A.MAJOR AS MAJOR
+			<!-- 코드값은 값대로 처리하고, _NM을 붙여서 한글화된 데이터를 보여주기만 하는 별도의 자료형을 둠 -->
+			,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='MAJOR' AND B.CODE = A.MAJOR ) AS MAJOR_NM
+			,A.COURSE_NAME AS COURSENAME
+			,A.SEMESTER AS SEMESTER
+			,A.COMPLETE_DIVISION AS COMPLETEDIVISION
+			,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='COMPLETE_DIVISION' AND B.CODE = A.COMPLETE_DIVISION ) AS COMPLETEDIVISION_NM
+			,A.GRADE AS GRADE
+			,A.SCHOOL_YEAR AS SCHOOLYEAR
+			,A.CRT_USER AS CRTUSER
+			,A.CRTDT AS CRTDT
+			,A.UPDT_USER AS UPDTUSER
+			,A.UPDTDT AS UPDTDT
+		FROM COURSE_CURRICULUM A
+		WHERE 1=1
+		<if test="major != null">
+			AND MAJOR = #{major}
+		</if>
+		<if test="year != null">
+			AND YEAR = #{year}
+		</if>
+		<if test="schoolYear != null and !schoolYear.equals('')">
+			AND SCHOOL_YEAR = #{schoolYear}
+		</if>
+		ORDER BY A.YEAR, A.SCHOOL_YEAR ASC
+	</select>
+	
+	<insert id="insertCourseCurriculum_MST" parameterType="ManagementCurriculumVO"> 
+		INSERT INTO COURSE_CURRICULUM 
+					(YEAR, COURSE_NUM, MAJOR, COURSE_NAME, SEMESTER, COMPLETE_DIVISION, GRADE, SCHOOL_YEAR, CRT_USER, CRTDT, UPDT_USER, UPDTDT) 
+		VALUES 		(#{year, jdbcType=NUMERIC}, #{courseNum, jdbcType=CHAR}, #{major, jdbcType=VARCHAR}, #{courseName}, #{semester}, #{completeDivision}, #{grade}, #{schoolYear}, #{updtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE) 
+	</insert>
+	
+	<update	id="updateCourseCurriculum_MST" parameterType="ManagementCurriculumVO">
+		UPDATE COURSE_CURRICULUM 
+		SET	COURSE_NAME = #{courseName}
+			,SEMESTER = #{semester}
+			,COMPLETE_DIVISION = #{completeDivision}
+			,GRADE = #{grade}
+			,SCHOOL_YEAR = #{schoolYear}
+			,UPDT_USER = #{updtUser, jdbcType=VARCHAR}
+			,UPDTDT = SYSDATE
+		WHERE 1=1
+		  AND YEAR = #{year, jdbcType=NUMERIC}
+		  AND COURSE_NUM = #{courseNum, jdbcType=CHAR}
+		  AND MAJOR = #{major, jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteCourseCurriculum_MST" parameterType="ManagementCurriculumVO">
+		DELETE FROM COURSE_CURRICULUM
+ 		 WHERE 1=1
+		  AND YEAR = #{year, jdbcType=NUMERIC}
+		  AND COURSE_NUM = #{courseNum, jdbcType=CHAR}
+		  AND MAJOR = #{major, jdbcType=VARCHAR}
+	</delete>
+</mapper>

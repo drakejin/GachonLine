@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.com.myspring.gachon.timetable.shareTimetable">
+
+<!-- 추가된 친구 가져오기 -->
+	<select id="myFnd" parameterType="int" resultType="ShareTimetableVo">
+		SELECT 
+			MEMBER_ID AS memberId,
+			MEMBER_NAME AS memberName
+		FROM MEMBER_MST 
+		WHERE MEMBER_ID 
+		IN (SELECT FND_MEMBER_ID FROM MEMBER_FND WHERE MEMBER_ID=#{value})
+	</select>
+	
+	<select id="fndInfo" parameterType="int" resultType="ShareTimetableVo">
+	SELECT 
+			MEMBER_ID AS memberId,
+			MEMBER_NAME AS memberName,
+			COLLEGE AS college,
+			DEPARTMENT AS department,
+			MAJOR AS major
+		FROM MEMBER_MST 
+		WHERE MEMBER_ID=#{value}
+	</select>
+</mapper>
