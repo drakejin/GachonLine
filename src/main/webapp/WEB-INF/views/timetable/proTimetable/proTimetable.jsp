@@ -83,6 +83,27 @@ $(document).ready(function() {
 		});
 	}
 	
+	function validation(){
+		var profDepartment = $('#department_s').val();
+		var profMajor = $('#major_s').val();
+		var profName = $('#prof_name').val();
+		
+		if(profDepartment != '' &&  profMajor != '' && profName != ''){	// 필수조건이 모두 null이 아닐때
+			profInfo();
+		}else{
+			if(profDepartment == ''){
+				GachonNoty.showResultNoty("404", "단과대학을 입력해주세요");
+			}else if(profMajor == ''){
+				GachonNoty.showResultNoty("404", "전공을 입력해주세요");
+			}else if(profName == ''){
+				GachonNoty.showResultNoty("404", "교수명을 입력해주세요");
+			}
+
+			return;
+		}
+		
+	}
+	
 	
 	function profInfo(){		
 		
@@ -101,25 +122,29 @@ $(document).ready(function() {
 			complete : function() {
 			},
 			success : function(response) {
-				if(response == ''){
-					alert("해당 소속 교수님이 없습니다.");
-				}else{
+				if(response == ''){		// 해당 소속 사람이  없을때
+					GachonNoty.showResultNoty("404", "해당 소속 교수님을 찾을 수 없습니다");
+				}else{					// 해당 소속 사람이 있을때
 					var transName = response[0].memberName + '  교수';
 					var content;
 					
-					// form insert data
-					document.getElementById("profNameTag").value = transName;
-					document.getElementById("college_p").value = response[0].college_nm;
-					document.getElementById("department_p").value = response[0].department_nm;
-					document.getElementById("major_p").value = response[0].major_nm;
-					document.getElementById("addr_p").value = response[0].address;
-					document.getElementById("phone_p").value = response[0].phone;
-					document.getElementById("email_p").value = response[0].email;
+					if(response[0].memberType == 'PRO'){				// 해당 소속 사람이 있는데 교수님일 때
+						// form insert data
+						document.getElementById("profNameTag").value = transName;
+						document.getElementById("college_p").value = response[0].college_nm;
+						document.getElementById("department_p").value = response[0].department_nm;
+						document.getElementById("major_p").value = response[0].major_nm;
+						document.getElementById("addr_p").value = response[0].address;
+						document.getElementById("phone_p").value = response[0].phone;
+						document.getElementById("email_p").value = response[0].email;
+						
+						content = "<img src="+ "/" + response[0].profileImgPath+" style='width: 240px; height: 325px;'/>";
 					
-					content = "<img src="+ "/" + response[0].profileImgPath+" style='width: 240px; height: 325px;'/>";
-				
-					$('.profPic').html(content);
-					timetableInfo();
+						$('.profPic').html(content);
+						timetableInfo();
+					}else{				// 해당 소속 사람이 있는데 교수님이 아닐 때
+						GachonNoty.showResultNoty("404", "해당 소속 교수님을 찾을 수 없습니다");
+					}
 				}
 			},
 			error : function(request, status, errorThrown) {
@@ -202,7 +227,7 @@ $(document).ready(function() {
 
 <body>
 	<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag"%>
-	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="noname" id="noname" />
+	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}"/>
 
 	<!-- 교수님 선택 -->
 	<div class="container">
@@ -264,7 +289,7 @@ $(document).ready(function() {
 						</div>
 						<!-- 5. 검색 버튼 -->
 						<div class="col-md-1">
-							<input type="button" class="btn btn-info" onclick="profInfo();" value="검색">
+							<input type="button" class="btn btn-info" onclick="validation();" value="검색">
 							</input>
 						</div>
 					</div>

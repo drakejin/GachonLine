@@ -51,26 +51,28 @@
 							</c:otherwise>
 						</c:choose>
 						<li><a href="/community?divs=music_club">동아리 게시판</a></li>
-						<li><a href="/community?divs=noname">익명게시판</a></li>
+						<li><a href="/community?divs=noname">대나무 숲</a></li>
 						<!-- 우뮴뮤뮤뮤뮤뮤 -->
-						<li><a href="/community?divs=sell">가천 장터</a></li>
+<!-- 						<li><a href="/community?divs=sell">가천 장터</a></li> -->
 						<li><a href="/community?divs=thunder">번개모임</a></li>
 						<li><a href="/community?divs=sinmungo">신문고</a></li>
-						<li><a href="/community?divs=group_buy">공동구매</a></li>
+<!-- 						<li><a href="/community?divs=group_buy">공동구매</a></li> -->
 					</ul>
 				</li>
-				<!-- 지연누나 -->
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-expanded="false">외부
-						커뮤니티<span class="caret"></span>
-				</a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="/outCommunity/store">상점 보기</a></li>
-						<li><a href="/outCommunity/alba">알바 공고</a></li>
-						<li><a href="/outCommunity/event">이벤트 정보</a></li>
-					</ul>
-				</li>
-
+				
+				<c:if test="${type eq 'ADM' or type eq 'ETC' or type eq 'PRO' or type eq 'STD'}">
+					<!-- 지연누나 -->
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-expanded="false">외부
+							커뮤니티<span class="caret"></span>
+					</a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="/outCommunity/store">상점 보기</a></li>
+							<li><a href="/outCommunity/alba">알바 공고</a></li>
+							<li><a href="/outCommunity/event">이벤트 정보</a></li>
+						</ul>
+					</li>
+				</c:if>
 				<!-- 관리자  -->
 				<c:if test="${type eq 'ADM'}">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"

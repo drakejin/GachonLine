@@ -57,22 +57,23 @@
 							</div>
 						</div>
 					</div>
-			
-					<div class="row">
-						<div class="col-sm-6 form-group">
-							<div class="col-sm-5 attr_name ">이름</div>
-							<div class="col-sm-7 input-group">
-								<input type="text" class="form-control" value="${LOGIN_MEMBER.memberName }" readonly />
+					<c:if test="${!(divs eq 'noname') }">
+						<div class="row">
+							<div class="col-sm-6 form-group">
+								<div class="col-sm-5 attr_name ">이름</div>
+								<div class="col-sm-7 input-group">
+									<input type="text" class="form-control" value="${LOGIN_MEMBER.memberName }" readonly />
+								</div>
+							</div>
+							<div class="col-sm-6 form-group">
+								<div class="col-sm-5 attr_name ">학번</div>
+								<div class="col-sm-7 input-group">
+									<input type="text" class="form-control" value="${LOGIN_MEMBER.memberId }"
+										readonly />
+								</div>
 							</div>
 						</div>
-						<div class="col-sm-6 form-group">
-							<div class="col-sm-5 attr_name ">학번</div>
-							<div class="col-sm-7 input-group">
-								<input type="text" class="form-control" value="${LOGIN_MEMBER.memberId }"
-									readonly />
-							</div>
-						</div>
-					</div>
+					</c:if>
 					<div class="row">
 						<div class="form-group col-sm-12">
 							<label for="comment">내용 작성 </label>
@@ -129,7 +130,7 @@
 					<div class="row">
 						<div class="form-group col-sm-12">
 							<label for="comment">내용 작성 </label>
-							<textarea id="content" onkeydown="checkInput()" class="form-control" name="content" rows="20">${board.CONTENT.content}</textarea>
+							<textarea id="content" onkeydown="checkInput()" class="form-control" name="content" rows="20">&emsp;&emsp;&emsp;&emsp;&emsp;${board.CONTENT.content}</textarea>
 						</div>
 					</div>
 					<div id="notice" class="row">

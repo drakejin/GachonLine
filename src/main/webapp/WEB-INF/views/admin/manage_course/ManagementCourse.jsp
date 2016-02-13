@@ -50,11 +50,15 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 function list(){		// 리스트 출력
+	var dataForm={
+		memberId : "${LOGIN_MEMBER.memberId}"
+	};
 	$.ajax({
-		type : "post",
+		type : "POST",
 		url : "/admin/manage_course/list.json", 	// 리스트 값들을 MST에 보여줌 (SELECT_MST)
 		cache : false,
-		async : true,
+		async : false,
+		data : dataForm,
 		dataType : "json",
 		success : function(response) {
 			console.log(response);
@@ -342,21 +346,10 @@ function deleteCourse(){
 				</thead>
 			</table>
 		</div>
+		<br/>
+		<button class="btn btn-info" onclick="add();">추가하기</button>
 
-		<div class="row">
-			<div class="col-sm-4">
-				<div class="row">
-					<button class="col-sm-5 btn btn-info" onclick="add();">
-						추가하기
-					</button>
-				</div>
-			</div>
-			<div class="col-sm-4">&nbsp;</div>
-			<div class="col-sm-4">&nbsp;</div>
-
-		</div>
-
-		<div id="courseInfo" class="row well" style="margin-top: 3em;">
+		<div id="courseInfo" class="well" style="margin-top: 2em;">
 			<div id="infoTitle" class="page_title"></div>
 			<hr />
 			<div class="row form-group">
@@ -635,51 +628,5 @@ function deleteCourse(){
 			</div>
 		</div>
 	</div>
-	<!-- 
-1	COURSE_NUM			학수번호 				courseNum
-2	COURSE_NAME			과목명					courseName
-3	YEAR				년도					year
-4	SEMESTER			학기					semester
-5	COLLEGE				캠퍼스 구분				college
-6	COMPLETE_DIVISION	이수영역				completeDivision
-7	SCHOOL_YEAR			학년					schoolYear
-8	GRADE				학점					grade
-9	PROFESSOR			담당교수				professor
-10	CAPACITY			정원					capacity
-11	CYBER_YN			싸이버강의				cyberYN
-12	LEC_ROOM			강의실					lecRoom
-13	LEC_TIME			강의시간				lecTime
-14	AREA				영역					area
-//CRT_USER
-//CRTDT
-//UPDT_USER
-//UPDTDT
---
-//COURSE_NUM
-15	PREREQUISITE_COURSE	선수과목				prerequisiteCourse
-16	ENGINEERING_AUTHENTICATION	공학인증 이수구분	engineeringAuthentication
-17	SUMMARY				강의개요				summary
-18	GOAL				강의목표				goal
-19	PROGRESS_WAY		강의 진행 방법			progressWay
-20	VALUATION_BASIS		성적평가 방법				valuationBasis
-//CRT_USER
-//CRTDT
-//UPDT_USER
-//UPDTDT
---
-//	COURSE_NUM
-22	MAJOR				전공			major
-//CRT_USER
-//CRTDT
-//UPDT_USER
-//UPDTDT
-
-
-
- -->
-
 </body>
-
-
-
 </gachonTag:html>

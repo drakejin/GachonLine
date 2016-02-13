@@ -119,6 +119,7 @@ hr {
 				if (response.result == "${RESULT_SUCCESS}") {
 					$("#modal").modal('show');
 					console.log(response);
+					$("#img").attr('src',"/"+response.profileImagePath);
 					document.getElementById("memberId").value = response.memberId;
 					document.getElementById("memberName").value = response.memberName;
 					document.getElementById("password").value = response.password;
@@ -127,7 +128,9 @@ hr {
 					document.getElementById("closeReason").value = response.closeReason;
 					document.getElementById("college").value = response.college;
 					document.getElementById("department").value = response.department;
+					console.info(response.department + "****");
 					document.getElementById("year").value = response.year;
+					console.info(response.year + "****");
 					document.getElementById("schoolYear").value = response.schoolYear;
 					document.getElementById("major").value = response.major;
 					document.getElementById("completeTerm").value = response.completeTerm;
@@ -135,7 +138,7 @@ hr {
 					document.getElementById("birthDate").value = response.birthDate;
 					document.getElementById("postalCode").value = response.postalCode;
 					document.getElementById("address").value = response.address;
-					//document.getElementById("year").value = response.year;
+					document.getElementById("year").value = response.year;
 					document.getElementById("schoolYear").value = response.schoolYear;
 					
 					var phone = response.phone.split("-");
@@ -321,7 +324,7 @@ hr {
 			</table>
 		</div>
 
-		<!-- Modal : 수업 교환 하기 공통 모달 -->
+		<!-- Modal : 사용자공통 모달 -->
 		<div id="modal" class="modal fade bs-example-modal-lg" tabindex="-1"
 			role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-lg">
@@ -337,17 +340,16 @@ hr {
 
 					<div id="showMemberModal" class="modal-body">
 						<div class="row form-group">
-							<div class="col-sm-6">
+							<div class="col-sm-5">
 								<div class="row">
 									<div class="attr_name text-center">회원사진</div>
-									<img src="${PATH_IMAGES}/img1.PNG" width="100%"
-										class="col-sm-12 img-responsive img-thumbnail" />
+									<img id="img" height="290px" class="col-sm-12" />
 								</div>
 								<button id="modifyImage" type="button" onclick="uploadImage();"
 									style="display: none;" class="col-xs-12 btn btn-success">
 									업로드</button>
 							</div>
-							<div class="col-sm-6" style="padding-top: 3em;">
+							<div class="col-sm-7" style="padding-top: 3em;">
 								<div class="row form-group">
 									<div class="col-sm-4 attr_name text-center">회원 학번</div>
 									<div class="col-sm-8">
@@ -440,6 +442,28 @@ hr {
 								<input type="text" id="email" class="form-control" readonly />
 							</div>
 						</div>
+						
+						
+						<div class="row form-group">
+							<div class="col-sm-4">
+								<div class="row">
+									<div class="col-sm-4 attr_name text-center">단과 대학</div>
+									<div class="col-sm-8">
+										<gachonTag:select id="department" code="${DEPARTMENT}" onChange="majorFilter();" className="attr_name"  required="required"/>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-4">
+								<div class="row">
+									<div class="col-sm-4 attr_name text-center">학과/부</div>
+									<div class="col-sm-8">
+										<gachonTag:select id="major" code="${MAJOR}" className="attr_name" required="required"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						
 						<div class="row form-group">
 							<div class="col-sm-4">
 								<div class="row">
@@ -457,7 +481,6 @@ hr {
 									<div class="col-sm-4 attr_name text-center">소속대학</div>
 									<div class="col-sm-8">
 										<gachonTag:select id="college" code="${COLLEGE}" className="attr_name"   required="required"/>
-										
 									</div>
 								</div>
 							</div>
@@ -472,15 +495,8 @@ hr {
 						</div>
 
 
+						
 						<div class="row form-group">
-							<div class="col-sm-4">
-								<div class="row">
-									<div class="col-sm-4 attr_name text-center">학과/학부</div>
-									<div class="col-sm-8">
-										<gachonTag:select id="major" code="${MAJOR}" className="attr_name" required="required"/>
-									</div>
-								</div>
-							</div>
 							<div class="col-sm-4">
 								<div class="row">
 									<div class="col-sm-4 attr_name text-center">학적 상태</div>
@@ -498,18 +514,7 @@ hr {
 									</div>
 								</div>
 							</div>
-						</div>
-						
-						<div class="row form-group">
-							<div class="col-sm-4">
-								<div class="row">
-									<div class="col-sm-4 attr_name text-center">단과 대학</div>
-									<div class="col-sm-8">
-										<gachonTag:select id="department" code="${DEPARTMENT}" className="attr_name"  required="required"/>
-												
-									</div>
-								</div>
-							</div>
+							
 							<div class="col-sm-4">
 								<div class="row">
 									<div class="col-sm-4 attr_name text-center">입학 년도</div>
@@ -594,7 +599,7 @@ hr {
 				<div class="col-sm-6">
 					<div class="row form-group">
 						<div class="attr_name text-center">회원사진</div>
-						<img src="${PATH_IMAGES}/img1.PNG" width="100%"
+						<img src="${PATH_IMAGES}/i.PNG" width="200px" height="100px"
 							class="col-sm-12 img-responsive img-thumbnail" />
 					</div>
 					<button type="button" onclick="uploadImage();"
@@ -718,10 +723,30 @@ hr {
 			<div class="row form-group">
 				<div class="col-sm-4">
 					<div class="row">
+						<div class="col-sm-4 attr_name text-center">단과 대학</div>
+						<div class="col-sm-8">
+							<gachonTag:select id="department_add" code="${DEPARTMENT}" onChange="majorFilter_add();" required="required"/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-4">
+					<div class="row">
 						<div class="col-sm-4 attr_name text-center">학과/학부</div>
 						<div class="col-sm-8">
 							<gachonTag:select id="major_add" code="${MAJOR}" required="required"/>
-									
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row form-group">
+				
+				<div class="col-sm-4">
+					<div class="row">
+						<div class="col-sm-4 attr_name text-center">입학 년도</div>
+						<div class="col-sm-8">
+							<gachonTag:select id="year_add" code="${YEAR}" required="required"/>
 						</div>
 					</div>
 				</div>
@@ -730,7 +755,6 @@ hr {
 						<div class="col-sm-4 attr_name text-center">학적 상태</div>
 						<div class="col-sm-8">
 							<gachonTag:select id="collegeStatus_add" code="${COLLEGE_STATUS}" required="required"/>
-							
 						</div>
 					</div>
 				</div>
@@ -744,28 +768,7 @@ hr {
 						</div>
 					</div>
 				</div>
-			</div>
-			
-			<div class="row form-group">
-				<div class="col-sm-4">
-					<div class="row">
-						<div class="col-sm-4 attr_name text-center">단과 대학</div>
-						<div class="col-sm-8">
-							<gachonTag:select id="department_add" code="${DEPARTMENT}" required="required"/>
-									
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="row">
-						<div class="col-sm-4 attr_name text-center">입학 년도</div>
-						<div class="col-sm-8">
-							<gachonTag:select id="year_add" code="${YEAR}" required="required"/>
-							
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-4">&nbsp;</div>
+<!-- 				<div class="col-sm-4">&nbsp;</div> -->
 			</div>
 
 
@@ -826,9 +829,9 @@ hr {
 	<script type="text/javascript">
 		$(document).ready(function() {
 			listIdInfomation();
-			checkForm($("#memberId_add"), 8, 9, "number"); //col1
+			checkForm($("#memberId_add"), 1, 9, "number"); //col1
 			checkForm($("#memberName_add"), 2, 10, "text"); //col2
-			checkForm($("#password_add"), 8, 64, "noneKr"); //col3
+			checkForm($("#password_add"), 1, 64, "noneKr"); //col3
 			checkForm($("#memberType_add"), 1, 3, "noneKr"); //col4
 			checkForm($("#department_add"), 1, 20, "noneKr"); //col4
 			checkForm($("#year_add"), 1, 20, "noneKr"); //col4
@@ -905,6 +908,76 @@ hr {
 						$("#modifyImage").hide();
 					});
 		});
+		
+		function majorFilter() {
+
+			var dataForm = {
+				grcode : 'MAJOR',			// 이 key 값에 해당하는 value는 무엇인가? MAJOR
+				code : $("#department option:selected").val()
+			};
+			$.ajax({
+				type : "POST",
+				url : "/common/code/codeDETWithCode.json",
+				cache : false,
+				async : true,
+				data : dataForm,
+				dataType : "json",
+				complete : function() {
+				},
+				success : function(response) {
+					$('#major').html('');	// 기존 Label값 지워주고
+					
+// 					for (var i = 0; i < response.length; i++) {
+// 						$('#otherMajor').append('<option value='+response[i].value + '>' + response[i].label + '</option>');
+// 					}
+					
+					$.each(response, function(index, code) {	// index, code -> value, label
+						// response 크기만큼 반복하는데 function 파라미터로 value와 label을 가져옴.
+						// 조금 더 분석 필요;; <option> </option> 문법을 전체 append한다...?
+						// for문 대신 .each
+						$('#major').append('<option value='+code.value + '>' + code.label + '</option>');
+					});
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+		function majorFilter_add() {
+
+			var dataForm = {
+				grcode : 'MAJOR',			// 이 key 값에 해당하는 value는 무엇인가? MAJOR
+				code : $("#department_add option:selected").val()
+			};
+			$.ajax({
+				type : "POST",
+				url : "/common/code/codeDETWithCode.json",
+				cache : false,
+				async : true,
+				data : dataForm,
+				dataType : "json",
+				complete : function() {
+				},
+				success : function(response) {
+					$('#major_add').html('');	// 기존 Label값 지워주고
+					
+// 					for (var i = 0; i < response.length; i++) {
+// 						$('#otherMajor').append('<option value='+response[i].value + '>' + response[i].label + '</option>');
+// 					}
+					
+					$.each(response, function(index, code) {	// index, code -> value, label
+						// response 크기만큼 반복하는데 function 파라미터로 value와 label을 가져옴.
+						// 조금 더 분석 필요;; <option> </option> 문법을 전체 append한다...?
+						// for문 대신 .each
+						$('#major_add').append('<option value='+code.value + '>' + code.label + '</option>');
+					});
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+		
 	</script>
 
 </body>

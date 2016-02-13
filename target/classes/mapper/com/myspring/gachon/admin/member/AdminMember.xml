@@ -20,7 +20,7 @@
 			
 			FROM MEMBER_MST A
 			WHERE 1=1
-			ORDER BY 	A.JOIN_FROM_DT DESC
+			ORDER BY 	A.MEMBER_ID ASC
 	</select>
 	
 	<select id="getFriendInfo" resultType="AdminMemberVO">
@@ -147,7 +147,7 @@ UPDATE MEMBER_MST A SET
 	A.UPDTDT = SYSDATE,
 	A.MAJOR = #{major,jdbcType=VARCHAR},
 	A.SCHOOL_YEAR =	TO_NUMBER(#{schoolYear,jdbcType=VARCHAR},9),
-	A.YEAR = TO_NUMBER(#{year,jdbcType=VARCHAR},999)
+	A.YEAR = TO_NUMBER(#{year,jdbcType=VARCHAR},9999)
 	WHERE 1 = 1
 		AND
 		A.MEMBER_ID = TO_NUMBER(#{memberId,jdbcType=VARCHAR},999999999)

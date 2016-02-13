@@ -6,21 +6,24 @@
 <!-- 추가된 친구 가져오기 -->
 	<select id="myFnd" parameterType="int" resultType="ShareTimetableVo">
 		SELECT 
-			MEMBER_ID AS memberId,
-			MEMBER_NAME AS memberName
+			MEMBER_ID AS memberId
+			,MEMBER_NAME AS memberName
 		FROM MEMBER_MST 
 		WHERE MEMBER_ID 
 		IN (SELECT FND_MEMBER_ID FROM MEMBER_FND WHERE MEMBER_ID=#{value})
 	</select>
 	
 	<select id="fndInfo" parameterType="int" resultType="ShareTimetableVo">
-	SELECT 
-			MEMBER_ID AS memberId,
-			MEMBER_NAME AS memberName,
-			COLLEGE AS college,
-			DEPARTMENT AS department,
-			MAJOR AS major
-		FROM MEMBER_MST 
-		WHERE MEMBER_ID=#{value}
+	SELECT  A.MEMBER_ID AS memberId
+			,A.MEMBER_NAME AS memberName
+			,A.COLLEGE AS college
+			,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'COLLEGE' AND B.CODE = A.COLLEGE) AS college_nm
+			,A.DEPARTMENT AS department
+			,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'DEPARTMENT' AND B.CODE = A.DEPARTMENT) AS department_nm
+			,A.MAJOR AS major
+			,(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE = 'MAJOR' AND B.CODE = A.MAJOR) AS major_nm
+		FROM MEMBER_MST A
+		WHERE 1=1  
+	      AND A.MEMBER_ID = #{value}
 	</select>
 </mapper>

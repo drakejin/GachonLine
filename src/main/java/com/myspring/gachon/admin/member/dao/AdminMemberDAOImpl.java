@@ -96,19 +96,36 @@ public class AdminMemberDAOImpl implements AdminMemberDAO{
 	public JSONObject setMemberModify(AdminMemberVO vo) {
 		// TODO Auto-generated method stub
 
-		System.out.println("====================");
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println(vo.getMemberId());
-		System.out.println("====================");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
+		System.out.println("asdasd");
 		
 		int result = sqlSession.update(NS + "setMemberModify", vo);
 		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		
 		JSONObject jsonObject = new JSONObject();
 		if (result > 0) {
 			jsonObject.put(ContentKey.RESULT_MSG,ContentKey.RESULT_SUCCESS);

@@ -59,7 +59,12 @@ public class AdminCourseController {
 	@RequestMapping(value = "/admin/manage_course/list.json", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONArray listJson(AdminCourseAllVO vo) {
-		return adminCourseService.getCourseList(vo);
+		JSONArray result = adminCourseService.getCourseList(vo);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		
+		return result;
 	}
 	
 	@RequestMapping(value = "/admin/manage_course/show.json", method = RequestMethod.POST)

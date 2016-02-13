@@ -88,7 +88,7 @@
 		</c:when>
 		
 		<c:when test="${divs eq 'noname'}">
-			익명 게시판
+			대나무 숲
 		</c:when>
 
 		<c:when test="${divs eq 'sell'}">
@@ -188,7 +188,7 @@
 				</ul>
 			</li>
 			<li role="presentation" class="<c:if test="${divs eq 'noname'}">active</c:if>">
-				<a href="/community?divs=noname">익명 게시판</a>
+				<a href="/community?divs=noname">대나무 숲</a>
 			</li>
 			<li role="presentation" class="<c:if test="${divs eq 'thunder'}">active</c:if>">
 				<a href="/community?divs=thunder">번개 모임</a>

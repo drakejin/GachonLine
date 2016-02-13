@@ -37,13 +37,13 @@
 			<mvc:mapping path="/home/**" />
 			<mvc:mapping path="/course/**" />
 			<mvc:mapping path="/common/**" />	
-
+			<mvc:mapping path="/outCommunity/**" />
+			
 			<mvc:exclude-mapping path="/" />
 			<mvc:exclude-mapping path="/login" />
 			<mvc:exclude-mapping path="/login.go" />
 			<mvc:exclude-mapping path="/error" />
 			<mvc:exclude-mapping path="/community" />
-			<mvc:exclude-mapping path="/outCommunity/**" />
 			<bean class="com.myspring.gachon.session.SessionInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

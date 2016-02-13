@@ -111,9 +111,9 @@
 					$.each(response, function(index, item) {
 						$("#memberName").val(item.memberName);
 						$("#memberId").val(item.memberId);
-						$("#college").val(item.college);
-						$("#department").val(item.department);
-						$("#major").val(item.major);
+						$("#college").val(item.college_nm);
+						$("#department").val(item.department_nm);
+						$("#major").val(item.major_nm);
 					})
 				},
 				error : function(request, status, errorThrown) {
@@ -158,7 +158,6 @@
 			var fndId = parseInt(split[0]);
 			
 			/* ★★★★★ selectbox의 option이 공백일 경우 처리해야함*/
-			console.info(fndId);
 			
 			var dataForm = {
 				memberId : fndId
@@ -172,11 +171,12 @@
 				dataType : "JSON",
 				success : function(response) {
 					$.each(response, function(index, item) {
+						console.info(item);
 						$("#fndMemberId").val(item.memberId);
 						$("#fndMemberName").val(item.memberName);
-						$("#fndCollege").val(item.college);
-						$("#fndDepartment").val(item.department);
-						$("#fndMajor").val(item.major);
+						$("#fndCollege").val(item.college_nm);
+						$("#fndDepartment").val(item.department_nm);
+						$("#fndMajor").val(item.major_nm);
 					});
 					
 					fndtimetableInfo(fndId);
@@ -252,9 +252,6 @@
 					var obj_f = fndTimetable.find('tr').eq(i+1).children('td').eq(j);
 					var html_m = obj_m.text(); 				// 나의 테이블 내 모든 text를 가져와 html_m에 대입
 					var html_f = obj_f.text();				// 친구 테이블 내 모든 text를 가져와 html_f에 대입
-
-// 					console.info(html_m);
-					console.info(html_f);
 					
 					if(html_m == "" && html_f == ""){					// 나와 친구가 모두 공강 일 때
 						obj_m.css('background-color','#F8E6E0');

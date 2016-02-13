@@ -29,7 +29,7 @@
 			C.COLLEGE AS college,
 			C.SCHOOL_YEAR AS schoolYear,
 			M.MAJOR AS major,
-			(SELECT 'Y' FROM COURSE_APPLICANT_STATE A WHERE A.COURSE_NUM = C.COURSE_NUM AND A.MEMBER_ID = #{memberId}) AS appYn
+ 			(SELECT 'Y' FROM COURSE_APPLICANT_STATE A WHERE A.COURSE_NUM = C.COURSE_NUM AND A.MEMBER_ID = #{memberId}) AS appYn
 		FROM COURSE_MST C, COURSE_MAJOR_MAP M
 		WHERE 1=1
 			AND C.COURSE_NUM = M.COURSE_NUM
@@ -105,7 +105,7 @@
 			#{completeDivision,jdbcType=VARCHAR},
 			#{schoolYear,jdbcType=VARCHAR},
 			TO_NUMBER(#{grade,jdbcType=VARCHAR},9),
-			TO_NUMBER(#{professor,jdbcType=VARCHAR},999999999),
+			#{professor,jdbcType=VARCHAR},
 			TO_NUMBER(#{capacity,jdbcType=VARCHAR},9999),
 			#{cyberYN,jdbcType=VARCHAR},
 			#{lecRoom,jdbcType=VARCHAR},
@@ -155,7 +155,7 @@
 			COMPLETE_DIVISION = #{completeDivision,jdbcType=VARCHAR},
 			SCHOOL_YEAR = #{schoolYear,jdbcType=VARCHAR},
 			GRADE = TO_NUMBER(#{grade,jdbcType=VARCHAR},9),
-			PROFESSOR = TO_NUMBER(#{professor,jdbcType=VARCHAR},999999999),
+			PROFESSOR = #{professor,jdbcType=VARCHAR},
 			CAPACITY = TO_NUMBER(#{capacity,jdbcType=VARCHAR},9999),
 			CYBER_YN = #{cyberYN,jdbcType=VARCHAR},
 			LEC_ROOM = #{lecRoom,jdbcType=VARCHAR},
@@ -279,7 +279,7 @@
 	<insert id="insertTemporarySchedule" parameterType="AdminCourseAllVO"> 
 		INSERT INTO COURSE_TEMPORARY_SCHEDULE 
 					(COURSE_NUM, COURSE_NAME, AREA, COMPLETE_DIVISION, GRADE, PROFESSOR, LEC_TIME, LEC_ROOM, SCHOOL_YEAR) 
-		VALUES 		(#{courseNum}, #{courseName, jdbcType=VARCHAR}, #{area, jdbcType=VARCHAR}, #{completeDivision, jdbcType=CHAR}, #{grade}, #{professor}, #{lecTime, jdbcType=VARCHAR}, #{lecRoom, jdbcType=VARCHAR}, #{schoolYear, jdbcType=CHAR}) 
+		VALUES 		(#{courseNum}, #{courseName, jdbcType=VARCHAR}, #{area, jdbcType=VARCHAR}, #{completeDivision, jdbcType=CHAR}, #{grade}, #{professor,jdbcType=VARCHAR}, #{lecTime, jdbcType=VARCHAR}, #{lecRoom, jdbcType=VARCHAR}, #{schoolYear, jdbcType=CHAR}) 
 	</insert>
 	
 	

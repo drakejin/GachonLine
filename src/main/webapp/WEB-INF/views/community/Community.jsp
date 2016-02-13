@@ -97,23 +97,24 @@ function list() {
 							</div>
 						</div>
 					</div>
-	
-					<div class="row form-row">
-						<div class="col-sm-6">
-							<div class="col-sm-4 attr_name ">이름</div>
-							<div class="col-sm-8">
-								<input id="createUser" type="text" class="form-control"
-									value="${board.LIST.createUser }" readonly />
+					<c:if test="${!(divs eq 'noname') }">
+						<div class="row form-row">
+							<div class="col-sm-6">
+								<div class="col-sm-4 attr_name ">이름</div>
+								<div class="col-sm-8">
+									<input id="createUser" type="text" class="form-control"
+										value="${board.LIST.createUser }" readonly />
+								</div>
 							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="col-sm-4 attr_name ">학번</div>
-							<div class="col-sm-8">
-								<input id="createId" type="text" class="form-control"
-									value="${board.LIST.createId }" readonly />
+							<div class="col-sm-6">
+								<div class="col-sm-4 attr_name ">학번</div>
+								<div class="col-sm-8">
+									<input id="createId" type="text" class="form-control"
+										value="${board.LIST.createId }" readonly />
+								</div>
 							</div>
-						</div>
-					</div>
+						</div>	
+					</c:if>
 				</div>
 				<div class="well">
 					<div class="row form-group">
@@ -148,8 +149,12 @@ function list() {
 						</div>
 					</c:if>
 				</div>
-				<div id="replies">
-
+				<div class="well">
+					<h6 class="page_title">댓글</h6>
+					
+					<div id="replies">
+				
+					</div>
 				</div>
 				
 <script type="text/javascript">
@@ -198,7 +203,9 @@ $(document).ready(function(){
 						<tr>
 							<th data-field="boardNo" class="col-sm-1 text_center">글 번호</th>
 							<th data-field="title" class="col-sm-5 text_center">제 목</th>
-							<th data-field="createUser" class="col-sm-2 text_center">작성자</th>
+							<c:if test="${!(divs eq 'noname')}">
+								<th data-field="createUser" class="col-sm-2 text_center">작성자</th>
+							</c:if>
 							<th data-field="createDate" class="col-sm-2 text_center">작성일</th>
 							<th data-field="viewCount" class="col-sm-1 text_center">조회</th>
 						</tr>
@@ -240,109 +247,114 @@ $(document).ready(function(){
 
 //덧글 불러오기
 function commentList(boardNo){
+	var replies = document.getElementById('replies');
 	var dataForm = {
 		boardNo : boardNo	
 	};
+	while (replies.firstChild) {
+	    replies.removeChild(replies.firstChild);
+	}
+	replies.className = "well";
 	$.post("/community/reply",{boardNo:boardNo},function(data){
-		var replies = document.getElementById('replies');
-		while (replies.firstChild) {
-		    replies.removeChild(replies.firstChild);
-		}
-		replies.className = "well";
-		for(var reply in data){
-
-			var div1 = document.createElement('div');
-			var div2 = document.createElement('div');
-			var div3 = document.createElement('div');
-			var div4 = document.createElement('div');
-			var div5 = document.createElement('div');
-			var div6 = document.createElement('div');
-			var div7 = document.createElement('div');
-			var div8 = document.createElement('div');
-			var div9 = document.createElement('div');
-			
-			var input1 = document.createElement('input');
-			var input2 = document.createElement('input');
-			var input3 = document.createElement('input');
-			
-			var textarea1 = document.createElement('textarea');
-			
-			div1.className = "row";
-			div1.style="background-color:#fff;margin-bottom:1em;padding-top:0.7em;";
 		
-			div2.className = "col-sm-2";
-			div3.className = "col-sm-7";
-			div4.className = "col-sm-3";
-			
-			div5.className = "form-group";
-			div6.className = "form-group";
-			div7.className = "form-group";
-			div8.className = "form-group";
-			div9.className = "form-group";
-			
-			textarea1.className = "form-control";
-			textarea1.rows = "4";
-			textarea1.readOnly = true;
-			textarea1.value = data[reply].comment1;
-			textarea1.id = data[reply].commentNo+"_comment1";
-			
-			input1.type = "text";
-			input1.className = "form-control";
-			input1.readOnly=true;
-			input1.value = data[reply].createUser;
-			input1.id = data[reply].commentNo+"_name";
-			
-			input2.type = "text";
-			input2.className = "form-control";
-			input2.readOnly=true;
-			input2.value = data[reply].createId;
-			input2.id = data[reply].commentNo+"_id";
-			
-			input3.type = "text";
-			input3.className = "form-control";
-			input3.readOnly=true;
-			input3.value = data[reply].createDate;
-			input3.id = data[reply].commentNo+"_date";
-			
-			
-			if('${LOGIN_MEMBER.memberId}' == data[reply].createId){
-				var input4 = document.createElement('input');
-				var input5 = document.createElement('input');
+		if(data.length!=0){
+			for(var reply in data){
+				var div1 = document.createElement('div');
+				var div2 = document.createElement('div');
+				var div3 = document.createElement('div');
+				var div4 = document.createElement('div');
+				var div5 = document.createElement('div');
+				var div6 = document.createElement('div');
+				var div7 = document.createElement('div');
+				var div8 = document.createElement('div');
+				var div9 = document.createElement('div');
 				
-				input4.type = "button";
-				input4.className = "col-sm-6 btn btn-warning";
-				input4.value = "삭제";
-				input4.id = data[reply].commentNo+"_delete";
-				input4.onclick = replyDelete;
+				var input1 = document.createElement('input');
+				var input2 = document.createElement('input');
+				var input3 = document.createElement('input');
 				
-				input5.type = "button";
-				input5.className = "col-sm-6 btn btn-success";
-				input5.value = "수정";
-				input5.id = data[reply].commentNo+"_update";
-				input5.onclick = replyUpdate;
+				var textarea1 = document.createElement('textarea');
 				
-				div9.appendChild(input4);
-				div9.appendChild(input5);
-			}else{
-				div9.innerHTML = "&nbsp;";
+				
+				div1.className = "row";
+				div1.style="background-color:#fff;margin-bottom:1em;padding-top:0.7em;";
+			
+				div2.className = "col-sm-2";
+				div3.className = "col-sm-7";
+				div4.className = "col-sm-3";
+				
+				div5.className = "form-group";
+				div6.className = "form-group";
+				div7.className = "form-group";
+				div8.className = "form-group";
+				div9.className = "form-group";
+				
+				textarea1.className = "form-control";
+				textarea1.rows = "4";
+				textarea1.readOnly = true;
+				textarea1.value = data[reply].comment1;
+				textarea1.id = data[reply].commentNo+"_comment1";
+				
+				input1.type = "text";
+				input1.className = "form-control";
+				input1.readOnly=true;
+				input1.value = data[reply].createUser;
+				input1.id = data[reply].commentNo+"_name";
+				
+				input2.type = "text";
+				input2.className = "form-control";
+				input2.readOnly=true;
+				input2.value = data[reply].createId;
+				input2.id = data[reply].commentNo+"_id";
+				
+				input3.type = "text";
+				input3.className = "form-control";
+				input3.readOnly=true;
+				input3.value = data[reply].createDate;
+				input3.id = data[reply].commentNo+"_date";
+				
+				
+				if('${LOGIN_MEMBER.memberId}' == data[reply].createId){
+					var input4 = document.createElement('input');
+					var input5 = document.createElement('input');
+					
+					input4.type = "button";
+					input4.className = "col-sm-6 btn btn-warning";
+					input4.value = "삭제";
+					input4.id = data[reply].commentNo+"_delete";
+					input4.onclick = replyDelete;
+					
+					input5.type = "button";
+					input5.className = "col-sm-6 btn btn-success";
+					input5.value = "수정";
+					input5.id = data[reply].commentNo+"_update";
+					input5.onclick = replyUpdate;
+					
+					div9.appendChild(input4);
+					div9.appendChild(input5);
+				}else{
+					div9.innerHTML = "&nbsp;";
+				}
+				div5.appendChild(input1);
+				div6.appendChild(input2);
+				div7.appendChild(textarea1);
+				div8.appendChild(input3);
+				
+				div2.appendChild(div5);
+				div2.appendChild(div6);
+				div3.appendChild(div7);
+				div4.appendChild(div8);
+				div4.appendChild(div9);
+				
+				div1.appendChild(div2);
+				div1.appendChild(div3);
+				div1.appendChild(div4);
+				
+				replies.appendChild(div1);
 			}
-			div5.appendChild(input1);
-			div6.appendChild(input2);
-			div7.appendChild(textarea1);
-			div8.appendChild(input3);
-			
-			div2.appendChild(div5);
-			div2.appendChild(div6);
-			div3.appendChild(div7);
-			div4.appendChild(div8);
-			div4.appendChild(div9);
-			
-			div1.appendChild(div2);
-			div1.appendChild(div3);
-			div1.appendChild(div4);
-			replies.appendChild(div1);
+		}else{
 		}
-		
+
 	});
 }
 

@@ -51,7 +51,21 @@ public class AdminStoreController {
 	@RequestMapping(value = "/admin/manage_store/adminStoreList.json", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONArray storeAllSelect() {
-		return JSONArray.fromObject(adminStoreServiceImpl.adminStoreAllSelect());
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		System.out.println("sdsd");
+		
+		JSONArray ary = JSONArray.fromObject(adminStoreServiceImpl.adminStoreAllSelect());
+		System.out.println(ary);
+		
+		return ary;
 	}
 
 	/* 상점관리 정보 확인 */

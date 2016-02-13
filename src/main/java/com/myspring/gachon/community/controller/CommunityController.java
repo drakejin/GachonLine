@@ -66,6 +66,15 @@ public class CommunityController {
 	}
 	@RequestMapping(value = "/community/write/submit", method = RequestMethod.POST)
 	public String communityWriteSubmit(CommunityNormalListVO list,CommunityNormalContentVO content,Model model,Locale locale) throws ServletRequestBindingException{
+		
+		String[] str = content.getContent().split("\n");
+		String result1="";
+		for(String temp:str){
+			result1+=temp+"<br/>";
+		}
+		content.setContent(result1);
+		
+		
 		String divs = ServletRequestUtils.getStringParameter(request, "divs");
 		model.addAttribute("divs",divs);
 		//서버단에서 작성글의 검증은 귀찮아서 패스 . 클라에서 대충 검증하고 넘길꺼임.

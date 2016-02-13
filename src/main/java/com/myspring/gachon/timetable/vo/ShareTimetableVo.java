@@ -7,8 +7,11 @@ public class ShareTimetableVo {
 	private int memberId;
 	private String memberName;
 	private String college;
+	private String college_nm;
 	private String department;
+	private String department_nm;
 	private String major;
+	private String major_nm;
 	
 	public int getMemberId() {
 		return memberId;
@@ -39,6 +42,24 @@ public class ShareTimetableVo {
 	}
 	public void setMajor(String major) {
 		this.major = major;
+	}
+	public String getCollege_nm() {
+		return college_nm;
+	}
+	public void setCollege_nm(String college_nm) {
+		this.college_nm = college_nm;
+	}
+	public String getDepartment_nm() {
+		return department_nm;
+	}
+	public void setDepartment_nm(String department_nm) {
+		this.department_nm = department_nm;
+	}
+	public String getMajor_nm() {
+		return major_nm;
+	}
+	public void setMajor_nm(String major_nm) {
+		this.major_nm = major_nm;
 	}
 	
 	

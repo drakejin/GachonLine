@@ -37,24 +37,33 @@
 			<ul class="list-group">
 				<li class="list-group-item"
 					style="background-color: #930000; color: #dddddd; font-weight: bold;">커뮤니티</li>
-				<a href="/community/gachon"><li class="list-group-item list_hover">
+					<a href="/community?divs=gachon"><li class="list-group-item list_hover">
 						 가천대 게시판</li></a>
-				<a href="/community/major"><li class="list-group-item list_hover">
-						 단대별 게시판</li></a>
-				<a href="/community/grade"><li class="list-group-item list_hover">
-						 학년별 게시판</li></a>
-				<a href="/community/club"><li class="list-group-item list_hover">
+					 <c:choose>
+					<c:when test="${!(LOGIN_MEMBER eq null) }">
+						<a href="/community?divs=${LOGIN_MEMBER.department}"><li class="list-group-item list_hover">단대별 게시판</li></a>
+						<a href="/community?divs=${LOGIN_MEMBER.schoolYear}"><li class="list-group-item list_hover">학년별 게시판</li></a>
+					</c:when>
+					<c:otherwise>
+						<a href="/community?divs=H"><li class="list-group-item list_hover">단대별 게시판</li></a>
+						<a href="/community?divs=1"><li class="list-group-item list_hover">학년별 게시판</li></a>
+					</c:otherwise>
+				</c:choose>
+						 
+						 
+						 
+				<a href="/community?divs=club"><li class="list-group-item list_hover">
 						 동아리 게시판</li></a>
-				<a href="/community/noname"><li class="list-group-item list_hover">
-						 익명 게시판</li></a>
-				<a href="/community/market"><li class="list-group-item list_hover">
-						 가천 장터</li></a>
-				<a href="/community/thunder"><li class="list-group-item list_hover">
+				<a href="/community?divs=noname"><li class="list-group-item list_hover">
+						 대나무 숲</li></a>
+<!-- 				<a href="/community/market"><li class="list-group-item list_hover"> -->
+<!-- 						 가천 장터</li></a> -->
+				<a href="/community?divs=thunder"><li class="list-group-item list_hover">
 						 번개 모임</li></a>
-				<a href="/community/sinmungo"><li class="list-group-item list_hover">
+				<a href="/community?divs=sinmungo"><li class="list-group-item list_hover">
 						신 문 고</li></a>
-				<a href="/community/group_buy"><li class="list-group-item list_hover">
-						 공동 구매</li></a>
+<!-- 				<a href="/community/group_buy"><li class="list-group-item list_hover"> -->
+<!-- 						 공동 구매</li></a> -->
 			</ul>
 		</div>
 

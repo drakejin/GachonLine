@@ -124,7 +124,7 @@ public class AdminMemberController {
 		
 		HttpSession session = request.getSession();
 		JSONObject obj = (JSONObject) session.getAttribute(ContentKey.LOGIN_MEMBER); 
-		
+
 		if(vo.getMemberId().equals(obj.getString("memberId"))){
 			if(!vo.getMemberType().equals("ADM")){
 				result = new JSONObject();
@@ -135,10 +135,6 @@ public class AdminMemberController {
 		}else{
 			result = adminMemberService.setMemberModify(vo);
 		}
-		
-		
-		
-		
 		return result;
 	}
 

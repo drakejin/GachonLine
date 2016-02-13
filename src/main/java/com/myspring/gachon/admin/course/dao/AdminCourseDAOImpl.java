@@ -156,7 +156,16 @@ public class AdminCourseDAOImpl implements AdminCourseDAO{
 
 	@Override
 	public JSONArray getCourseList(AdminCourseAllVO vo) {
-		return JSONArray.fromObject(sqlSession.selectList(NS+"getCourseList", vo));
+		JSONArray result = JSONArray.fromObject(sqlSession.selectList(NS+"getCourseList", vo));
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		System.out.println(result);
+		
+		return result;
 	}
 
 	@Override
