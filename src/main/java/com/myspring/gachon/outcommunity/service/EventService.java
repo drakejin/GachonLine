@@ -14,6 +14,8 @@ public interface EventService {
 	List<EventVo> loadData(int boardNum); //데이터 수정 할 때 데이터 가져오기
 	JSONObject eventMstUpdate(EventVo eventVo); //게시된 이벤트 수정 - Event_MST UPDATE
 	JSONObject eventDetUpdate(EventVo eventVo); //게시된 이벤트 수정 - Event_DET UPDATE
+	JSONObject eventMstUpdateHit(EventVo eventVo);
+	JSONObject eventMstUpdateLove(EventVo eventVo);
 	JSONObject eventMstDelete(int boardNum); //게시된 이벤트 삭제 - Event_MST DELETE
 	JSONObject eventDetDelete(int boardNum); //게시된 이벤트 삭제 - Event_DET DELETE
 }

@@ -135,13 +135,13 @@ public class CommunityDAOImpl implements CommunityDAO{
 			if(sqlSession.delete(NS+"setBoardDelete",vo)!=1){
 				throw new Exception("COMMU_NORMAL_CONTENT 삭제 실패");
 			}
-			if(sqlSession.delete(NS+"setBoardReplyDelete",vo)!=-1){
+			if(sqlSession.delete(NS+"setBoardReplyDelete",vo)==-1){
 				throw new Exception("COMMU_NORMAL_REPLY 덧글들 삭제 실패");
 			}
 		}
 		catch (Exception ex) {
 			platformTransactionManager.rollback(status);
-			//ex.printStackTrace();
+			ex.printStackTrace();
 			result.put(ContentKey.RESULT_MSG, ContentKey.RESULT_FAIL);
 			return result;			
 		}

@@ -62,6 +62,16 @@ public class AlbaServiceImpl implements AlbaService {
 	}
 	
 	@Override
+	public JSONObject albaMstUpdateHit(AlbaVo albaVo) {
+		return albaDaoImpl.albaMstUpdateHit(albaVo);
+	}
+	
+	@Override
+	public JSONObject albaMstUpdateLove(AlbaVo albaVo) {
+		return albaDaoImpl.albaMstUpdateLove(albaVo);
+	}
+	
+	@Override
 	public JSONObject albaMstDelete(int boardNum) {
 		return albaDaoImpl.albaMstDelete(boardNum);
 	}

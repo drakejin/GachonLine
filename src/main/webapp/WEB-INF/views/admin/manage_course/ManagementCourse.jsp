@@ -57,9 +57,11 @@ function list(){		// 리스트 출력
 		type : "POST",
 		url : "/admin/manage_course/list.json", 	// 리스트 값들을 MST에 보여줌 (SELECT_MST)
 		cache : false,
-		async : false,
+		async : true,
 		data : dataForm,
 		dataType : "json",
+		complete : function() {
+		},
 		success : function(response) {
 			console.log(response);
 			$('#adminTable').bootstrapTable('load', response);
@@ -94,7 +96,6 @@ function add() {
 <script type="text/javascript">
 
 function mod(id) {
-	console.log("mod함수 실행됨 ["+id+"]=row.courseNum");
 	inputTextInit("#courseInfo");
 	$("#courseNum").attr("readonly", true);
 	
@@ -119,6 +120,8 @@ function mod(id) {
 		data : dataForm,
 		dataType : "json",
 		success : function(response) {
+			console.info(response);
+			
 			if (response.${RESULT_MSG}== "${RESULT_SUCCESS}") {		// 수정하기 모드에서 해당 데이터를 DET 테이블에 뿌려 줌 (response.)
 				GachonNoty.showCustomNoty("[${RESULT_SUCCESS}]"+dataForm.courseNum+"과목을 불러왔습니다.");
 				console.log(response);
@@ -202,6 +205,7 @@ function submit(){
 			if (response.${RESULT_MSG}== "${RESULT_SUCCESS}") {
 				list();
 				GachonNoty.showCustomNoty("[${RESULT_SUCCESS}]"+dataForm.courseName+"과목을 등록 완료 하였습니다.");
+				inputTextInit("#courseInfo");
 			} else if (response.${RESULT_MSG}== "${RESULT_FAIL}") {
 				GachonNoty.showCustomNoty("[${RESULT_FAIL}] 로그인을 하고 시도 해 주세요");
 
@@ -322,7 +326,7 @@ function deleteCourse(){
 				data-pagination="true">
 				<thead class="row">
 					<tr>
-						<th data-field="courseNum" class="text_center tr-padding-2">
+						<th data-field="courseNum" class="text_center">
 							${PAGE.P_MANAGE_COURSE.COURSE_NUM}</th>
 						<th data-field="courseName" class="text_center">
 							${PAGE.P_MANAGE_COURSE.COURSE_NAME}</th>
@@ -330,17 +334,17 @@ function deleteCourse(){
 							${PAGE.P_MANAGE_COURSE.YEAR}</th>
 						<th data-field="area_nm" class="text_center">
 							${PAGE.P_MANAGE_COURSE.AREA}</th>
-						<th data-field="completeDivision_nm" class="col-sm-3 text_center">
+						<th data-field="completeDivision_nm" class="text_center">
 							${PAGE.P_MANAGE_COURSE.COMPLETE_DIVISION}</th>
-						<th data-field="grade" class="col-sm-3 text_center">
+						<th data-field="grade" class="text_center">
 							${PAGE.P_MANAGE_COURSE.GRADE}</th>
-						<th data-field="professor" class="col-sm-3 text_center">
+						<th data-field="professor" class="text_center">
 							${PAGE.P_MANAGE_COURSE.PROFESSOR}</th>
-						<th data-field="lecTime" class="col-sm-3 text_center">
+						<th data-field="lecTime" class="text_center">
 							${PAGE.P_MANAGE_COURSE.LEC_TIME}</th>
-						<th data-field="lecRoom" class="col-sm-3 text_center">
+						<th data-field="lecRoom" class="text_center">
 							${PAGE.P_MANAGE_COURSE.LEC_ROOM}</th>
-						<th data-field="major" class="col-sm-3 text_center">
+						<th data-field="major" class="text_center">
 							${PAGE.P_MANAGE_COURSE.MAJOR}</th>
 					</tr>
 				</thead>

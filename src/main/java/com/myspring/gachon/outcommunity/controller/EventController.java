@@ -44,10 +44,6 @@ public class EventController {
 	@RequestMapping(value = "/outcommunity/event/eventInsert", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject eventInsert(EventVo eventVo) {
-		String crtUser = "글쓴이";
-		eventVo.setCrtUser(crtUser);
-		String updtUser = "김지연";
-		eventVo.setUpdtUser(updtUser);
 
 		//seq 가져오기
 		JSONObject seq = eventServiceImpl.selectevent_list_seq();
@@ -85,9 +81,6 @@ public class EventController {
 		int eventBoardNum = Integer.parseInt(request.getParameter("boardNum"));
 		eventVo.setEventBoardNum(eventBoardNum);
 
-		String updt_user = "수정자"; // 세션처리!!!
-		eventVo.setUpdtUser(updt_user);
-
 		JSONObject obj = new JSONObject();
 
 		// 트랜잭션처리
@@ -105,7 +98,57 @@ public class EventController {
 
 		return obj;
 	}
+	
+	/*조회수*/
+	@RequestMapping(value = "/outcommunity/event/updataHit", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject eventUpdateHit(EventVo eventVo, int boardNum) {
+		int eventBoardNum = Integer.parseInt(request.getParameter("boardNum"));
+		eventVo.setEventBoardNum(eventBoardNum);
 
+		JSONObject obj = new JSONObject();
+
+		// 트랜잭션처리
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setName(EventController.class.getName());
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = platformTransactionManager.getTransaction(def);
+
+		obj = eventServiceImpl.eventMstUpdateHit(eventVo);
+		if (obj.getInt("RESULT_CODE") > 0) {
+			obj = eventServiceImpl.eventMstUpdateHit(eventVo);
+		}
+
+		platformTransactionManager.commit(status);
+
+		return obj;
+	}
+	
+	/*추천수*/
+	@RequestMapping(value = "/outcommunity/event/updateLove", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject eventUpdateLobe(EventVo eventVo, int boardNum) {
+		int eventBoardNum = Integer.parseInt(request.getParameter("boardNum"));
+		eventVo.setEventBoardNum(eventBoardNum);
+
+		JSONObject obj = new JSONObject();
+
+		// 트랜잭션처리
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setName(EventController.class.getName());
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = platformTransactionManager.getTransaction(def);
+
+		obj = eventServiceImpl.eventMstUpdateLove(eventVo);
+		if (obj.getInt("RESULT_CODE") > 0) {
+			obj = eventServiceImpl.eventMstUpdateLove(eventVo);
+		}
+
+		platformTransactionManager.commit(status);
+
+		return obj;
+	}
+	
 	/* 이벤트 게시글 삭제하기 */
 	@RequestMapping(value = "/outcommunity/event/deleteEvent", method = RequestMethod.POST)
 	@ResponseBody

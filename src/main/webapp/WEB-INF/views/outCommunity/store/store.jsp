@@ -33,7 +33,15 @@ hr {
 	position: relative;
 }
 </style>
-	<script data-for="등록된 상점리스트 메인사진 가져오기">
+
+	<script>
+		$(document).ready(function() {
+			storeAllSelect();
+
+		});
+	</script>
+
+	<script data-for="전체 상점 리스트 출력">
 		function storeAllSelect() {
 			var content = "";
 			$.ajax({
@@ -43,8 +51,7 @@ hr {
 				async : true,
 				dataType : "JSON",
 				success : function(response) {
-					//alert(response[0].shopTitlePicPath);
-					$.each(response, function(index, item){
+					$.each(response, function(index, item) {
 						content += "<div class='Img'>";
 						content += "<a class='hoverTrigger' href='javascript:load(" + item.shopNum + ");'>";
 						content += "<div class='overlay'>";
@@ -53,34 +60,36 @@ hr {
 						content += "<img id='shopTitlePicPath' src='<c:url value='/resources/image/shop/"+item.shopTitlePicPath+"'/>'>";
 						content += "</a>";
 						content += "</div>";
-						numOfReview = index+1;
+						numOfReview = index + 1;
 					})
 
-					//$("#portfolio-list").append(content);
-					
-					if(numOfReview == 0 ){
+					if (numOfReview == 0) {
 						$("#portfolio-list").append("<h4>No Result");
-					}else{
+					} else {
 						$("#portfolio-list").append(content);
 					}
-					
-					/*상점 타이틀 사진 크기 조절*/
-					$('img').css({'max-width':'380px','height':'auto'});
-					
-					
-					/*loadMore구현부*/
-					if(numOfReview>7){
-						$(".Img").slice(8).css("display", "none");
+
+					if (numOfReview > 7) {
+						var n = 8;
+						$(".Img").slice(8, numOfReview).css("display", "none");
+
+						$("#loadMore").click(function() {
+							$('.Img').slice(n, n + 8).show();
+							n = n + 8;
+							//alert(numOfReview<n);
+
+							if (numOfReview < n) {
+								alert("결과가 더이상 존재하지 않습니다.");
+							}
+						})
 					}
-					$("#loadMore").click(function(){
-						//alert(1);
-						$(".Img").slice(0,numOfReview).show();
-						if($(".Img").find("display:none").length == 0){
-							alert("결과가 더이상 존재하지 않습니다.");
-						}
-					})
-					
-					
+
+					/*사진 크기 조절*/
+					$('img#shopTitlePicPath').css({
+						'width' : '259px',
+						'height' : '250px'
+					});
+
 					/* hoverTrigger */
 					$('.hoverTrigger').on("mouseenter", function() {
 						$(this).find('.overlay').show();
@@ -88,18 +97,15 @@ hr {
 					$('.hoverTrigger').on("mouseleave", function() {
 						$(this).find('.overlay').hide();
 					});
-
 				},
 				error : function(request, status, errorThrown) {
 					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
 				}
 			});
 		}
-		storeAllSelect();
 	</script>
 
-
-	<script>
+	<script data-for="상점 정보 로드">
 		function load(num) {
 			var shopNum = num;
 			var dataForm = {
@@ -124,9 +130,7 @@ hr {
 						$("#shopTel").val(response[i].shopTel);
 						$("#shopDetailDesc").val(response[i].shopDetailDesc);
 						setMapApi(response[i].shopAddrApi1, response[i].shopAddrApi2);
-
 					}
-
 				},
 				error : function(request, status, errorThrown) {
 					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
@@ -134,29 +138,28 @@ hr {
 			});
 		}
 	</script>
-	
-	<script>
-	$(function(){
-		$("#loadMore").click(function(){
-			
-		})
-	})
-	</script>
 
-	<script>
-		function setMapApi(shopAddrApi1, shopAddrApi2) {
+	<script data-for="다음 지도 API">
+		function setMapApi(shopAddrApi, shopAddrApi2) {
 			$('#myModal').on('shown.bs.modal', function() {
 				$('#myInput').focus();
 
-				var staticMapContainer = document.getElementById('staticMap'), staticMapOption = {
-					center : new daum.maps.LatLng(shopAddrApi1, shopAddrApi2),
-					level : 3,
-					marker : {
-						position : new daum.maps.LatLng(shopAddrApi1, shopAddrApi2),// 좌표가 없으면 이미지 지도 중심에 마커가 표시된다.
-					}
+				var mapContainer = document.getElementById('staticMap'), // 지도를 표시할 div 
+				mapOption = {
+					center : new daum.maps.LatLng(shopAddrApi, shopAddrApi2), // 지도의 중심좌표
+					level : 3
+				// 지도의 확대 레벨
 				};
 
-				var staticMap = new daum.maps.StaticMap(staticMapContainer, staticMapOption);
+				var map = new daum.maps.Map(mapContainer, mapOption);
+
+				var markerPosition = new daum.maps.LatLng(shopAddrApi, shopAddrApi2);
+
+				var marker = new daum.maps.Marker({
+					position : markerPosition
+				});
+
+				marker.setMap(map);
 			})
 		}
 	</script>
@@ -165,7 +168,7 @@ hr {
 
 <body>
 	<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag"%>
-	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}"/>
+	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}" />
 
 	<div class="container">
 		<div class="page_title">상점보기</div>
@@ -174,7 +177,7 @@ hr {
 		<div class="boundingBox" id="content">
 			<ul id="portfolio-list" class="listDiv">
 
-			</ul>	
+			</ul>
 		</div>
 	</div>
 	<input type="button" class="btn btn-info" id="loadMore" style="width: 15%; height: 40px; font-weight: bold; margin-left: 43%" value="More"></input>
@@ -230,7 +233,6 @@ hr {
 						</div>
 					</div>
 				</form>
-
 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -69,7 +69,6 @@
 			$("input[id=grcode_det]").attr("readonly", true); // disabled도 동일
 			$("input[id=code]").attr("readonly", true); // disabled도 동일
 
-			// 			document.getElementById("useYn_select").value = row.useYn;
 			showModal('GroupDetail_modal');
 		}
 	}

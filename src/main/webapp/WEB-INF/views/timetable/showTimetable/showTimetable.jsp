@@ -37,42 +37,16 @@ table{
 				data : dataForm,
 				dataType : "JSON",
 				success : function(response) {
-
+					// table refresh
+					$('.scheduleTable td').text("").css("background-color", "white");
+					
 					$.each(response, function(index, item) {
-						var info = "[" + item.courseName + "]" + "<br/>" + item.lecRoom;
-
-						var str = item.lecTime + "/";
-						var sstr = str.split('/');
-						var kssr = sstr[0].split(',');
-
-						$('td[id=' + kssr[0] + ']').html(info);
-						$('td[id=' + kssr[1] + ']').html(info);
-						$('td[id=' + kssr[2] + ']').html(info);
-						$('td[id=' + kssr[3] + ']').html(info);
-
-						var lec = "";
-						var stn = "";
-						var lecSplit = "";
-						for (var i = 0; i < response.length; i++) {
-							lec = response[i].lecTime;
-							if (i != 0) {
-								lec = response[i].lecTime;
-								stn += "," + lec;
-							} else {
-								lec = response[i].lecTime;
-								stn += lec;
-							}
-
-						}
 						
-						lecSplit = stn.split(',');
-						for (var j = 0; j < lecSplit.length; j++) {
-							for (var k = 0; k < lecSplit.length; k++) {
-								if ($('td[id=' + lecSplit[j] + ']').text() == $('td[id=' + lecSplit[k] + ']').text()) {
-									$('td[id=' + lecSplit[k] + ']').css("background-color", color[j / 4]);
-								}
-							}
-						}
+						var kssr = item.lecTime.split(',');
+						
+						for(var i=0 in kssr){
+							$('td[id=' + kssr[i] + ']').html("[" + item.courseName + "]" + "<br/>" + item.lecRoom).css('background-color', color[index]);
+						} 
 					});
 				},
 				error : function(request, status, errorThrown) {

@@ -15,12 +15,12 @@
 		var notice = document.getElementById('notice');
 		
 		if(title.length>0&&title.length<=25){
-			if(content.length>0&&content.length<=1300){
+			if(content.length>0&&content.length<=3000){
 				document.getElementById("notice").innerHTML = "&nbsp;";
 				document.getElementById("submit").disabled = false;
 				document.getElementById("submit").disabled = false;
 			}else{
-				document.getElementById("notice").innerHTML = "내용이 너무 짧거나 너무 깁니다.1300글자 제한입니다.";
+				document.getElementById("notice").innerHTML = "내용이 너무 짧거나 너무 깁니다.3000글자 제한입니다.";
 				document.getElementById("submit").disabled = true;
 			}	
 		}else{
@@ -51,7 +51,7 @@
 					
 					<div class="row">
 						<div class="col-sm-12 form-group">
-							<div class="col-sm-2 attr_name ">제목</div>
+							<div class="col-sm-2 attr_name">제목</div>
 							<div class="col-sm-10 input-group" style="padding-left:2.8em;">
 								<input id="title" onkeydown="checkInput()"  type="text" name="title" class="form-control" value="" placeholder="제목을 입력하세요" />
 							</div>
@@ -74,6 +74,7 @@
 							</div>
 						</div>
 					</c:if>
+					
 					<div class="row">
 						<div class="form-group col-sm-12">
 							<label for="comment">내용 작성 </label>
@@ -130,7 +131,7 @@
 					<div class="row">
 						<div class="form-group col-sm-12">
 							<label for="comment">내용 작성 </label>
-							<textarea id="content" onkeydown="checkInput()" class="form-control" name="content" rows="20">&emsp;&emsp;&emsp;&emsp;&emsp;${board.CONTENT.content}</textarea>
+							<textarea id="content" onkeydown="checkInput()" class="form-control" name="content" rows="20">${board.CONTENT.content}</textarea>
 						</div>
 					</div>
 					<div id="notice" class="row">

@@ -51,6 +51,16 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
+	public JSONObject eventMstUpdateHit(EventVo eventVo) {
+		return eventDaoImpl.eventMstUpdateHit(eventVo);
+	}
+	
+	@Override
+	public JSONObject eventMstUpdateLove(EventVo eventVo) {
+		return eventDaoImpl.eventMstUpdateLove(eventVo);
+	}
+	
+	@Override
 	public JSONObject eventMstDelete(int boardNum) {
 		return eventDaoImpl.eventMstDelete(boardNum);
 	}

@@ -3,6 +3,7 @@
 <gachonTag:html>
 <gachonTag:script bootstrapTable="YES">
 
+
 	<style>
 table {
 	text-align: center;
@@ -22,150 +23,10 @@ hr {
 </style>
 
 	<script data-for="상점 등록하기">
-		$(function() {
+		$(document).ready(function() {
 			$("#divvv").hide();
-		})
-	</script>
-
-
-	<script data-for="등록된 상점리스트 가져오기">
-		function storeAllSelect() {
-			$.ajax({
-				type : "POST",
-				url : "/admin/manage_store/adminStoreList.json",
-				cache : false,
-				async : true,
-				dataType : "JSON",
-				success : function(response) {
-					response[0].crtUser = '${LOGIN_MEMBER.memberName}';
-
-					$('#adminStoreTable').bootstrapTable('load', response).on('click-row.bs.table', function(e, row) {
-						
-						
-						$("#adminStoreModal").modal('show');
-						$("#modalTitle").html(row.shopName);
-						/* 상점정보_모달 */
-						$("#modal_shopTitlePicPath").val("/resources/image/upload/store/"+row.shopTitlePicPath);
-						$("#modal_storeHp").val(row.shopHp);
-						$("#modal_shopDetailDesc").val(row.shopDetailDesc);
-
-					});
-				},
-				error : function(request, status, errorThrown) {
-					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
-				}
-			});
-		}
-		storeAllSelect();
-	</script>
-
-	<script data-for="상점 수정하기">
-		function update() {
-			var dataFrom = {
-				shopNum : $('#shopNum').val(),
-				shopName : $('#shopName').val(),
-				shopAddr : $('#shopAddr').val(),
-				shopTel : $('#shopTel').val(),
-				shopAddrApi1 : $('#shopAddrApi1').val(),
-				shopAddrApi2 : $('#shopAddrApi2').val(),
-				shopHp : $('#shopHp').val(),
-				shopDetailDesc : $('#shopDetailDesc').val(),
-				shopTitlePicPath : $('#shopTitlePicPath').val()
-			}
-
-			$.ajax({
-				type : "POST",
-				url : "/admin/manage_store/adminStoreUpdate",
-				cache : false,
-				async : true,
-				data : dataFrom,
-				dataType : "JSON",
-				success : function(response) {
-
-					location.reload();
-					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
-
-					if (response.RESULT_CODE >= 0) {
-						getList();
-					}
-				},
-				error : function(request, status, errorThrown) {
-					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
-				}
-			});
-		}
-	</script>
-	<script>
-		function methodType(type) {
 			
-			if (type == "write") {
-				$('#saveBtn').attr('href', 'javascript:insert();');
-				$("#divvv").show();
-				$("#admin_member").html("상점등록");
-
-			} else if (type == "modify") {
-				$("#divvv").show();
-				$("#admin_member").html("상점수정");
-				$("#saveBtn").html("수정");
-				$(function() {
-					$('#adminStoreTable').on('check.bs.table', function(e, row) {
-						$('#shopNum').val(row.shopNum);
-						$('#shopName').val(row.shopName);
-						$('#shopAddr').val(row.shopAddr);
-						$('#shopTel').val(row.shopTel);
-						$('#shopAddrApi1').val(row.shopAddrApi1);
-						$('#shopAddrApi2').val(row.shopAddrApi2);
-						$('#shopHp').val(row.shopHp);
-						$('#shopDetailDesc').val(row.shopDetailDesc);
-						$("input[name=shopTitlePicPath]")[0].files[0];
-						$('#shopNum').attr("readonly", true);
-					})
-					$('#saveBtn').attr('href', 'javascript:update();');
-				})
-			}
-		}
-	</script>
-
-	<script data-for="상점 등록하기">
-		function insert() {
-			var formData = new FormData();
-			formData.append("shopNum", $('#shopNum').val());
-			formData.append("shopName", $('#shopName').val());
-			formData.append("shopTel", $('#shopTel').val());
-			formData.append("shopAddr", $('#shopAddr').val());
-			formData.append("shopAddrApi1", $('#shopAddrApi1').val());
-			formData.append("shopAddrApi2", $('#shopAddrApi2').val());
-			formData.append("shopHp", $('#shopHp').val());
-			formData.append("shopTitlePicPath", $("input[name=shopTitlePicPath]")[0].files[0]);
-			formData.append("shopDetailDesc", $('#shopDetailDesc').val());
-			console.log($('#shopNum').val());
-
-			$.ajax({
-				type : "POST",
-				url : "/admin/manage_store/adminStoreInsert",
-				cache : false,
-				async : true,
-				data : formData,
-				dataType : "JSON",
-				processData : false,
-				contentType : false,
-				success : function(response) {
-					location.reload();
-					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
-					if (response.RESULT_CODE >= 0) {
-						getList();
-					}
-				},
-				error : function(request, status, errorThrown) {
-					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
-				}
-			});
-		}
-	</script>
-
-	<script>
-		$(function() {
-			$("#deleteBtn").click(function() {
+			$("#deleteBtn").on('click',function() {
 				var dataForm = {
 					shopNum : $('#adminStoreTable').bootstrapTable('getSelections')[0].shopNum
 				};
@@ -190,22 +51,177 @@ hr {
 						GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
 					}
 				});
-			})
+			});
+			
+			$("#reset").on('click',function() {
+				if($("#admin_member").html() =="상점수정"){
+					location.href="#db";
+				}else if($("#admin_member").html()=="상점등록"){
+					location.reload();
+				}
+			});
+			
+			$('#createBtn').on('click',function(){
+				methodType('write');
+			});
+			
+			$('#modifyBtn').on('click',function(){
+				methodType('modify');
+			});
+		});
+	</script>
+	
 
-		})
+	<script data-for="등록된 상점리스트 가져오기">
+		function storeAllSelect() {
+			$.ajax({
+				type : "POST",
+				url : "/admin/manage_store/adminStoreList.json",
+				cache : false,
+				async : true,
+				dataType : "JSON",
+				success : function(response) {
+					//response[0].crtUser = '${LOGIN_MEMBER.memberName}';
+
+					$('#adminStoreTable').bootstrapTable('load', response).on('dbl-click-row.bs.table', function(e, row) {
+						
+						
+						$("#adminStoreModal").modal('show');
+						$("#modalTitle").html(row.shopName);
+						/* 상점정보_모달 */
+						$("#modal_shopTitlePicPath").val("/resources/image/shop/"+row.shopTitlePicPath);
+						$("#modal_storeHp").val(row.shopHp);
+						$("#modal_shopDetailDesc").val(row.shopDetailDesc);
+
+					});
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+		storeAllSelect();
 	</script>
 
+	<script data-for="상점 수정하기">
+		function update() {
+			var dataFrom = {
+				shopNum : $('#shopNum').val(),
+				shopName : $('#shopName').val(),
+				shopAddr : $('#shopAddr').val(),
+				shopTel : $('#shopTel').val(),
+				shopAddrApi1 : $('#shopAddrApi1').val(),
+				shopAddrApi2 : $('#shopAddrApi2').val(),
+				shopHp : $('#shopHp').val(),
+				shopDetailDesc : $('#shopDetailDesc').val(),
+				shopTitlePicPath : $('#shopTitlePicPath').val(),
+				updtUser:"${LOGIN_MEMBER.memberName}"
+			}
+
+			$.ajax({
+				type : "POST",
+				url : "/admin/manage_store/adminStoreUpdate",
+				cache : false,
+				async : true,
+				data : dataFrom,
+				dataType : "JSON",
+				success : function(response) {
+					location.reload();
+					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
+
+					if (response.RESULT_CODE >= 0) {
+						getList();
+					}
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+	</script>
 	<script>
-		$(function() {
-			$("#reset").click(function() {
-				location.reload();
-			})
-		})
+		function methodType(type) {
+			
+			//상점 등록
+			if (type == "write") {
+				$("#divvv").show();
+				$("#admin_member").html("상점등록");
+				      
+			    var position = $('#divvv').offset(); // 위치값
+			    $('html,body').animate({ scrollTop : position.top }, 600); // 이동
+			
+				$("#saveBtn").html("등록"); 
+				$('#saveBtn').attr('href', 'javascript:insert();');
+				
+				
+			//상점 수정	
+			} else if (type == "modify") {
+				$("#divvv").show();
+				$("#admin_member").html("상점수정");
+				
+			    var position = $('#divvv').offset(); // 위치값
+			    $('html,body').animate({ scrollTop : position.top }, 600); // 이동
+				
+				
+				$("#saveBtn").html("수정");
+				$('#adminStoreTable').on('check.bs.table', function(e, row) {
+					$('#shopNum').val(row.shopNum);
+					$('#shopName').val(row.shopName);
+					$('#shopAddr').val(row.shopAddr);
+					$('#shopTel').val(row.shopTel);
+					$('#shopAddrApi1').val(row.shopAddrApi1);
+					$('#shopAddrApi2').val(row.shopAddrApi2);
+					$('#shopHp').val(row.shopHp);
+					$('#shopDetailDesc').val(row.shopDetailDesc);
+					$("input[name=shopTitlePicPath]")[0].files[0];
+					$('#shopNum').attr("readonly", true);
+				})
+				$('#saveBtn').attr('href', 'javascript:update();');
+			}
+		}
+	</script>
+
+	<script data-for="상점 등록하기">
+		function insert() {
+			var formData = new FormData();
+			formData.append("shopNum", $('#shopNum').val());
+			formData.append("shopName", $('#shopName').val());
+			formData.append("shopTel", $('#shopTel').val());
+			formData.append("shopAddr", $('#shopAddr').val());
+			formData.append("shopAddrApi1", $('#shopAddrApi1').val());
+			formData.append("shopAddrApi2", $('#shopAddrApi2').val());
+			formData.append("shopHp", $('#shopHp').val());
+			formData.append("shopTitlePicPath", $("input[name=shopTitlePicPath]")[0].files[0]);
+			formData.append("shopDetailDesc", $('#shopDetailDesc').val());
+			formData.append("crtUser", "${LOGIN_MEMBER.memberName}");
+			formData.append("updtUser", "N");
+
+			$.ajax({
+				type : "POST",
+				url : "/admin/manage_store/adminStoreInsert",
+				cache : false,
+				async : true,
+				data : formData,
+				dataType : "JSON",
+				processData : false,
+				contentType : false,
+				success : function(response) {
+					location.reload();
+					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
+					if (response.RESULT_CODE >= 0) {
+						getList();
+					}
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
 	</script>
 
 </gachonTag:script>
 
-<body>
+<body id="db">
 	<%@ taglib tagdir="/WEB-INF/tags/" prefix="GachonTag"%>
 	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}"/>
 
@@ -228,8 +244,8 @@ hr {
 		</table>
 
 		<div>&nbsp;</div>
-		<input type="button" class="btn btn-info" id="createBtn" onclick="methodType('write');" value="등록하기"></input>
-		<input type="button" class="btn btn-info" id="modifyBtn" onclick="methodType('modify');" value="수정하기"></input>
+		<input type="button" class="btn btn-info" id="createBtn" value="등록하기"></input>
+		<input type="button" class="btn btn-info" id="modifyBtn" value="수정하기"></input>
 		<input type="button" class="btn btn-info" id="deleteBtn" value="삭제하기"></input>
 		
 		<div id="divvv">

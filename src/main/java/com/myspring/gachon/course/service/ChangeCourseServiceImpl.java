@@ -47,11 +47,6 @@ public class ChangeCourseServiceImpl implements ChangeCourseService {
 	// update course
 	@Override
 	public JSONObject updateCourse(AdminCourseAllVO vo) {
-		//
-		// System.out.println("*****"+ vo.getMemberId() +"********");
-		// System.out.println("*****"+ vo.getChangeSubject() +"********");
-		// System.out.println("*****"+ vo.getWriterMemberId() +"********");
-		//
 		JSONObject obj;
 		if (ChangeCourseDao.selectValidationCourse(vo) > 0) { // 해당 과목을 가지고 있을 때
 			// 트랜잭션처리

@@ -86,12 +86,26 @@ public class AlbaDaoImpl implements AlbaDao {
 	@Override
 	public JSONObject albaImgUpdate(AlbaVo albaVo) {
 		JSONObject result = new JSONObject();
-		
-		
 		result.put("RESULT_CODE", sqlSession.update(NS+"alba_imgUpdate", albaVo));
 		if(result.getInt("RESULT_CODE") >0){
 			result.put("RESULT_MSG", "아르바이트 정보가 수정되었습니다");
 		}
+		return result;
+	}
+	
+	@Override
+	public JSONObject albaMstUpdateHit(AlbaVo albaVo) {
+		JSONObject result = new JSONObject();
+		result.put("RESULT_CODE", sqlSession.update(NS+"alba_mstUpdateHit", albaVo));
+		
+		return result;
+	}
+	
+	@Override
+	public JSONObject albaMstUpdateLove(AlbaVo albaVo) {
+		JSONObject result = new JSONObject();
+		result.put("RESULT_CODE", sqlSession.update(NS+"alba_mstUpdateLove", albaVo));
+		
 		return result;
 	}
 	

@@ -20,7 +20,7 @@
 	<!-- 아르바이트 게시글 등록 -->
 	<!-- alba_mst 테이블 INSERT -->
 	<insert id="alba_mstInsert" parameterType="AlbaVo">
-		INSERT INTO ALBA_MST VALUES(ALBA_LIST_SEQ.NEXTVAL,#{boardTitle},0,0,#{crtUser},SYSDATE,#{updtUser},SYSDATE)
+		INSERT INTO ALBA_MST VALUES(ALBA_LIST_SEQ.NEXTVAL,#{boardTitle, jdbcType=VARCHAR},0,0,#{crtUser},SYSDATE,#{updtUser},SYSDATE)
 	</insert>
 	
 	<!-- seq=boadrNum값 가져오기 -->
@@ -32,14 +32,17 @@
 	<!-- alba_det 테이블 INSERT -->
 	<insert id="alba_detInsert" parameterType="AlbaVo">
 	INSERT INTO ALBA_DET VALUES(
-	#{albaBoardNum}, #{corporate}, TO_DATE(#{closeDate},'YYYY-MM-DD'), #{recuritNum},
-	#{gender}, #{age},#{academicBg},#{emailAddr},#{workForm}, #{workType},#{workDay},#{workTime}, 
-	#{pay},#{empWalfare}, #{workArea}, #{crtUser}, SYSDATE,#{updtUser}, SYSDATE)
+	#{albaBoardNum}, #{corporate, jdbcType=VARCHAR}, TO_DATE(#{closeDate},'YYYY-MM-DD'), #{recuritNum},
+	#{gender}, #{age},#{academicBg},
+	#{emailAddr},#{workForm}, #{workType},#{workDay},
+	#{workTime}, #{pay},#{empWalfare}, #{workArea}, #{crtUser}, SYSDATE,#{updtUser}, SYSDATE, 
+	#{albaAddrApi1, jdbcType=VARCHAR}, #{albaAddrApi2, jdbcType=VARCHAR})
 	</insert>
 
 	<!-- alba_img 테이블 INSERT -->	
 	<insert id="alba_imgInsert" parameterType="AlbaVo">
-	INSERT INTO ALBA_IMG VALUES(#{albaBoardNum},#{corPicPath1},#{crtUser},SYSDATE, #{corPicPath2},#{corPicPath3})
+	INSERT INTO ALBA_IMG VALUES(#{albaBoardNum},#{corPicPath1, jdbcType=VARCHAR},
+	#{crtUser},SYSDATE, #{corPicPath2},#{corPicPath3})
 	</insert> 
 	
 	
@@ -63,7 +66,9 @@
 	       WORK_AREA AS workArea,
 	       COR_PIC_PATH1 AS corPicPath1,
 	       COR_PIC_PATH2 AS corPicPath2,
-	       COR_PIC_PATH3 AS corPicPath3
+	       COR_PIC_PATH3 AS corPicPath3,
+	       ALBA_ADDR_API1 AS albaAddrApi1,
+	       ALBA_ADDR_API2 AS albaAddrApi2
 	  		FROM ALBA_MST M, ALBA_DET D, ALBA_IMG I
 	 		WHERE M.ALBA_BOARD_NUM = #{value}
 	       AND M.ALBA_BOARD_NUM = D.ALBA_BOARD_NUM
@@ -84,13 +89,26 @@
 		EMAIL_ADDR=#{emailAddr}, WORK_FORM=#{workForm}, 
 		WORK_TYPE=#{workType}, WORK_DAY=#{workDay},
 		WORK_TIME=#{workTime}, PAY=#{pay}, EMP_WALFARE=#{empWalfare},
-		WORK_AREA=#{workArea}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE ALBA_BOARD_NUM=#{albaBoardNum}
+		WORK_AREA=#{workArea}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE,
+		ALBA_ADDR_API1=#{albaAddrApi1, jdbcType=VARCHAR}, ALBA_ADDR_API2=#{albaAddrApi2, jdbcType=VARCHAR}
+		 WHERE ALBA_BOARD_NUM=#{albaBoardNum}
 	</update> 
 
 	<!-- 등록된 알바 수정하기 alba_img -->
 	<update id="alba_imgUpdate" parameterType="AlbaVo">
 		UPDATE ALBA_IMG SET COR_PIC_PATH1=#{corPicPath1}, COR_PIC_PATH2=#{corPicPath2}, COR_PIC_PATH3=#{corPicPath3} WHERE ALBA_BOARD_NUM=#{albaBoardNum}	
 	</update>
+	
+	<!-- 조회수 -->
+	<update id="alba_mstUpdateHit" parameterType="AlbaVo">
+		UPDATE ALBA_MST SET HIT=#{hit} WHERE ALBA_BOARD_NUM=#{albaBoardNum}
+	</update>
+	
+	<!-- 추천수 -->
+	<update id="alba_mstUpdateLove" parameterType="AlbaVo">
+		UPDATE ALBA_MST SET LOVE=#{love} WHERE ALBA_BOARD_NUM=#{albaBoardNum}
+	</update>
+	
 	
 	<!-- 알바 게시글 삭제하기 alba_mst-->
 	<delete id="alba_mstDelete" parameterType="int">

@@ -190,42 +190,12 @@
 				data : dataForm,
 				dataType : "JSON",
 				success : function(response) {
-					
 					$.each(response, function(index, item) {
-						var info = "[" + item.courseName + "]" + "<br/>" + item.lecRoom;
-
-						var str = item.lecTime + "/";
-						var sstr = str.split('/');
-						var kssr = sstr[0].split(',');
-
-						$('td[id=' + kssr[0] + ']').html(info);
-						$('td[id=' + kssr[1] + ']').html(info);
-						$('td[id=' + kssr[2] + ']').html(info);
-						$('td[id=' + kssr[3] + ']').html(info);
-
-						var lec = "";
-						var stn = "";
-						var lecSplit = "";
-						for (var i = 0; i < response.length; i++) {
-							lec = response[i].lecTime;
-							if (i != 0) {
-								lec = response[i].lecTime;
-								stn += "," + lec;
-							} else {
-								lec = response[i].lecTime;
-								stn += lec;
-							}
-
-						}
-
-						lecSplit = stn.split(',');
-						for (var j = 0; j < lecSplit.length; j++) {
-							for (var k = 0; k < lecSplit.length; k++) {
-								if ($('td[id=' + lecSplit[j] + ']').text() == $('td[id=' + lecSplit[k] + ']').text()) {
-									$('td[id=' + lecSplit[k] + ']').css("background-color", color[j / 4]);
-								}
-							}
-						}
+						var kssr = item.lecTime.split(',');
+						
+						for(var i=0 in kssr){
+							$('td[id=' + kssr[i] + ']').html("[" + item.courseName + "]" + "<br/>" + item.lecRoom).css('background-color', color[index]);
+						} 
 					});
 				},
 				error : function(request, status, errorThrown) {
@@ -259,12 +229,9 @@
 						strHtml += "<ul class='dropdown-menu'>"
 						strHtml += "<li><a href='#' onclick='deleteFnd("+response[i].memberId+");return false;' style='color:black; width:90px;'>친구 끊기</a></li>"
 						strHtml += "</ul></div>"
-// 						console.log("나 니 친구다");
 
 					}else{					// 현재 친구가 아닌애들은... 이렇게 처리
 						strHtml += "<button type='button' class='btn btn-sm btn-default' style='margin-right:2px; width:90px;' onclick='insertFnd("+response[i].memberId+");return false;'>친구추가</button>"
-// 						console.log("나 니 친구 아니다");	
-						console.info(response[i].memberId);
 					}
 					strHtml += "<button type='button' data-toggle='modal' data-target='#friendInfo' onclick='selectModalInfo("+response[i].memberId+"); selectFriendSchedule("+response[i].memberId+");' class='btn btn-sm btn-warning' style='width:90px;'>친구정보</button></p></div>"
 					isFriend=0;

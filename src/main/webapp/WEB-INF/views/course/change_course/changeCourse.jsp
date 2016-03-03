@@ -51,7 +51,7 @@ $(document).ready(function() {
 					$('input[name="give_subject"]').val(row.giveSubject);
 					$('input[name="take_subject"]').val(row.takeSubject);
 					$('input[name="writer_det"]').val(row.writer);
-
+		
 					$('.panel-heading #give').html(row.giveSubject_nm);
 					$('.panel-heading #take').html(row.takeSubject_nm);
 					
@@ -71,14 +71,6 @@ $(document).ready(function() {
 					$('#changeComplete').attr('disabled', false);
 					
 				});
-					
-
-// 				$('#table_mst').bootstrapTable({
-// 					'click-row.bs.table' : function(e, row, $element) {	
-// 					var selected = $('#table_mst').bootstrapTable('getSelections')[0].writer_nm;
-// 					console.info(selected);
-// 					}
-// 				});
 				
 				// 선택한 게시글이 내가 쓴거인지 아닌지에 따라 button을 show, hide 해줄 부분
 
@@ -125,7 +117,6 @@ $(document).ready(function() {
 			},
 			success : function(response) {
 				
-				console.info(response);
 				if(response.${RESULT_CODE} == '-404'){
 					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
 					$('#changeComplete').attr('disabled','disabled');
@@ -223,7 +214,7 @@ $(document).ready(function() {
 
 	// 글쓰기 폼에서 원하는 과목 리스트 select (select tag)
 	function selectTakeForm() {
-	
+		var content="";
 		var dataForm = {
 			notMemberId : "${LOGIN_MEMBER.memberId}"
 		};
@@ -238,11 +229,12 @@ $(document).ready(function() {
 			},
 			success : function(response) {
 				
-				
 				$('#wantSubject').append('<option value="">원하는 과목을 선택하세요</option>');
 				$.each(response, function(index, item) {
-					$('#wantSubject').append('<option value='+item.courseNum + '>' + item.courseNum + " / " + item.courseName + '</option>');
+					content += '<option value='+item.courseNum + '>' + item.courseNum + " / " + item.courseName + '</option>';
+					$('#wantSubject').html(content);
 				});
+				content="";
 				
 				selectGiveForm();
 			},
@@ -275,8 +267,10 @@ $(document).ready(function() {
 				
 				$('#writeformTable').bootstrapTable('load', response).on(
 						'click-row.bs.table', function(e, row, $element) {
+								
 							gCourseNum = row.courseNum;
 				});
+
 				showModal('writeForm');
 			},
 			error : function(request, status, errorThrown) {
@@ -287,7 +281,7 @@ $(document).ready(function() {
 
 	// 글쓰기 폼에서 글 작성시 (insert)
 	function insertWriteform() {
-		
+
 		var dataForm = {
 			boardTitle : $('#writeTitle').val(),	
 			giveSubject : gCourseNum,
@@ -304,9 +298,10 @@ $(document).ready(function() {
 			dataType : "json",
 			complete : function() {
 			},
-			success : function(response) {
-				selectChangeCourseList();
+			success : function(response) {		
+			
 				hideModal('writeForm');
+				selectChangeCourseList();
 			},
 			error : function(request, status, errorThrown) {
 				GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
@@ -344,7 +339,7 @@ $(document).ready(function() {
 				<table id="table_mst" class="tableMst" data-toggle="table" data-show-columns="false"
 					data-search="true" data-show-refresh="false"
 					data-show-toggle="false" data-show-export="false"
-					data-pagination="true" data-height="450" data-click-to-select="true" data-select-item-name="boardNum">
+					data-pagination="true" data-height="500" data-click-to-select="true" data-select-item-name="boardNum">
 					<thead>
 						<tr>
 							<th data-field="state" data-radio="true"></th>

@@ -27,9 +27,9 @@ function replyInput(value) {
 	}
 }
 //댓글에 들어가는 인풋박스 검증하기
-function repliesInput(event) {
-	var commentNo = event.srcElement.id.split('_')[0];
-	var value = event.srcElement.value;
+function repliesInput(event, commentNo, textarea1) {
+// 	var commentNo = event.srcElement.id.split('_')[0];
+	var value = textarea1.value;
 	
 	if (value.length > 2 && value.length < 1000) {
 		document.getElementById(commentNo+"_update").disabled = false;
@@ -88,7 +88,8 @@ function list() {
 			</script>
 			<div id="board">
 				<div class="row" style="margin-top: 3em;">
-					<div class="row form-row">
+					<!-- 1. 제목 -->
+					<div class="row">
 						<div class="col-sm-12">
 							<div class="col-sm-2 attr_name ">제목</div>
 							<div class="col-sm-10">
@@ -97,15 +98,11 @@ function list() {
 							</div>
 						</div>
 					</div>
+					<div style="border-bottom:1px solid #E7E7E7; margin:1em;"></div>
+					
+					<!-- 2. 학번 / 이름 -->
 					<c:if test="${!(divs eq 'noname') }">
-						<div class="row form-row">
-							<div class="col-sm-6">
-								<div class="col-sm-4 attr_name ">이름</div>
-								<div class="col-sm-8">
-									<input id="createUser" type="text" class="form-control"
-										value="${board.LIST.createUser }" readonly />
-								</div>
-							</div>
+						<div class="row">
 							<div class="col-sm-6">
 								<div class="col-sm-4 attr_name ">학번</div>
 								<div class="col-sm-8">
@@ -113,86 +110,114 @@ function list() {
 										value="${board.LIST.createId }" readonly />
 								</div>
 							</div>
+							
+							<div class="col-sm-6">
+								<div class="col-sm-4 attr_name ">이름</div>
+								<div class="col-sm-8">
+									<input id="createUser" type="text" class="form-control"
+										value="${board.LIST.createUser }" readonly />
+								</div>
+							</div>
 						</div>	
 					</c:if>
+					<div style="border-bottom:1px solid #E7E7E7; margin:1em;"></div>
 				</div>
-				<div class="well">
-					<div class="row form-group">
+				
+				<!-- 3. 내용  -->
+				<div class="row">
+					<div class="col-xs-2">
 						<label for="comment">내용</label>
-						<div class="card-content card"
-							style="height: 440px; overflow-y: scroll;">
-							<div id="content" style="border: none; background-color: #ffffff">
-								${board.CONTENT.content }
-							</div>
-						</div>
 					</div>
-					<c:if test="${LOGIN_MEMBER.memberId eq board.LIST.createId}">
-						<div class="row">
-							<div class="col-sm-4">&nbsp;</div>
-							<div class="col-sm-4">&nbsp;</div>
-							<div class="col-sm-4" style="padding-top: 1em;">
-								<div class="col-sm-6">
-									<form method="post" id="boardDelete" action="/community/delete">
-										<input type="hidden" name="divs" value="${divs}" />
-										<input type="hidden" name="boardNo" value="${boardNo}" />
-										<input type="submit" onclick="boardDelete()" value="삭제하기" class="col-sm-12 btn btn-warning" />
-									</form>
-								</div>
-								<div class="col-sm-6">
-									<form method="post" id="boardUpdate" action="/community/update">
-										<input type="hidden" name="divs" value="${divs}" /> 
-										<input type="hidden" name="boardNo" value="${boardNo}" />
-										<input type="submit" value="수정하기" class="col-sm-12 btn btn-success" />
-									</form>
-								</div>
+					<div class="well col-xs-10">
+						<div class="row form-group">
+							
+							<div class="card-content card"
+								style="height: 440px; overflow-y: scroll;">
+								<div id="content" style="border: none; background-color: #ffffff">${board.CONTENT.content }</div>
 							</div>
 						</div>
-					</c:if>
+						<c:if test="${LOGIN_MEMBER.memberId eq board.LIST.createId or LOGIN_MEMBER.memberType eq 'ADM'}">
+							<div class="row">
+								<div class="col-sm-4">&nbsp;</div>
+								<div class="col-sm-4">&nbsp;</div>
+								<div class="col-sm-4" style="padding-top: 1em;">
+									<div class="col-sm-5" style="float:right; margin-left:1%; padding:0;">
+										<form method="post" id="boardDelete" action="/community/delete">
+											<input type="hidden" name="divs" value="${divs}" />
+											<input type="hidden" name="boardNo" value="${boardNo}" />
+											<input type="submit" onclick="boardDelete()" value="삭제하기" class="col-sm-12 btn btn-warning" />
+										</form>
+									</div>
+									<div class="col-sm-5" style="float:right; padding:0;">
+										<form method="post" id="boardUpdate" action="/community/update">
+											<input type="hidden" name="divs" value="${divs}" /> 
+											<input type="hidden" name="boardNo" value="${boardNo}" />
+											<input type="submit" value="수정하기" class="col-sm-12 btn btn-success" />
+										</form>
+									</div>
+								</div>
+							</div>
+						</c:if>
+					</div>
 				</div>
-				<div class="well">
-					<h6 class="page_title">댓글</h6>
+				
+				<div style="border-bottom:1px solid #E7E7E7; margin:0 0 1em 0;"></div>
+				<!-- 4. 댓글  -->
+				
+				<div class="row">
+					<div class="col-xs-2">
+						<label>댓글</label>
+					</div>
+				
+					<!-- documnet.ready commentList -->
+					<script type="text/javascript">
+					$(document).ready(function(){
+						commentList('${boardNo}');
+					});
+					</script>
+				
 					
-					<div id="replies">
-				
+					<!-- 댓글 박스 -->
+					<div class="well col-xs-10" style="padding:0;">
+						<!-- 신규 댓글 -->
+						<c:if test="${!(LOGIN_MEMBER eq null)}">
+							<div id="replyNotice" class="row">&nbsp;</div>
+							<div class="well" style="border-bottom:1px solid #D5D5D5;">
+								<div class="row">
+									<div class="col-sm-2">
+										<div class="form-group">
+											<input class="form-control" type="text" id="replyCreateUser"
+												value="${LOGIN_MEMBER.memberName}" readonly />
+										</div>
+										<div class="form-group">
+											<input class="form-control" type="text" name="createId"
+												value="${LOGIN_MEMBER.memberId}" id="replyCreateId" readonly />
+										</div>
+									</div>
+									<div class="col-sm-8">
+										<textarea onkeydown="replyInput(this.value)" 
+										rows="3" class="form-control" type="text" id="replyComment1"></textarea>
+									</div>
+									<div class="col-sm-2">
+										<div class="form-group">
+											<input type="reset" class="form-control btn btn-warning" value="다시 작성" />
+										</div>
+										<div class="form-group">
+											<input type="submit" onClick="replySubmit();" id="replySubmit" class="form-control btn btn-success" value="덧글 달기" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</c:if>
+						
+						<!-- 기존 저장된 댓글 -->
+						<div id="replies" style="margin:0;"></div>
 					</div>
 				</div>
-				
-<script type="text/javascript">
-$(document).ready(function(){
-	commentList('${boardNo}');
-});
-</script>
-				<c:if test="${!(LOGIN_MEMBER eq null)}">
-					<div id="replyNotice" class="row">&nbsp;</div>
-					<div class="well">
-						<div class="row">
-							<div class="col-sm-2">
-								<div class="form-group">
-									<input class="form-control" type="text" id="replyCreateUser"
-										value="${LOGIN_MEMBER.memberName}" readonly />
-								</div>
-								<div class="form-group">
-									<input class="form-control" type="text" name="createId"
-										value="${LOGIN_MEMBER.memberId}" id="replyCreateId" readonly />
-								</div>
-							</div>
-							<div class="col-sm-7">
-								<textarea onkeydown="replyInput(this.value)" rows="4"
-									class="form-control" type="text" id="replyComment1"></textarea>
-							</div>
-							<div class="col-sm-3">
-								<div class="form-group">
-									<input type="reset" class="form-control btn btn-warning" value="다시 작성" />
-								</div>
-								<div class="form-group">
-									<input type="submit" onClick="replySubmit();" id="replySubmit" class="form-control btn btn-success" value="덧글 달기" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</c:if>
 			</div>
 		</c:if>
+		
+		<div style="border-bottom:2px double black; margin:0 0 1em 0;"></div>
 		<div>
 			<div class="table-responsive">
 				<table id="boardList" data-toggle="table" data-show-columns="true"
@@ -201,13 +226,13 @@ $(document).ready(function(){
 					data-pagination="true">
 					<thead>
 						<tr>
-							<th data-field="boardNo" class="col-sm-1 text_center">글 번호</th>
-							<th data-field="title" class="col-sm-5 text_center">제 목</th>
+							<th data-field="boardNo" class="text_center">글 번호</th>
+							<th data-field="title">제 목</th>
 							<c:if test="${!(divs eq 'noname')}">
-								<th data-field="createUser" class="col-sm-2 text_center">작성자</th>
+								<th data-field="createUser">작성자</th>
 							</c:if>
-							<th data-field="createDate" class="col-sm-2 text_center">작성일</th>
-							<th data-field="viewCount" class="col-sm-1 text_center">조회</th>
+							<th data-field="createDate">작성일</th>
+							<th data-field="viewCount">조회</th>
 						</tr>
 					</thead>
 				</table>
@@ -237,13 +262,7 @@ $(document).ready(function(){
 </body>
 
 
-
-
-
-
-
 <script type="text/javascript">
-
 
 //덧글 불러오기
 function commentList(boardNo){
@@ -258,7 +277,7 @@ function commentList(boardNo){
 	$.post("/community/reply",{boardNo:boardNo},function(data){
 		
 		if(data.length!=0){
-			for(var reply in data){
+			for(var reply=0 in data){
 				var div1 = document.createElement('div');
 				var div2 = document.createElement('div');
 				var div3 = document.createElement('div');
@@ -277,7 +296,7 @@ function commentList(boardNo){
 				
 				
 				div1.className = "row";
-				div1.style="background-color:#fff;margin-bottom:1em;padding-top:0.7em;";
+				div1.style="margin-bottom:1em;padding-top:0.7em;";
 			
 				div2.className = "col-sm-2";
 				div3.className = "col-sm-7";
@@ -290,7 +309,7 @@ function commentList(boardNo){
 				div9.className = "form-group";
 				
 				textarea1.className = "form-control";
-				textarea1.rows = "4";
+				textarea1.rows = "3";
 				textarea1.readOnly = true;
 				textarea1.value = data[reply].comment1;
 				textarea1.id = data[reply].commentNo+"_comment1";
@@ -322,13 +341,17 @@ function commentList(boardNo){
 					input4.className = "col-sm-6 btn btn-warning";
 					input4.value = "삭제";
 					input4.id = data[reply].commentNo+"_delete";
-					input4.onclick = replyDelete;
+					input4.onclick = function(event){
+						replyDelete(event, this);
+					}
 					
 					input5.type = "button";
 					input5.className = "col-sm-6 btn btn-success";
 					input5.value = "수정";
 					input5.id = data[reply].commentNo+"_update";
-					input5.onclick = replyUpdate;
+					input5.onclick = function(event){
+						replyUpdate(event, this);
+					}
 					
 					div9.appendChild(input4);
 					div9.appendChild(input5);
@@ -374,27 +397,29 @@ function replySubmit(){
 	});
 }
 //댓글 삭제
-function replyDelete(event){
+function replyDelete(event, obj){
 	if(confirm("해당 댓글을 정말 삭제 하시겠습니까?")){
 
-		var commentNo = event.toElement.id.split('_')[0];
+		var commentNo = obj.id.split('_')[0];
 		var comment1 = document.getElementById(commentNo+'_comment1').value;
 		var dataForm ={
 			boardNo : '${boardNo}',
+			createUser : document.getElementById('replyCreateUser').value,
 			commentNo : commentNo
 		};
 		$.post("/community/reply/delete",dataForm,function(data){
-			GachonNoty.showCustomNoty(dataForm.createUser+'님의 \n [덧글]이 [수정]되었습니다.');
+			GachonNoty.showCustomNoty(dataForm.createUser+'님의 \n [덧글]이 [삭제]되었습니다.');
 			commentList(dataForm.boardNo);
 		});
 	}
 }
 //댓글 수정
-function replyUpdate(event){
-	var commentNo = event.toElement.id.split('_')[0];
+function replyUpdate(event, obj){
+	var commentNo = obj.id.split('_')[0];
 	var comment1 = document.getElementById(commentNo+'_comment1').value;
 	var dataForm ={
 		boardNo : '${boardNo}',
+		createUser : document.getElementById('replyCreateUser').value,
 		commentNo : commentNo,
 		comment1 : comment1
 	};
@@ -413,9 +438,11 @@ function replyUpdate(event){
 	}else{
 		deleteBtn.value="취소"
 		deleteBtn.onclick=replyUpdateCancle;
-		updateBtn.value="!제출!";
+		updateBtn.value="제출";
 		
-		textarea1.onkeydown=repliesInput;
+		textarea1.onkeydown= function(event){
+			repliesInput(event, commentNo, textarea1);
+		}
 		textarea1.readOnly=false;
 	}
 }

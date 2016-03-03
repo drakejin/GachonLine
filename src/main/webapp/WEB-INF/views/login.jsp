@@ -65,6 +65,34 @@ function login() {
 		login();
 	</script>
 </c:if>
+
+<style>
+.content {
+	height: 35em;
+	border: solid 2px #bbb;
+	border-radius: 15px;
+	padding: 2em 2em 2em 2em;
+}
+
+.content-side {
+	background-color: #fff;
+	border: solid 2px #bbb;
+	border-radius: 15px;
+	padding: 2em 2em 2em 2em;
+	overflow-y: scroll;
+	height: 700px;
+}
+
+.content-controller {
+	background-color: #fff;
+	border: solid 2px #bbb;
+	border-radius: 15px;
+	padding: 3em 2em 1em 2em;
+	margin-left: 12%;
+}
+</style>
+
+
 </gachonTag:script>
 
 <body>
@@ -102,8 +130,31 @@ function login() {
 			</div>
 			<div class="col-sm-2">&nbsp;</div>
 		</div>
-		<div class="row"></div>
 		
+		<br>
+		<br>
+		<br>
+		<div class="row">
+			<div class="col-sm-9 content-controller">
+				<div class="row">
+					<div class="form-group">
+						<label> <span class="glyphicon glyphicon-info-sign"></span>&nbsp; 본 페이지는 자동 가입제입니다. Tester 계정은 아래와 같습니다.</label>
+					</div>
+					<hr/>
+					
+					<div class="form-group">
+						<label>Tester(관리자) 이름&nbsp; : &nbsp;</label> 
+						<label>201033152</label>
+					</div>
+				
+					<div class="form-group">
+						<label>Tester(관리자) 비밀번호&nbsp; : &nbsp;</label> 
+						<label>111</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
 	</div>
 </body>
 </gachonTag:html>

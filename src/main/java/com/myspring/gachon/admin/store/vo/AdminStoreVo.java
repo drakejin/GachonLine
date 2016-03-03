@@ -1,5 +1,7 @@
 package com.myspring.gachon.admin.store.vo;
 
+import java.awt.List;
+
 import org.apache.ibatis.type.Alias;
 
 @Alias("AdminStoreVo")
@@ -31,9 +33,13 @@ public class AdminStoreVo {
 		this.shopName = shopName;
 	}
 	public String getShopTitlePicPath() {
+		System.out.println("***************************************************");
+		System.out.println(shopTitlePicPath);
 		return shopTitlePicPath;
 	}
 	public void setShopTitlePicPath(String shopTitlePicPath) {
+		System.out.println("---------------------------------------------------");
+		System.out.println(shopTitlePicPath);
 		this.shopTitlePicPath = shopTitlePicPath;
 	}
 	public String getCrtUser() {

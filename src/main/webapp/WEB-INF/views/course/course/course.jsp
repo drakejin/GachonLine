@@ -9,103 +9,95 @@
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<link rel="stylesheet" href="/resources/demos/style.css">
 
+	<!-- 가상시간표 보기 테이블 -->
+	<style>
+	/* --- The Table Structure --- */
+	.scheduleTable {
+		border-collapse: separate;
+		border-spacing: 0;
+		width: 100%;
+	}
+	
+	.scheduleTable  tr  th,.scheduleTable  tr  td {
+		border-right: 1px solid #bbb;
+		border-bottom: 1px solid #bbb;
+		box-shadow: 2px 2px 1px #e5dfcc;
+		text-align: center;
+	}
+	
+	.scheduleTable  tr  th:first-child,.scheduleTable  tr  td:first-child {
+		border-left: 1px solid #bbb;
+	}
+	
+	.scheduleTable  tr  th {
+		border-top: 1px solid #bbb;
+	}
+	
+	/* top-left border-radius */
+	.scheduleTable  tr:first-child  th:first-child {
+		border-top-left-radius: 6px;
+	}
+	
+	/* top-right border-radius */
+	.scheduleTable  tr:first-child  th:last-child {
+		border-top-right-radius: 6px;
+	}
+	
+	/* bottom-left border-radius */
+	.scheduleTable  tr:last-child  td:first-child {
+		border-bottom-left-radius: 6px;
+	}
+	
+	/* bottom-right border-radius */
+	.scheduleTable  tr:last-child  td:last-child {
+		border-bottom-right-radius: 6px;
+	}
+
+	.scheduleTable  th,.scheduleTable  td {
+		padding: 8px 20px;
+	}
+	
+	.scheduleTable  th {
+		background: #E5E6EB;
+		color: #111;
+	}
+	
+	.scheduleTable  td {
+		background: #EFF1F6;
+	}
+	</style>
+	<!-- 가상시간표 보기 css 끝 -->
+	
+	<style>
+	#ui-id-1 {
+		background: #E7E7E7;
+		font-weight: bold;
+	}
+	
+	#ui-id-2 {
+		/* background :  */
+		
+	}
+	</style>
+	<!-- 가상시간표 아코디언 끝 -->
+
 
 	<script>
+		var pageNumber;
 		$(function() {
 			$("#accordion").accordion({
 				collapsible : true,
 				active : 2
 			});
 		});
-	</script>
+		
+		$(document).ready(function(){
+			$('#MST').on('page-change.bs.table', function (number, size) {
+				pageNumber = number;
+				drawLineSwitching();
+			});
+		});
 
-
-
-	<!-- 가상시간표 보기 테이블 -->
-	<style>
-/* --- The Table Structure --- */
-.scheduleTable {
-	border-collapse: separate;
-	border-spacing: 0;
-	width: 100%;
-}
-
-.scheduleTable  tr  th,.scheduleTable  tr  td {
-	border-right: 1px solid #bbb;
-	border-bottom: 1px solid #bbb;
-	box-shadow: 2px 2px 1px #e5dfcc;
-	text-align: center;
-}
-
-.scheduleTable  tr  th:first-child,.scheduleTable  tr  td:first-child {
-	border-left: 1px solid #bbb;
-}
-
-.scheduleTable  tr  th {
-	border-top: 1px solid #bbb;
-}
-
-/* top-left border-radius */
-.scheduleTable  tr:first-child  th:first-child {
-	border-top-left-radius: 6px;
-}
-
-/* top-right border-radius */
-.scheduleTable  tr:first-child  th:last-child {
-	border-top-right-radius: 6px;
-}
-
-/* bottom-left border-radius */
-.scheduleTable  tr:last-child  td:first-child {
-	border-bottom-left-radius: 6px;
-}
-
-/* bottom-right border-radius */
-.scheduleTable  tr:last-child  td:last-child {
-	border-bottom-right-radius: 6px;
-}
-
-/* -- The Stlyes -- 
-	body {
-		margin: 30px;
-		background: #ECEAE3;
-		font-family: 'Muli', Serif;
-	} */
-.scheduleTable  th,.scheduleTable  td {
-	padding: 8px 20px;
-}
-
-.scheduleTable  th {
-	background: #E5E6EB;
-	color: #111;
-}
-
-.scheduleTable  td {
-	background: #EFF1F6;
-}
-</style>
-	<!-- 가상시간표 보기 css 끝 -->
-
-	<style>
-#ui-id-1 {
-	background: #E7E7E7;
-	font-weight: bold;
-}
-
-#ui-id-2 {
-	/* background :  */
-	
-}
-
-/* .btn-warning { */
-/* 	height: 30px; */
-/* 	padding-bottom: 20px; */
-/* 	padding-top: 2px; */
-/* } */
-</style>
-	<!-- 가상시간표 아코디언 끝 -->
-
-	<script>
 		//초기 로드 테이블
 		$(document).ready(function() {
 			selectMst();
@@ -117,10 +109,7 @@
 			$("table.aTable tr:eq(0)").css("background", "lightblue");
 
 		});
-	</script>
 
-	<!-- MST 테이블 Ajax (조건 필터링 이전 - 최초 Select) -->
-	<script>
 		function selectMst() {
 
 			var dataForm = {
@@ -144,20 +133,28 @@
 				success : function(response) {
 					$('#MST').bootstrapTable('load', response);
 					
-					console.log(response);
-					
 					var data = $('#MST').bootstrapTable('getData');
-					
-					for (var i = 0; i < data.length; i++) {
-						if (data[i].appYn == "Y") {
-							$("table.mTable tbody tr").eq(i).css("background", "#E0EFFF");
-						}
-					}
+	
+					drawLineSwitching();
 				},
 				error : function(request, status, errorThrown) {
 					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
 				}
 			});
+		}
+		
+		function drawLineSwitching(){
+			$("table.mTable tbody tr").each(function(){
+				$(this).css("background", "#FFFFFF");
+			})
+			var data = $('#MST').bootstrapTable('getData',pageNumber);
+			for (var i = 0; i < data.length; i++) {
+				if ($("table.mTable tbody tr").eq(i).children('td').last().find('button').text() === "신청취소") {
+					$("table.mTable tbody tr").eq(i).css("background", "#E0EFFF");			// 수강신청 완료 시 해당 line 색깔 변경
+				}else{
+					$("table.mTable tbody tr").eq(i).css("background", "#FFFFFF");			// 수강신청 취소 시 해당 line 색깔 white로 돌림
+				}
+			}
 		}
 	</script>
 
@@ -237,9 +234,6 @@
 		}
 	</script>
 
-
-	<!--  수강신청 취소는 어떻게 함??? 신청버튼이 신청하면 다시 취소로 바뀌게 해야하고, 신청한 과목의 라인색이 바뀌도록 업그레이드 시킬 것!  -->
-
 	<!-- 신청자 현황보기 Ajax (select, insert) -->
 	<script>
 		function selectApplicantModal() {
@@ -267,11 +261,10 @@
 		}
 
 		function insertApplicantModal(idx, regCourseNum) {
-
+			
 			var dataForm = {
 				courseNum : regCourseNum,
 				memberId : "${LOGIN_MEMBER.memberId}",
-// 				appYn : appYn,
 				crtUser : "tester",
 				updtUser : "tester"
 			};
@@ -290,7 +283,7 @@
 						$('a.register button').eq(idx).toggleClass("btn-info").toggleClass("btn-warning");	// toggleClass('class명') : class명이 기존에 있다면, 삭제해주고 없다면 추가해 줌
 						$('a.register button').eq(idx).text('신청취소');
 					}
-					
+					drawLineSwitching();
 					selectMst();
 				},
 				error : function(request, status, errorThrown) {
@@ -300,7 +293,7 @@
 		}
 
 		function deleteApplicantModal(idx, cancelCourseNum) {
-
+			
 			var dataForm = {
 				courseNum : cancelCourseNum,
 				memberId : "${LOGIN_MEMBER.memberId}"
@@ -320,7 +313,8 @@
 						$('a.register button').eq(idx).toggleClass("btn-info").toggleClass("btn-warning");
 						$('a.register button').eq(idx).text('수강신청');
 					}
-// 					selectMst();
+					drawLineSwitching();
+					selectMst();
 				},
 				error : function(request, status, errorThrown) {
 					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
@@ -332,8 +326,11 @@
 	<!-- 가상시간표 Ajax (select, insert) -->
 	<script>
 		function selectTemporarySchedule() {
-
-			var dataForm = {};
+			$('#DET').bootstrapTable('removeAll');
+			
+			var dataForm = {
+				memberId : "${LOGIN_MEMBER.memberId}"
+			};
 			$.ajax({
 				type : "POST",
 				url : "/admin/manage_course/temporarySchedule.json",
@@ -344,6 +341,7 @@
 				complete : function() {
 				},
 				success : function(response) {
+// 					$('#DET').bootstrapTable('removeAll');
 					$('#DET').bootstrapTable('load', response);
 
 				},
@@ -354,7 +352,7 @@
 		}
 
 		function insertTemporarySchedule() {
-
+			
 			var dataForm = {
 				courseNum : $('#MST').bootstrapTable('getSelections')[0].courseNum,
 				courseName : $('#MST').bootstrapTable('getSelections')[0].courseName,
@@ -364,7 +362,8 @@
 				professor : $('#MST').bootstrapTable('getSelections')[0].professor,
 				lecTime : $('#MST').bootstrapTable('getSelections')[0].lecTime,
 				lecRoom : $('#MST').bootstrapTable('getSelections')[0].lecRoom,
-				schoolYear : $('#MST').bootstrapTable('getSelections')[0].schoolYear
+				schoolYear : $('#MST').bootstrapTable('getSelections')[0].schoolYear,
+				memberId : "${LOGIN_MEMBER.memberId}"
 			};
 			$.ajax({
 				type : "POST",
@@ -387,7 +386,8 @@
 
 		function deleteTemporarySchedule() {
 			var dataForm = {
-				courseNum : $('#DET').bootstrapTable('getSelections')[0].courseNum
+				courseNum : $('#DET').bootstrapTable('getSelections')[0].courseNum,
+				memberId : "${LOGIN_MEMBER.memberId}"
 			};
 			$.ajax({
 				type : "POST",
@@ -411,9 +411,11 @@
 
 	<script data-for="시간표 가져오기">
 		function selectTmpSchedule() {
-			var dataForm = {};
-
-			var color = [ "#FFA7A7", "#FFC19E", "#FFE08C", "#CEF279", "#B7F0B1", "#D1B2FF", "#FFB2F5", "#B2EBF4" ];
+			var dataForm = {
+				memberId : "${LOGIN_MEMBER.memberId}"
+			};
+ 			
+			var color = [ "#FFA7A7", "#FFC19E", "#FFE08C", "#CEF279", "#B7F0B1" , "#D1B2FF", "#FFB2F5", "#B2EBF4"];
 			$.ajax({
 				type : "POST",
 				url : "/admin/manage_course/temporarySchedule.json",
@@ -422,43 +424,15 @@
 				data : dataForm,
 				dataType : "JSON",
 				success : function(response) {
-					console.log(response);
+					// table refresh
+					$('.scheduleTable td').text("").css("background-color", "white");
+					
 					$.each(response, function(index, item) {
-						var info = "[" + item.courseName + "]" + "<br/>" + item.lecRoom;
-
-						var str = item.lecTime + "/";
-						var sstr = str.split('/');
-						var kssr = sstr[0].split(',');
-
-						$('td[id=' + kssr[0] + ']').html(info);
-						$('td[id=' + kssr[1] + ']').html(info);
-						$('td[id=' + kssr[2] + ']').html(info);
-						$('td[id=' + kssr[3] + ']').html(info);
-
-						var lec = "";
-						var stn = "";
-						var lecSplit = "";
-						for (var i = 0; i < response.length; i++) {
-							lec = response[i].lecTime;
-							if (i != 0) {
-								lec = response[i].lecTime;
-								stn += "," + lec;
-							} else {
-								lec = response[i].lecTime;
-								stn += lec;
-							}
-
+						var kssr = item.lecTime.split(',');
+						
+						for(var i=0 in kssr){
+							$('td[id=' + kssr[i] + ']').html("[" + item.courseName + "]" + "<br/>" + item.lecRoom).css('background-color', color[index]);
 						}
-
-						lecSplit = stn.split(',');
-						for (var j = 0; j < lecSplit.length; j++) {
-							for (var k = 0; k < lecSplit.length; k++) {
-								if ($('td[id=' + lecSplit[j] + ']').text() == $('td[id=' + lecSplit[k] + ']').text()) {
-									$('td[id=' + lecSplit[k] + ']').css("background-color", color[j / 4]);
-								}
-							}
-						}
-
 					});
 				},
 				error : function(request, status, errorThrown) {
@@ -582,7 +556,7 @@
 		<table class="mTable" id="MST" data-toggle="table"
 			data-show-columns="false" data-search="false"
 			data-show-refresh="false" data-show-toggle="false"
-			data-show-export="false" data-pagination="true" data-height="500"
+			data-show-export="false" data-pagination="true" data-height="550"
 			data-click-to-select="true" data-select-item-name="radioName">
 			<thead>
 				<tr>
@@ -658,7 +632,7 @@
 					<th data-field="completeDivision_nm">이수</th>
 					<th data-field="grade_nm">학점</th>
 					<th data-field="professor">담당교수</th>
-					<th data-field="lecTime_nm">강의시간</th>
+					<th data-field="lecTime">강의시간</th>
 					<th data-field="lecRoom">강의실</th>
 				</tr>
 			</thead>
@@ -682,13 +656,13 @@
 						<form class="form-horizontal">
 							<div class="row form-group">
 								<label for="id" class="col-sm-2 control-label">교과목명</label>
-								<div class="col-sm-4">
+								<div class="col-sm-3">
 									<input type="text" class="form-control" id="modalCourseName"
 										readonly>
 								</div>
 
-								<label for="id" class="col-sm-2 control-label">학수번호</label>
-								<div class="col-sm-4">
+								<label for="id" class="col-sm-3 control-label">학수번호</label>
+								<div class="col-sm-3">
 									<input type="text" class="form-control" id="modalCourseNum"
 										readonly>
 								</div>
@@ -697,13 +671,13 @@
 
 							<div class="row form-group">
 								<label for="id" class="col-sm-2 control-label">이수</label>
-								<div class="col-sm-4">
+								<div class="col-sm-3">
 									<input type="text" class="form-control"
 										id="modalCompleteDivision" readonly>
 								</div>
 
-								<label for="id" class="col-sm-2 control-label">학점</label>
-								<div class="col-sm-4">
+								<label for="id" class="col-sm-3 control-label">학점</label>
+								<div class="col-sm-3">
 									<input type="text" class="form-control" id="modalGrade"
 										readonly>
 								</div>
@@ -711,13 +685,13 @@
 
 							<div class="row form-group">
 								<label for="id" class="col-sm-2 control-label">강의시간</label>
-								<div class="col-sm-4">
+								<div class="col-sm-3">
 									<input type="text" class="form-control" id="modalLecTime"
 										readonly>
 								</div>
 
-								<label for="id" class="col-sm-2 control-label">강의실</label>
-								<div class="col-sm-4">
+								<label for="id" class="col-sm-3 control-label">강의실</label>
+								<div class="col-sm-3">
 									<input type="text" class="form-control" id="modalLecRoom"
 										readonly>
 								</div>
@@ -725,27 +699,26 @@
 
 							<div class="row form-group">
 								<label for="id" class="col-sm-2 control-label">선수과목</label>
-								<div class="col-sm-4">
-									<input type="text" class="form-control"
-										id="modalPrerequisiteCourse" readonly>
+								<div class="col-sm-3">
+									<input type="text" class="form-control" id="modalPrerequisiteCourse" readonly>
 								</div>
 
-								<label for="id" class="col-sm-2 control-label">공학인증이수</label>
-								<div class="col-sm-4">
-									<input type="text" class="form-control"
-										id="modalEngineeringAuthentication" readonly>
+								<label for="id" class="col-sm-3 control-label">공학인증이수</label>
+								<div class="col-sm-3">
+									<input type="text" class="form-control" id="modalEngineeringAuthentication"
+										readonly>
 								</div>
 							</div>
 
 							<div class="row form-group">
 								<label for="id" class="col-sm-2 control-label">교수성명</label>
-								<div class="col-sm-4">
+								<div class="col-sm-3">
 									<input type="text" class="form-control" id="modalProfessorName"
 										readonly>
 								</div>
 
-								<label for="id" class="col-sm-2 control-label">연락처</label>
-								<div class="col-sm-4">
+								<label for="id" class="col-sm-3 control-label">연락처</label>
+								<div class="col-sm-3">
 									<input type="text" class="form-control"
 										id="modalProfessorPhone" readonly>
 								</div>
@@ -754,7 +727,7 @@
 
 							<div class="row form-group">
 								<label for="id" class="col-sm-2 control-label">E-mail</label>
-								<div class="col-sm-10">
+								<div class="col-sm-9">
 									<input type="email" class="form-control"
 										id="modalProfessorEmail" readonly>
 								</div>
@@ -762,30 +735,29 @@
 
 							<div class="row form-group">
 								<label class="col-sm-2 control-label">강의개요</label>
-								<div class="col-sm-10">
-									<textarea class="form-control" id="ModalSummary" disabled></textarea>
+								<div class="col-sm-9">
+									<textarea class="form-control" id="ModalSummary" rows="5" disabled></textarea>
 								</div>
 							</div>
 
 							<div class="row form-group">
 								<label class="col-sm-2 control-label">강의목표</label>
-								<div class="col-sm-10">
-									<textarea class="form-control" id="ModalGoal" disabled></textarea>
+								<div class="col-sm-9">
+									<textarea class="form-control" id="ModalGoal" rows="2" disabled></textarea>
 								</div>
 							</div>
 
 							<div class="row form-group">
 								<label class="col-sm-2 control-label">강의진행</label>
-								<div class="col-sm-10">
-									<textarea class="form-control" id="ModalProgressWay" disabled></textarea>
+								<div class="col-sm-9">
+									<textarea class="form-control" id="ModalProgressWay" rows="2" disabled></textarea>
 								</div>
 							</div>
 
 							<div class="row form-group">
 								<label class="col-sm-2 control-label">성적평가</label>
-								<div class="col-sm-10">
-									<textarea class="form-control" id="ModalValuationBasis"
-										disabled></textarea>
+								<div class="col-sm-9">
+									<textarea class="form-control" id="ModalValuationBasis" rows="6" disabled></textarea>
 								</div>
 							</div>
 						</form>
@@ -1045,9 +1017,6 @@
 <script>
 	function operateFormatter(value, row, index) {
 		var arrHtml = null;
-		console.log(value);
-		console.log(row);
-		console.log(index);
 
 		if (row.appYn == "Y") { // 신청한 것
 			arrHtml = [ '<a class="register" href="javascript:toggleApplicant(\'' + index + '\',\''+row.courseNum+'\')" title="Like">', '<button class="btn btn-sm btn-warning">신청취소</button>',
@@ -1056,12 +1025,14 @@
 			arrHtml = [ '<a class="register" href="javascript:toggleApplicant(\'' + index + '\',\''+row.courseNum+'\')" title="Like">', '<button class="btn btn-sm btn-info">수강신청</button>',
 					'</a>' ]
 		}
-		console.info(arrHtml.join(''));
 		return arrHtml.join('');
 	}
 
 	function toggleApplicant(idx, courseNum) {
-		$('a.register button').eq(idx).text() == "수강신청" ? insertApplicantModal(idx, courseNum) : deleteApplicantModal(idx, courseNum);
+		
+		var indexTrans = idx % 10;
+		
+		$('a.register button').eq(indexTrans).text() == "수강신청" ? insertApplicantModal(indexTrans, courseNum) : deleteApplicantModal(indexTrans, courseNum);
 	}
 </script>
 

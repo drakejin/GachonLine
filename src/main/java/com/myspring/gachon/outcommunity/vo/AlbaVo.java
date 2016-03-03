@@ -30,7 +30,8 @@ public class AlbaVo {
 	private String corPicPath1;
 	private String corPicPath2;
 	private String corPicPath3;
-	
+	private String albaAddrApi1;
+	private String albaAddrApi2;
 	
 	public String getWorkForm() {
 		return workForm;
@@ -188,11 +189,18 @@ public class AlbaVo {
 	public void setCorPicPath3(String corPicPath3) {
 		this.corPicPath3 = corPicPath3;
 	}
-	
-	
-	
-	
-	
-	
+	public String getAlbaAddrApi1() {
+		return albaAddrApi1;
+	}
+	public void setAlbaAddrApi1(String albaAddrApi1) {
+		this.albaAddrApi1 = albaAddrApi1;
+	}
+	public String getAlbaAddrApi2() {
+		return albaAddrApi2;
+	}
+	public void setAlbaAddrApi2(String albaAddrApi2) {
+		this.albaAddrApi2 = albaAddrApi2;
+	}
+
 
 }

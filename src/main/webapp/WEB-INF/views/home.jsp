@@ -37,8 +37,6 @@
 			success : function(response) {
 				var route = "";
 				
-				console.info(response);
-				
 				document.getElementById("memberType_nm").value = response[0].memberType_nm;
 				document.getElementById("college_nm").value = response[0].college_nm;
 				document.getElementById("department_nm").value = response[0].department_nm;

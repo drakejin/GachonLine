@@ -79,8 +79,8 @@
 			D.GOAL AS goal,
 			D.PROGRESS_WAY AS progressWay,
 			D.VALUATION_BASIS AS valuationBasis,
-			(SELECT F.MOBILE FROM MEMBER_MST F WHERE F.MEMBER_ID = C.PROFESSOR ) AS phone,
-			(SELECT F.EMAIL FROM MEMBER_MST F WHERE F.MEMBER_ID = C.PROFESSOR ) AS email,
+			(SELECT F.MOBILE FROM MEMBER_MST F WHERE F.MEMBER_ID = (SELECT A.MEMBER_ID FROM MEMBER_MST A WHERE A.MEMBER_NAME = C.PROFESSOR) ) AS phone,
+			(SELECT F.EMAIL FROM MEMBER_MST F WHERE F.MEMBER_ID = (SELECT A.MEMBER_ID FROM MEMBER_MST A WHERE A.MEMBER_NAME = C.PROFESSOR) ) AS email,
 			M.MAJOR AS major,
 			C.CRT_USER AS crtUser,
 			C.CRTDT AS crtDt,
@@ -268,18 +268,23 @@
 			C.LEC_TIME AS lecTime,
 			C.LEC_ROOM AS lecRoom,
 			C.SCHOOL_YEAR AS schoolYear,
-			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='SCHOOL_YEAR' AND B.CODE = C.SCHOOL_YEAR ) AS schoolYear_nm
+			(SELECT B.CODE_NAME FROM CODE_DET B WHERE B.GRCODE='SCHOOL_YEAR' AND B.CODE = C.SCHOOL_YEAR ) AS schoolYear_nm,
+			C.MEMBER_ID AS memberId
 		FROM COURSE_TEMPORARY_SCHEDULE C
 		WHERE 1=1
 		<if test="courseNum != null and !courseNum.equals('')">
 				AND C.COURSE_NUM = #{courseNum}
 		</if>
+		
+		<if test="memberId != null and !memberId.equals('')">
+				AND C.MEMBER_ID = #{memberId}
+		</if>
 	</select>
 
 	<insert id="insertTemporarySchedule" parameterType="AdminCourseAllVO"> 
 		INSERT INTO COURSE_TEMPORARY_SCHEDULE 
-					(COURSE_NUM, COURSE_NAME, AREA, COMPLETE_DIVISION, GRADE, PROFESSOR, LEC_TIME, LEC_ROOM, SCHOOL_YEAR) 
-		VALUES 		(#{courseNum}, #{courseName, jdbcType=VARCHAR}, #{area, jdbcType=VARCHAR}, #{completeDivision, jdbcType=CHAR}, #{grade}, #{professor,jdbcType=VARCHAR}, #{lecTime, jdbcType=VARCHAR}, #{lecRoom, jdbcType=VARCHAR}, #{schoolYear, jdbcType=CHAR}) 
+					(COURSE_NUM, COURSE_NAME, AREA, COMPLETE_DIVISION, GRADE, PROFESSOR, LEC_TIME, LEC_ROOM, SCHOOL_YEAR, MEMBER_ID) 
+		VALUES 		(#{courseNum}, #{courseName, jdbcType=VARCHAR}, #{area, jdbcType=VARCHAR}, #{completeDivision, jdbcType=CHAR}, #{grade}, #{professor,jdbcType=VARCHAR}, #{lecTime, jdbcType=VARCHAR}, #{lecRoom, jdbcType=VARCHAR}, #{schoolYear, jdbcType=CHAR}, #{memberId}) 
 	</insert>
 	
 	
@@ -287,5 +292,6 @@
 		DELETE FROM COURSE_TEMPORARY_SCHEDULE
  		 WHERE 1=1
 		  AND COURSE_NUM = #{courseNum}
+		  AND MEMBER_ID = #{memberId}
 	</delete>
 </mapper>

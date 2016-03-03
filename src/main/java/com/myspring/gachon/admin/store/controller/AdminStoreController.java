@@ -2,9 +2,11 @@ package com.myspring.gachon.admin.store.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.myspring.gachon.admin.store.service.AdminStoreService;
 import com.myspring.gachon.admin.store.vo.AdminStoreVo;
+import com.myspring.gachon.content.ContentKey;
 import com.myspring.gachon.outcommunity.controller.AlbaController;
 import com.myspring.gachon.outcommunity.controller.EventController;
 import com.myspring.gachon.outcommunity.vo.AlbaVo;
@@ -51,21 +54,7 @@ public class AdminStoreController {
 	@RequestMapping(value = "/admin/manage_store/adminStoreList.json", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONArray storeAllSelect() {
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		System.out.println("sdsd");
-		
-		JSONArray ary = JSONArray.fromObject(adminStoreServiceImpl.adminStoreAllSelect());
-		System.out.println(ary);
-		
-		return ary;
+		return JSONArray.fromObject(adminStoreServiceImpl.adminStoreAllSelect());
 	}
 
 	/* 상점관리 정보 확인 */
@@ -79,15 +68,11 @@ public class AdminStoreController {
 	/* 상점 등록하기(글쓰기) */
 	@RequestMapping(value = "/admin/manage_store/adminStoreInsert", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject storeInsert(MultipartHttpServletRequest mRequest, 
+	public JSONObject storeInsert(HttpSession session, MultipartHttpServletRequest mRequest, 
 			@RequestParam("shopTitlePicPath") MultipartFile multipartFile1){
 		
 		AdminStoreVo adminStoreVo = new AdminStoreVo();
-		String crtUser = "글쓴이"; //세션처리
-		adminStoreVo.setCrtUser(crtUser);
-		String updtUser = "김지연"; //세션처리
-		adminStoreVo.setUpdtUser(updtUser);
-		
+
 		adminStoreVo.setShopNum(Integer.parseInt(mRequest.getParameter("shopNum")));
 		adminStoreVo.setShopName(mRequest.getParameter("shopName"));
 		adminStoreVo.setShopTel(mRequest.getParameter("shopTel"));
@@ -96,11 +81,13 @@ public class AdminStoreController {
 		adminStoreVo.setShopAddrApi2(mRequest.getParameter("shopAddrApi2"));
 		adminStoreVo.setShopHp(mRequest.getParameter("shopHp"));
 		adminStoreVo.setShopDetailDesc(mRequest.getParameter("shopDetailDesc"));
+		adminStoreVo.setCrtUser(mRequest.getParameter("crtUser"));
+		adminStoreVo.setUpdtUser(mRequest.getParameter("updtUser"));
 	
 		int shopNum = Integer.parseInt(mRequest.getParameter("shopNum"));
 		String shopName = mRequest.getParameter("shopName");
 		
-		String path = mRequest.getSession().getServletContext().getRealPath("/resources/image/upload/store/");
+		String path = mRequest.getSession().getServletContext().getRealPath("/resources/image/shop/");
 		
 		String fileName = shopNum+"^"+shopName;
 
@@ -132,17 +119,34 @@ public class AdminStoreController {
 
 		return obj;
 	}
-	
+
 	
 	/* 상점 수정하기 */
 	@RequestMapping(value = "/admin/manage_store/adminStoreUpdate", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject storeUpdate(AdminStoreVo adminStoreVo, int shopNum) {
+	public JSONObject storeUpdate(HttpSession session, AdminStoreVo adminStoreVo, MultipartHttpServletRequest mRequest,  
+			@RequestParam("shopTitlePicPath") MultipartFile multipartFile2) {
+	
+		adminStoreVo.setShopNum(Integer.parseInt(mRequest.getParameter("shopNum")));
 		
-		adminStoreVo.setShopNum(ServletRequestUtils.getIntParameter(request, "shopNum", 0));
-		String updt_user = "수정자"; // 세션처리!!!
-		adminStoreVo.setUpdtUser(updt_user);
 
+		int updateShopNum = Integer.parseInt(mRequest.getParameter("shopNum"));
+		String updateShopName = mRequest.getParameter("shopName");
+			
+		String path = mRequest.getSession().getServletContext().getRealPath("/resources/image/shop/");
+		String fileName = updateShopName;
+		int pos = multipartFile2.getOriginalFilename().lastIndexOf(".");
+		String ext = multipartFile2.getOriginalFilename().substring(pos+1);
+		
+		try {
+			multipartFile2.transferTo(new File(path+"/"+fileName+"."+ext));
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		adminStoreVo.setShopTitlePicPath(fileName+"."+ext);
+		
+		
 		JSONObject obj = new JSONObject();
 
 		// 트랜잭션처리

@@ -1,17 +1,18 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/resources/include/include.jsp"%>
 <gachonTag:html>
-<gachonTag:script bootstrapTable="YES">
+<gachonTag:script bootstrapTable="YES" jQueryUI="YES">
 
 	<style>
 table {
-	text-align: center;
 	table-layout: auto;
 }
+
 hr {
 	border: 1px solid gray;
 	margin: 0 0 2% 0;
-}	
+}
+
 .btn btn-info {
 	font-size: 12px;
 	width: 10%;
@@ -23,33 +24,47 @@ hr {
 .form-horizontal .form-group {
 	margin-left: -5%;
 }
+
 .th-inner {
-	text-align:center;
+	text-align: center;
 }
 </style>
 
 	<script>
+		$(document).ready(function(){
+			listAllSelect();
+			
+			$( "#openDate" ).datepicker({
+			    dateFormat: 'yy-mm-dd'
+			  });
+		});
+	</script>
+
+	<script data-for="다음 지도 API">
 		function setMapApi(eventAddrApi, eventAddrApi2) {
 			$('#myModal').on('shown.bs.modal', function() {
 				$('#myInput').focus();
-
-				var staticMapContainer = document.getElementById('staticMap'), staticMapOption = {
-					center : new daum.maps.LatLng(eventAddrApi, eventAddrApi2),
-					level : 3,
-					marker : {
-						position : new daum.maps.LatLng(eventAddrApi, eventAddrApi2),// 좌표가 없으면 이미지 지도 중심에 마커가 표시된다.
-					}
-				};
-
-				var staticMap = new daum.maps.StaticMap(staticMapContainer, staticMapOption);
+				
+				var mapContainer = document.getElementById('staticMap'), // 지도를 표시할 div 
+			    mapOption = { 
+			        center: new daum.maps.LatLng(eventAddrApi, eventAddrApi2), // 지도의 중심좌표
+			        level: 3 // 지도의 확대 레벨
+			    };
+				
+				var map = new daum.maps.Map(mapContainer, mapOption);
+				
+				var markerPosition  = new daum.maps.LatLng(eventAddrApi, eventAddrApi2); 
+				
+				var marker = new daum.maps.Marker({
+				    position: markerPosition
+				});
+				
+				marker.setMap(map);
 			})
 		}
 	</script>
 
-
-	<!-- Event 리스트 전체 가져오기 -->
-	<script>
-		var crtId = "";
+	<script data-for="이벤트 전체 리스트 가져오기">
 		function listAllSelect() {
 			$.ajax({
 				type : "POST",
@@ -58,20 +73,16 @@ hr {
 				async : true,
 				dataType : "JSON",
 				success : function(response) {
-					$('#eventTable').bootstrapTable('load', response).on('check.bs.table', function(e, row) {
-						crtId = row.crtUser;
-					});
+					$('#eventTable').bootstrapTable('load', response);
 				},
 				error : function(request, status, errorThrown) {
 					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
 				}
 			});
 		}
-		listAllSelect();
 	</script>
 
-	<!-- Event 등록하기 -->
-	<script>
+	<script data-for="이벤트 등록">
 		function insert() {
 			var dataForm = {
 				boardTitle : $('#boardTitle').val(),
@@ -79,7 +90,9 @@ hr {
 				eventAddrApi : $("#eventAddrApi").val(),
 				eventAddrApi2 : $("#eventAddrApi2").val(),
 				openDate : $('#openDate').val(),
-				eventDetail : $('#eventDetail').val()
+				eventDetail : $('#eventDetail').val(),
+				crtUser: "${LOGIN_MEMBER.memberName}",
+				updtUser : "N"
 			};
 
 			if ($("input[id=boardTitle]").val() == "") {
@@ -114,9 +127,9 @@ hr {
 				success : function(response) {
 					GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
 					$('#event_modal').modal('hide');
-					$('#eventForm')[0].reset();
+					$('#eventForm')[0].reset();			
 					location.reload();
-
+					
 					if (response.RESULT_CODE >= 0) {
 						getList();
 					}
@@ -128,8 +141,7 @@ hr {
 		}
 	</script>
 
-	<!-- 이벤트 수정하기 -->
-	<script>
+	<script data-for="이벤트 수정">
 		function update() {
 			var dataForm = {
 				boardNum : $('#eventTable').bootstrapTable('getSelections')[0].eventBoardNum,
@@ -138,7 +150,8 @@ hr {
 				eventAddrApi : $('#eventAddrApi').val(),
 				eventAddrApi2 : $('#eventAddrApi2').val(),
 				openDate : $('input[name="openDate"]').val(),
-				eventDetail : $('textarea[name="eventDetail"]').val()
+				eventDetail : $('textarea[name="eventDetail"]').val(),
+				updtUser: "${LOGIN_MEMBER.memberName}"
 			};
 
 			$.ajax({
@@ -187,10 +200,11 @@ hr {
 						dataType : "JSON",
 						success : function(response) {
 							$.each(response, function(index, item) {
-								var id = "글쓴이";//로그인 아이디(세션)
-								if (id == item.crtUser) {
+								var id = "${LOGIN_MEMBER.memberName}";
+								if (id == item.crtUser || "${LOGIN_MEMBER.memberType}" == "ADM") {
 									$("#event_modal").modal('show');
 									$('h2[id="myModalLabel"]').html("이벤트 수정하기");
+									
 									$('input[id="boardTitle"]').val(item.boardTitle);
 									$('input[id="openDate"]').val(item.openDate);
 									$('input[id="eventAddr"]').val(item.eventAddr);
@@ -213,14 +227,17 @@ hr {
 		}
 	</script>
 
-	<!-- 이벤트 정보 띄우기 -->
-	<script>
-		$(function() {
-			$('#eventTable').on('click-row.bs.table', function(e, row) {
+
+	<script data-for="이벤트 내용 출력">
+		$(function () {
+			$('#eventTable').on('dbl-click-row.bs.table', function(e, row) {
+				var boardNum = row.eventBoardNum;
+				var updateLove = row.love;
 				var boardNum = row.eventBoardNum;
 				var dataForm = {
 					boardNum : boardNum
 				};
+
 				$.ajax({
 					type : "POST",
 					url : "/outcommunity/event/updateLoadData",
@@ -229,58 +246,118 @@ hr {
 					data : dataForm,
 					dataType : "JSON",
 					success : function(response) {
-						$.each(response, function(index, item) {
-							$("#myModal").modal('show');
-							$('h2[id="eventTitle"]').html(item.boardTitle);
-							$('input[id="eventOpenDate"]').val(item.openDate);
-							$('input[id="loc"]').val(item.eventAddr);
-							$('textarea[id="detail"]').val(item.eventDetail);
-							setMapApi(item.eventAddrApi, item.eventAddrApi2);
-
-						})
+						$("#myModal").modal('show');
+						$('h2[id="eventTitle"]').html(response[0].boardTitle);
+						$('input[id="eventOpenDate"]').val(response[0].openDate);
+						$('input[id="loc"]').val(response[0].eventAddr);
+						$('textarea[id="detail"]').val(response[0].eventDetail);
+						$('#loveBtn').html("♡"+row.love);
+						console.info(response[0].eventAddrApi);
+						console.info(response[0].eventAddrApi2);
+						
+						setMapApi(response[0].eventAddrApi, response[0].eventAddrApi2);
 					},
 					error : function(request, status, errorThrown) {
 						GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
 					}
 				});
+				
+				$("#loveBtn").click(function(){
+					love(boardNum, ++updateLove);	
+
+				}) 
 			});
 		})
 	</script>
-	
-	<!-- ★★★★★ 조회수 처리해야함 -->
 
-	<!-- 이벤트 삭제하기 -->
-	<script>
+
+	<script data-for="이벤트 추천">
+		function love(boardNum, updateLove){
+			var a = boardNum;
+			var b = updateLove
+			var dataForm = {
+					boardNum : a,
+					love : b
+			}
+			 $.ajax({
+				type : "POST",
+				url : "/outcommunity/event/updateLove",
+				cache : false,
+				async : true,
+				data : dataForm,
+				dataType : "JSON",
+				success : function(response) {
+					$('#loveBtn').html("♡"+b);
+					listAllSelect();
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});
+		}
+	
+	</script>
+
+
+	<script data-for="이벤트 조회수">
+	$(function(){
+		$('#eventTable').on('dbl-click-row.bs.table', function(e,row){
+			var updateHit = ++row.hit;
+			var dataForm={
+					boardNum : row.eventBoardNum,
+					hit : updateHit
+			};
+
+			$.ajax({		
+				type : "POST",
+				url : "/outcommunity/event/updataHit",
+				cache : false,
+				async : true,
+				data : dataForm,
+				dataType : "JSON",
+				success : function(response) {
+					$('#eventTable').bootstrapTable('load', response)
+				},
+				error : function(request, status, errorThrown) {
+					GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+				}
+			});	
+		})
+	})
+	</script>
+
+
+	<script data-for="이벤트 삭제">
 		$(function() {
 			$("#deleteBtn").click(function() {
 				var dataForm = {
 					boardNum : $('#eventTable').bootstrapTable('getSelections')[0].eventBoardNum
 				};
 
-				var id = "user"; //세션 아이디 가져오기
-				if (id == crtId) {
-					if (!confirm("삭제하시겠습니까??")) {
-
-					} else {
-						$.ajax({
-							type : "POST",
-							url : "/outcommunity/event/deleteEvent",
-							cache : false,
-							async : true,
-							data : dataForm,
-							dataType : "JSON",
-							success : function(response) {
-								GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
-								location.reload();
-							},
-							error : function(request, status, errorThrown) {
-								GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+						if("${LOGIN_MEMBER.memberName}" == $('#eventTable').bootstrapTable('getSelections')[0].crtUser ||
+								"${LOGIN_MEMBER.memberType}" == "ADM"){
+							if(confirm("삭제하시겠습니까??")==true){
+								$.ajax({
+									type : "POST",
+									url : "/outcommunity/event/deleteEvent",
+									cache : false,
+									async : true,
+									data : dataForm,
+									dataType : "JSON",
+									success : function(response) {
+										GachonNoty.showResultNoty(response.RESULT_CODE, response.RESULT_MSG);
+										location.reload();
+									},
+									error : function(request, status, errorThrown) {
+										GachonNoty.showAjaxErrorNoty(request, status, errorThrown);
+									}
+								});
+							}else{
+								return;
 							}
-						});
-					}
-				} else {
+						}else {
 					GachonNoty.showCustomNoty("삭제 권한이 없습니다");
-				}
+					}
 			})
 		})
 	</script>
@@ -288,12 +365,12 @@ hr {
 
 
 <body>
-	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}"/>
+	<GachonTag:nav-bar name="${LOGIN_MEMBER.memberName}" type="${LOGIN_MEMBER.memberType}" />
 	<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=a06be78220061f3fc867e63e61abf9a0"></script>
 
 	<div class="container">
 		<div class="page_title">이벤트 정보</div>
-		<hr/>
+		<hr />
 		<table id="eventTable" data-toggle="table" data-show-columns="true" data-search="true" data-show-refresh="true" data-show-toggle="false"
 			data-show-export="true" data-pagination="true" data-height="500">
 			<thead>
@@ -310,10 +387,9 @@ hr {
 		</table>
 
 		<input type="button" class="btn btn-info" data-toggle="modal" onclick="modalType('write');" value="글쓰기"></input> <input type="button" class="btn btn-info"
-			onclick="modalType('rewrite');" style="margin-left: 1%;" value="수정하기"></input> <input type="button" class="btn btn-info" id="deleteBtn"
-			style="margin-left: 1%;" value="삭제하기"></input>
-
+			onclick="modalType('rewrite');" value="수정하기"></input> <input type="button" class="btn btn-info" id="deleteBtn" value="삭제하기"></input>
 	</div>
+
 
 	<!-- 이벤트 정보 입력하기 -->
 	<div class="modal fade bs-example-modal-lg" id="event_modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -385,6 +461,7 @@ hr {
 					<h2 class="modal-title" id="eventTitle" style="font-weight: bold; text-align: center;"></h2>
 				</div>
 				<div class="modal-body" style="height: 85%;">
+
 					<form class="form-horizontal myform">
 						<div class="form-group">
 							<label for="eventOpenDate" class="col-sm-2 control-label">일시</label>
@@ -416,7 +493,9 @@ hr {
 					</form>
 				</div>
 				<div class="modal-footer">
+					<button id="loveBtn" type="button" class="btn btn-warning">♡0</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
 				</div>
 
 			</div>

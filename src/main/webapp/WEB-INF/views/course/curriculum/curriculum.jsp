@@ -13,7 +13,6 @@
 			$( "select" ).addClass( "input-sm" );
 		});
 		
-		console.info("${LOGIN_MEMBER.year}");
 
 		function selectMst() {
 			var dataForm = {
@@ -135,7 +134,7 @@
 		function majorFilter() {
 
 			var dataForm = {
-				grcode : 'MAJOR',			// 이 key 값에 해당하는 value는 무엇인가? MAJOR
+				grcode : 'MAJOR',			
 				code : $("#otherDepartment option:selected").val()
 			};
 			$.ajax({
@@ -150,14 +149,7 @@
 				success : function(response) {
 					$('#otherMajor').html('');	// 기존 Label값 지워주고
 					
-// 					for (var i = 0; i < response.length; i++) {
-// 						$('#otherMajor').append('<option value='+response[i].value + '>' + response[i].label + '</option>');
-// 					}
-					
 					$.each(response, function(index, code) {	// index, code -> value, label
-						// response 크기만큼 반복하는데 function 파라미터로 value와 label을 가져옴.
-						// 조금 더 분석 필요;; <option> </option> 문법을 전체 append한다...?
-						// for문 대신 .each
 						$('#otherMajor').append('<option value='+code.value + '>' + code.label + '</option>');
 					});
 				},
@@ -192,12 +184,10 @@
 	<script type="text/javascript">
 		function otherYearFilter() {
 			var selectYear = document.getElementById('otherYear').value;
-// 			var selectYearNum = selectYear.split('년도', 1); 
 
-			console.log(selectYear);
 			if (selectYear != "") {
 				otherCurriMst(selectYear);
-			} else {			// 오류발견, '전체'선택시 어떻게 처리??
+			} else {			
 				otherCurriMst();
 			}
 		}

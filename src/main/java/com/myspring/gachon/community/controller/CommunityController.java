@@ -156,11 +156,27 @@ public class CommunityController {
 	//글 수정
 	@RequestMapping(value = "/community/update", method = RequestMethod.POST)
 	public String communityUpdate(Model model, Locale locale) throws ServletRequestBindingException {
+
 		String divs = ServletRequestUtils.getStringParameter(request, "divs");
 		String boardNo = ServletRequestUtils.getStringParameter(request, "boardNo");
+		
 		CommunityNormalListVO vo = new CommunityNormalListVO();
 		vo.setBoardNo(boardNo);
-		model.addAttribute("board",communityService.getBoard(vo));
+		JSONObject board = communityService.getBoard(vo);
+		JSONObject content = board.getJSONObject("CONTENT");
+		
+		String[] str = content.getString("content").split("<br/>");
+		String result1="";
+		for(String temp:str){
+			System.out.println(temp);
+			result1+=temp+"\n";
+		}
+		content.remove("content");
+		content.put("content",result1);
+		board.remove("CONTENT");
+		board.put("CONTENT", content);
+		
+		model.addAttribute("board",board);
 		model.addAttribute("divs",divs);
 		model.addAttribute("boardNo",boardNo);
 		
@@ -171,6 +187,17 @@ public class CommunityController {
 	public String communityUpdateSubmit(CommunityNormalContentVO content,CommunityNormalListVO list,Model model, Locale locale) throws ServletRequestBindingException {
 		String divs = ServletRequestUtils.getStringParameter(request, "divs");
 		String boardNo = ServletRequestUtils.getStringParameter(request, "boardNo");
+		System.out.println("==-=-=-=-=-=-=-=-=-==");
+		System.out.println(content.getContent());
+		String[] str = content.getContent().split("\n");
+		String result1="";
+		for(String temp:str){
+			result1+=temp+"<br/>";
+		}
+		System.out.println(result1);
+		System.out.println("==-=-=-=-=-=-=-=-=-==");
+		
+		content.setContent(result1);
 		
 		communityService.setBoardUpdateSubmit(content,list);
 		

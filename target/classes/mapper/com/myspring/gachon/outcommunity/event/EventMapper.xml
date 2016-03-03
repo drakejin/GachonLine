@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 이벤트 게시글 등록 -->
 	<insert id="event_mstInsert" parameterType="EventVo">
-		INSERT INTO EVENT_MST VALUES(EVENT_LIST_SEQ.NEXTVAL,#{boardTitle},0,0,#{crtUser},SYSDATE,#{updtUser},SYSDATE)
+		INSERT INTO EVENT_MST VALUES(EVENT_LIST_SEQ.NEXTVAL,#{boardTitle},0,0,#{crtUser},SYSDATE,#{updtUser}, SYSDATE)
 	</insert>
 
 	<!-- 이벤트 게시글 등록하면서 seq=boarNum값 가져오기 -->
@@ -47,14 +47,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 등록된 이벤트 수정하기 evnet_mst -->
 	<update id="event_mstUpdate" parameterType="EventVo">
-		UPDATE EVENT_MST SET BOARD_TITLE=#{boardTitle}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE EVENT_BOARD_NUM=#{eventBoardNum}
+		UPDATE EVENT_MST SET BOARD_TITLE=#{boardTitle, jdbcType=VARCHAR}, UPDT_USER=#{updtUser, jdbcType=VARCHAR}, UPDTDT=SYSDATE WHERE EVENT_BOARD_NUM=#{eventBoardNum}
 	</update>
 
 	<!-- 등록된 이벤트 수정하기 evnet_det -->
 	<update id="event_detUpdate" parameterType="EventVo">
 		UPDATE 
-		EVENT_DET SET OPEN_DATE=#{openDate}, EVENT_ADDR=#{eventAddr}, 
-		EVENT_ADDR_API=#{eventAddrApi}, EVENT_ADDR_API2=#{eventAddrApi2}, EVENT_DETAIL=#{eventDetail}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE WHERE EVENT_BOARD_NUM=#{eventBoardNum}
+		EVENT_DET SET OPEN_DATE=#{openDate, jdbcType=VARCHAR}, EVENT_ADDR=#{eventAddr, jdbcType=VARCHAR}, 
+		EVENT_ADDR_API=#{eventAddrApi, jdbcType=VARCHAR}, EVENT_ADDR_API2=#{eventAddrApi2, jdbcType=VARCHAR}, 
+		EVENT_DETAIL=#{eventDetail, jdbcType=VARCHAR}, UPDT_USER=#{updtUser, jdbcType=VARCHAR}, 
+		UPDTDT=SYSDATE WHERE EVENT_BOARD_NUM=#{eventBoardNum}
+	</update>
+	
+	<!-- 조회수 -->
+	<update id="event_mstUpdateHit" parameterType="EventVo">
+		UPDATE EVENT_MST SET HIT=#{hit} WHERE EVENT_BOARD_NUM=#{eventBoardNum}
+	</update>
+	
+	<!-- 추천수 -->
+	<update id="event_mstUpdateLove" parameterType="EventVo">
+		UPDATE EVENT_MST SET LOVE=#{love} WHERE EVENT_BOARD_NUM=#{eventBoardNum}
 	</update>
 	
 	<!-- 이벤트 게시글 삭제하기 event_mst-->

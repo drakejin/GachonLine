@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import com.myspring.gachon.outcommunity.service.AlbaService;
 import com.myspring.gachon.outcommunity.vo.AlbaVo;
+import com.myspring.gachon.outcommunity.vo.EventVo;
 
 @Controller
 public class AlbaController {
@@ -59,16 +60,15 @@ public class AlbaController {
 			@RequestParam("corPicPath2") MultipartFile multipartFile2,
 			@RequestParam("corPicPath3") MultipartFile multipartFile3
 			) {
-		String userId="user"; //세션처리뤼뤼뤼
+		String userId=mRequest.getParameter("crtUser");
 		AlbaVo albaVo = new AlbaVo();
-		 // 로그인 세션 처리
-		albaVo.setCrtUser(userId);
-		 // 세션처리
-		albaVo.setUpdtUser("수정자");
+
 		albaVo.setBoardTitle(mRequest.getParameter("boardTitle"));
 		albaVo.setCorporate(mRequest.getParameter("corporate"));
 		albaVo.setCloseDate(mRequest.getParameter("closeDate"));
 		albaVo.setRecuritNum(Integer.parseInt(mRequest.getParameter("recuritNum")));
+		albaVo.setAlbaAddrApi1(mRequest.getParameter("albaAddrApi1"));
+		albaVo.setAlbaAddrApi2(mRequest.getParameter("albaAddrApi2"));
 		albaVo.setGender(mRequest.getParameter("gender"));
 		albaVo.setAge(mRequest.getParameter("age"));
 		albaVo.setAcademicBg(mRequest.getParameter("academicBg"));
@@ -80,34 +80,20 @@ public class AlbaController {
 		albaVo.setPay(mRequest.getParameter("pay"));
 		albaVo.setEmpWalfare(mRequest.getParameter("empWalfare"));
 		albaVo.setWorkArea(mRequest.getParameter("workArea"));
+		albaVo.setCrtUser(mRequest.getParameter("crtUser"));
+		albaVo.setUpdtUser(mRequest.getParameter("updtUser"));
 
 		JSONObject seq = albaServiceImpl.selectalba_list_seq();
 		int boardNum = seq.getInt("ALBA_LIST_SEQ");
 		albaVo.setAlbaBoardNum(seq.getInt("ALBA_LIST_SEQ"));
 		
-		String path = mRequest.getSession().getServletContext().getRealPath("/resources/image/upload/");
-		System.out.println("*******************************************path=" + path);
+		String path = mRequest.getSession().getServletContext().getRealPath("/resources/image/alba/");
 
-		String fileName1 = boardNum+"^"+userId+"1";
-		String fileName2 = boardNum+"^"+userId+"2";
-		String fileName3 = boardNum+"^"+userId+"3";
+		String fileName1 = boardNum+userId+"1";
+		String fileName2 = boardNum+userId+"2";
+		String fileName3 = boardNum+userId+"3";
 		int pos = multipartFile1.getOriginalFilename().lastIndexOf(".");
 		String ext = multipartFile1.getOriginalFilename().substring(pos+1);
-		
-		System.out.println("######################################fileName=" + fileName1);
-		
-		/*if(ext.equalsIgnoreCase("JPG") || ext.equalsIgnoreCase("JPEG") || ext.equalsIgnoreCase("GIF") || ext.equalsIgnoreCase("PNG")){
-			try {
-				multipartFile1.transferTo(new File(path+"/"+fileName1));
-				multipartFile2.transferTo(new File(path+"/"+fileName2));
-				multipartFile3.transferTo(new File(path+"/"+fileName3));
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-            System.err.println("File upload success! ");
-        }else{
-        	System.err.println("File upload fail! ");	
-        }*/
 		
 		try {
 			multipartFile1.transferTo(new File(path+"/"+fileName1+"."+ext));
@@ -162,8 +148,6 @@ public class AlbaController {
 	@ResponseBody
 	public JSONObject albaUpdate(AlbaVo albaVo, int boardNum) {
 		albaVo.setAlbaBoardNum(ServletRequestUtils.getIntParameter(request, "boardNum", 0));
-		String updt_user = "수정자1"; // 세션처리!!!
-		albaVo.setUpdtUser(updt_user);
 
 		JSONObject obj = new JSONObject();
 
@@ -183,6 +167,57 @@ public class AlbaController {
 
 		return obj;
 	}
+	
+	/*조회수*/
+	@RequestMapping(value = "/outcommunity/alba/updateHit", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject albaMstUpdateHit(int boardNum, AlbaVo albaVo) {
+		int albaBoardNum = Integer.parseInt(request.getParameter("boardNum"));
+		albaVo.setAlbaBoardNum(albaBoardNum);
+
+		JSONObject obj = new JSONObject();
+
+		// 트랜잭션처리
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setName(AlbaController.class.getName());
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = platformTransactionManager.getTransaction(def);
+
+		obj = albaServiceImpl.albaMstUpdateHit(albaVo);
+		if (obj.getInt("RESULT_CODE") > 0) {
+			obj = albaServiceImpl.albaMstUpdateHit(albaVo);
+		}
+
+		platformTransactionManager.commit(status);
+
+		return obj;
+	}
+	
+	/*추천수*/
+	@RequestMapping(value = "/outcommunity/alba/updateLove", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject albaUpdateLove(AlbaVo albaVo, int boardNum) {
+		int albaBoardNum = Integer.parseInt(request.getParameter("boardNum"));
+		albaVo.setAlbaBoardNum(albaBoardNum);
+
+		JSONObject obj = new JSONObject();
+
+		// 트랜잭션처리
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setName(AlbaController.class.getName());
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = platformTransactionManager.getTransaction(def);
+
+		obj = albaServiceImpl.albaMstUpdateLove(albaVo);
+		if (obj.getInt("RESULT_CODE") > 0) {
+			obj = albaServiceImpl.albaMstUpdateLove(albaVo);
+		}
+
+		platformTransactionManager.commit(status);
+
+		return obj;
+	}
+	
 
 	/* 아르바이트 게시글 삭제하기 */
 	@RequestMapping(value = "/outcommunity/alba/deleteAlba", method = RequestMethod.POST)

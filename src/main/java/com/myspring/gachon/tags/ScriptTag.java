@@ -34,6 +34,7 @@ public class ScriptTag extends TagSupport {
 	private String bootstrapTable = "";
 	private String noty = "";
 	private String select = "";
+	private String jQueryUI="";
 
 	static {
 		try {
@@ -92,6 +93,10 @@ public class ScriptTag extends TagSupport {
 			}
 			if(this.getSelect().equals(ContentKey.KEY_YES)){
 			appendln("<script src='"+contextPath + ScriptTag.PATH_JS+"/selectTag.js'></script>");
+			}
+			if(this.jQueryUI.equals(ContentKey.KEY_YES)){
+				appendln("<link rel='stylesheet' href='" + contextPath + ScriptTag.PATH_CSS + "/jquery-ui.css'/>");
+				appendln("<script src='" + contextPath + ScriptTag.PATH_JS + "/jquery-ui.js'></script>");
 			}
 			appendln("");
 			appendln("");
@@ -178,6 +183,14 @@ public class ScriptTag extends TagSupport {
 
 	public void setSelect(String select) {
 		this.select = select;
+	}
+	
+	public String getjQueryUI(){
+		return jQueryUI;
+	}
+	
+	public void setjQueryUI(String jQueryUI){
+		this.jQueryUI=jQueryUI;
 	}
 
 }

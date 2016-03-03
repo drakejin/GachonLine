@@ -103,7 +103,6 @@ hr {
 	// 첫회 보여주기
 	function showIdInfomation(id) {
 		$("#modal select").attr("readonly",true);
-		console.log(id);
 		dataForm = {
 			memberId : id
 		};
@@ -118,7 +117,6 @@ hr {
 			success : function(response) {
 				if (response.result == "${RESULT_SUCCESS}") {
 					$("#modal").modal('show');
-					console.log(response);
 					$("#img").attr('src',"/"+response.profileImagePath);
 					document.getElementById("memberId").value = response.memberId;
 					document.getElementById("memberName").value = response.memberName;
@@ -128,9 +126,7 @@ hr {
 					document.getElementById("closeReason").value = response.closeReason;
 					document.getElementById("college").value = response.college;
 					document.getElementById("department").value = response.department;
-					console.info(response.department + "****");
 					document.getElementById("year").value = response.year;
-					console.info(response.year + "****");
 					document.getElementById("schoolYear").value = response.schoolYear;
 					document.getElementById("major").value = response.major;
 					document.getElementById("completeTerm").value = response.completeTerm;
@@ -239,7 +235,6 @@ hr {
 
 				success : function(response) {
 					console.log('modifyInfomation--success');
-					console.log(response);
 					if (response.RESULT_MSG == "${RESULT_SUCCESS}") {
 						GachonNoty.showCustomNoty(dataForm.memberName
 								+ "님의 회원정보를 \n 수정 완료하였습니다. ");
@@ -284,7 +279,6 @@ hr {
 		});
 	}
 
-	//console.log(response.responseText);
 	//코어자바스크립트는 responseHeader 하고 responseText
 	//var ary = JSON.parse(response); 여기서 에러가 나네용! 이미 json인 response 를 json 으로 다시 하려고해서	
 	//에러를 발생기키는대 이거 풀면 자바스크립트 전체 먹통됨.
@@ -292,8 +286,6 @@ hr {
 
 	//코어 ajax 는 response에 헤더와 바디(text)가 나누어져 있는데 
 	//jquery는 response 객체 자체가 그냥 코저 ajax의 responseText 이다. 
-	//	console.log(response);
-	//	console.log(response[0]);
 </script>
 </gachonTag:script>
 <body>
@@ -340,80 +332,82 @@ hr {
 
 					<div id="showMemberModal" class="modal-body">
 						<div class="row form-group">
-							<div class="col-sm-5">
-								<div class="row">
-									<div class="attr_name text-center">회원사진</div>
-									<img id="img" height="290px" class="col-sm-12" />
+							<div class="col-sm-4">
+								<div class="row" style="margin:0;padding: 0;">
+									<div class="attr_name" style="margin-left:9%; margin-bottom: 2%;">회원사진</div>
+									<img id="img" class="col-sm-12" style="width:270px; height:290px; margin-left:5%;"/>
 								</div>
 								<button id="modifyImage" type="button" onclick="uploadImage();"
-									style="display: none;" class="col-xs-12 btn btn-success">
+									style="display: none; margin:2% 0 0 15%;" class="col-xs-10 btn btn-success">
 									업로드</button>
 							</div>
-							<div class="col-sm-7" style="padding-top: 3em;">
+							<div class="col-sm-8">
 								<div class="row form-group">
-									<div class="col-sm-4 attr_name text-center">회원 학번</div>
-									<div class="col-sm-8">
+									<div class="col-sm-2 attr_name text-center">회원 학번</div>
+									<div class="col-sm-10">
 										<input type="text" id="memberId" class="form-control" readonly />
 									</div>
 								</div>
 								<div class="row form-group">
-									<div class="col-sm-4 attr_name text-center">회원 이름</div>
-									<div class="col-sm-8">
+									<div class="col-sm-2 attr_name text-center">회원 이름</div>
+									<div class="col-sm-10">
 										<input type="text" id="memberName" class="form-control"
 											readonly />
 									</div>
 								</div>
 								<div class="row form-group">
-									<div class="col-sm-4 attr_name text-center">비밀번호</div>
-									<div class="col-sm-8">
+									<div class="col-sm-2 attr_name text-center">비밀번호</div>
+									<div class="col-sm-10">
 										<input type="password" id="password" class="form-control"
 											readonly />
 									</div>
 								</div>
 								<div class="row form-group">
-									<div class="col-sm-4 attr_name text-center">생년월일</div>
-									<div class="col-sm-8">
+									<div class="col-sm-2 attr_name text-center">생년월일</div>
+									<div class="col-sm-10">
 										<input type="date" id="birthDate" class="form-control"
 											readonly />
 									</div>
 								</div>
-								
-							</div>
-						</div>
-						<div class="row form-group">
-							
-							<div class="col-sm-2 attr_name text-center">전화번호1</div>
-							<div class="col-sm-10">
-								<div class="row">
-									<div class="col-sm-4">
-										<gachonTag:select id="phone_1" code="${TEL}"  className="attr_name"  required="required"/>
-									</div>
-									<div class="col-sm-4">
-										<input type="text" id="phone_2" class="form-control"
-											readonly />
-									</div>
-									<div class="col-sm-4">
-										<input type="text" id="phone_3" class="form-control"
-											readonly />
+
+								<div class="row form-group">
+									<div class="col-sm-2 attr_name text-center">전화번호</div>
+									<div class="col-sm-10">
+										<div class="row">
+											<div class="col-sm-4">
+												<gachonTag:select id="phone_1" code="${TEL}"
+													className="attr_name" required="required" />
+											</div>
+											<div class="col-sm-4">
+												<input type="text" id="phone_2" class="form-control"
+													readonly />
+											</div>
+											<div class="col-sm-4">
+												<input type="text" id="phone_3" class="form-control"
+													readonly />
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-2 attr_name text-center">전화번호2</div>
-							<div class="col-sm-10">
-								<div class="row">
-									<div class="col-sm-4">
-										<gachonTag:select id="phone2_1" code="${TEL}" className="attr_name"  required="required"/>
-					
-									</div>
-									<div class="col-sm-4">
-										<input type="text" id="phone2_2" class="form-control"
-											readonly />
-									</div>
-									<div class="col-sm-4">
-										<input type="text" id="phone2_3" class="form-control"
-											readonly />
+
+								<div class="row form-group">
+									<div class="col-sm-2 attr_name text-center">전화번호</div>
+									<div class="col-sm-10">
+										<div class="row">
+											<div class="col-sm-4">
+												<gachonTag:select id="phone2_1" code="${TEL}"
+													className="attr_name" required="required" />
+
+											</div>
+											<div class="col-sm-4">
+												<input type="text" id="phone2_2" class="form-control"
+													readonly />
+											</div>
+											<div class="col-sm-4">
+												<input type="text" id="phone2_3" class="form-control"
+													readonly />
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -598,15 +592,14 @@ hr {
 			<div class="row form-group">
 				<div class="col-sm-6">
 					<div class="row form-group">
-						<div class="attr_name text-center">회원사진</div>
-						<img src="${PATH_IMAGES}/i.PNG" width="200px" height="100px"
-							class="col-sm-12 img-responsive img-thumbnail" />
+						<div class="attr_name" style="margin-left:5%; margin-bottom: 2%;">회원사진</div>
+						<img src="${PATH_IMAGES}/i.PNG" class="col-sm-12 img-responsive img-thumbnail" style="margin-left:5%; width:450px; height:370px;"/>
 					</div>
 					<button type="button" onclick="uploadImage();"
-						class="col-xs-12 btn btn-success">업로드</button>
+						class="col-xs-10 btn btn-success" style="margin-left:3%;">업로드</button>
 
 				</div>
-				<div class="col-sm-6" style="padding-top: 3em;">
+				<div class="col-sm-6">
 					<div class="row form-group">
 						<div class="col-sm-4 attr_name text-center">회원 학번</div>
 						<div class="col-sm-8">

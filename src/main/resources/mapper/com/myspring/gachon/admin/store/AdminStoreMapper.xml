@@ -5,7 +5,7 @@
 	<!-- gachon_shop_mst 테이블 INSERT -->
 	<insert id="admin_shop_mstInsert" parameterType="AdminStoreVo">
 		INSERT INTO GACHON_SHOP_MST VALUES(
-		#{shopNum}, #{shopName, jdbcType=VARCHAR}, #{shopTitlePicPath, jdbcType=VARCHAR}, #{crtUser}, SYSDATE, #{updtUser}, SYSDATE)
+		#{shopNum}, #{shopName, jdbcType=VARCHAR}, #{shopTitlePicPath, jdbcType=VARCHAR}, #{crtUser, jdbcType=VARCHAR}, SYSDATE, #{updtUser, jdbcType=VARCHAR}, SYSDATE)
 	</insert>
 
 	<!-- gachon_shop_det 테이블 INSERT -->
@@ -36,7 +36,7 @@
 	
 	<!-- 등록된 상점정보 수정하기 gachon_shop_mst -->
 	<update id="admin_shop_mstUpdate" parameterType="AdminStoreVo">
-		UPDATE GACHON_SHOP_MST SET SHOP_NAME=#{shopName}, SHOP_TITLE_PIC_PATH=#{shopTitlePicPath}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE 
+		UPDATE GACHON_SHOP_MST SET SHOP_NAME=#{shopName}, SHOP_TITLE_PIC_PATH=#{shopTitlePicPath, jdbcType=VARCHAR}, UPDT_USER=#{updtUser}, UPDTDT=SYSDATE 
 		WHERE SHOP_NUM=#{shopNum}
 	</update>
 	

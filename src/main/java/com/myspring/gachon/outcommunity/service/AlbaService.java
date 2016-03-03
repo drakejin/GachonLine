@@ -18,6 +18,8 @@ public interface AlbaService {
 	JSONObject albaMstUpdate(AlbaVo albaVo); 
 	JSONObject albaDetUpdate(AlbaVo albaVo);
 	JSONObject albaImgUpdate(AlbaVo albaVo);
+	JSONObject albaMstUpdateHit(AlbaVo albaVo);
+	JSONObject albaMstUpdateLove(AlbaVo albaVo);
 	JSONObject albaMstDelete(int boardNum);
 	JSONObject albaDetDelete(int boardNum); 
 	JSONObject albaImgDelete(int boardNum); 

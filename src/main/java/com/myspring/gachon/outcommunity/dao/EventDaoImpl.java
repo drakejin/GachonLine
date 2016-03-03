@@ -75,6 +75,20 @@ public class EventDaoImpl implements EventDao {
 	}
 	
 	@Override
+	public JSONObject eventMstUpdateHit(EventVo eventVo) {
+		JSONObject result = new JSONObject();
+		result.put("RESULT_CODE", sqlSession.update(NS+"event_mstUpdateHit", eventVo));
+		return result;
+	}
+	
+	@Override
+	public JSONObject eventMstUpdateLove(EventVo eventVo) {
+		JSONObject result = new JSONObject();
+		result.put("RESULT_CODE", sqlSession.update(NS+"event_mstUpdateLove", eventVo));
+		return result;
+	}
+	
+	@Override
 	public JSONObject eventMstDelete(int boardNum) {
 		JSONObject result = new JSONObject();
 		result.put("RESULT_CODE", sqlSession.delete(NS+"event_mstDelete", boardNum));

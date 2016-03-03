@@ -112,7 +112,6 @@ THE SOFTWARE.*/
 					tdData += ";";
 					
 					//output
-					//console.log(tdData);
 					
 					if(defaults.consoleLog == 'true'){
 						console.log(tdData);
@@ -212,7 +211,6 @@ THE SOFTWARE.*/
 					window.open('data:application/xml;filename=exportData;' + base64data);
 
 				}else if(defaults.type == 'excel' || defaults.type == 'doc'|| defaults.type == 'powerpoint'  ){
-					//console.log($(this).html());
 					var excel="<table>";
 					// Header
 					$(el).find('thead').find('tr').each(function() {
