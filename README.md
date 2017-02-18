@@ -8,8 +8,8 @@
 
 # 실행 화면
 
- ![]()
- ![]()
+ ![시간표 조회](https://github.com/drake-jin/GachonLine/raw/master/docs/%EC%8B%9C%EA%B0%84%ED%91%9C%20%EC%A1%B0%ED%9A%8C.JPG)
+ ![메인 화면](https://github.com/drake-jin/GachonLine/raw/master/docs/UI_%EB%A9%94%EC%9D%B8%ED%99%94%EB%A9%B4.JPG)
 
 # 프로젝트 특징
  1. 커스텀 태그를 활용한 UI 구성
@@ -93,8 +93,9 @@
 
 # 산출 문서
 
- - []()
- - []()
+ - [기능명세 및 업무 분담표](https://github.com/drake-jin/GachonLine/raw/master/docs/%EA%B0%80%EC%B2%9C%EB%9D%BC%EC%9D%B8_%EA%B8%B0%EB%8A%A5.xlsx)
+ - [가천라인 제안 및 설계](https://github.com/drake-jin/GachonLine/raw/master/docs/gachonline.pdf)
+ - [코드리스트.pdf](https://github.com/drake-jin/GachonLine/raw/master/docs/%EC%BD%94%EB%93%9C%20%EB%A6%AC%EC%8A%A4%ED%8A%B8.pdf)
 
 # 참여자
  - 08 김동준[멘토]
